@@ -3,7 +3,7 @@ import React from 'react'
 import { SplashProp } from './types';
 
 
-const Splash = ({navigation}: SplashProp) => {
+const Splash = ({navigation}: SplashProp): React.JSX.Element => {
 
   setTimeout(() => {
     navigation.replace('Login');

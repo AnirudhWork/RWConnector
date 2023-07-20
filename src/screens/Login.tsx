@@ -11,7 +11,7 @@ import {
 
 import {LoginProp} from './types'
 
-const Login = ({navigation}: LoginProp) => {
+const Login = ({navigation}: LoginProp): React.JSX.Element => {
   const logo = require('../Icons/RWLogo.png');
   const loginImage = require('../Images/TruckLogin.png');
   const usernameIcon = require('../Icons/Username.png');
