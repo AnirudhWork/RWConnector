@@ -6,14 +6,10 @@ import {
   Image,
   TextInput,
   StyleSheet,
-  KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
 
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../App';
-
-type LoginProp = NativeStackScreenProps<RootStackParamList, 'Login'>;
+import {LoginProp} from './types'
 
 const Login = ({navigation}: LoginProp) => {
   const logo = require('../Icons/RWLogo.png');

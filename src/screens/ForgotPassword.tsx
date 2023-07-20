@@ -6,17 +6,10 @@ import {
   Image,
   TextInput,
   StyleSheet,
-  KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
 
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../App';
-
-type ForgotPasswordProp = NativeStackScreenProps<
-  RootStackParamList,
-  'ForgotPassword'
->;
+import {ForgotPasswordProp} from './types'
 
 const ForgotPassword = ({navigation}: ForgotPasswordProp) => {
   const logo = require('../Icons/RWLogo.png');

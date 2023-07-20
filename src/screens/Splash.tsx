@@ -1,12 +1,9 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
+import { SplashProp } from './types';
 
-import {NativeStackScreenProps} from '@react-navigation/native-stack'
-import {RootStackParamList} from '../App'
 
-type HomeProp = NativeStackScreenProps <RootStackParamList, 'Splash'>;
-
-const Splash = ({navigation}: HomeProp) => {
+const Splash = ({navigation}: SplashProp) => {
 
   setTimeout(() => {
     navigation.replace('Login');
