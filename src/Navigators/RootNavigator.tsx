@@ -5,6 +5,7 @@ import {RootStackParamList} from '../App';
 import Splash from '../screens/Splash';
 import Login from '../screens/Login';
 import ForgotPassword from '../screens/ForgotPassword';
+import Main from '../screens/Main';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -31,6 +32,12 @@ const RootNavigator = (): React.JSX.Element => {
             title: 'Forgot Password',
           }}
         />
+        <Stack.Screen
+        name='Main'
+        component={Main}
+        options={{
+          title: 'Main'
+        }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
