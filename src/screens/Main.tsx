@@ -1,13 +1,21 @@
-import { StyleSheet, ScrollView } from 'react-native'
-import React from 'react'
-import DrawerNavigator from '../Navigators/DrawerNavigator'
+import React, {FC} from 'react';
+import {StyleSheet, View} from 'react-native';
+import DrawerNavigator from '../Navigators/DrawerNavigator';
 
-const Main = (): React.JSX.Element => {
+const Main: FC = () => {
+
+
   return (
-    <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 1}}>
-      <DrawerNavigator/>
-    </ScrollView>    
-  )
-}
+    <View style={styles.container}>
+      <DrawerNavigator />
+    </View>
+  );
+};
 
-export default Main
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
+
+export default Main;

@@ -9,7 +9,7 @@ import Main from '../screens/Main';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const RootNavigator = (): React.JSX.Element => {
+const RootNavigator : React.FC  = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator

@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
-import { SplashProp } from './types';
+import { SplashProps } from './types';
 
 
-const Splash = ({navigation}: SplashProp): React.JSX.Element => {
+const Splash : React.FC<SplashProps> = ({navigation}) => {
 
   setTimeout(() => {
     navigation.replace('Login');

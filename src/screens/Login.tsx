@@ -7,11 +7,12 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
+  KeyboardAvoidingView,
 } from 'react-native';
 
-import {LoginProp} from './types';
+import {LoginProps} from './types';
 
-const Login = ({navigation}: LoginProp): React.JSX.Element => {
+const Login: React.FC<LoginProps> = ({navigation}) => {
   const logo = require('../Icons/RWLogo.png');
   const loginImage = require('../Images/TruckLogin.png');
   const usernameIcon = require('../Icons/Username.png');
@@ -28,7 +29,9 @@ const Login = ({navigation}: LoginProp): React.JSX.Element => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{flex: 1}}>
+    <ScrollView style={styles.container}
+    contentContainerStyle={styles.container}
+    >
       <View style={styles.login_container}>
         <View style={styles.login_content}>
           <View>
@@ -82,6 +85,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+    backgroundColor: 'red',
   },
   login_container: {
     flex: 0.6,

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const About = () => {
+const About : React.FC  = () => {
   return (
     <View>
       <Text>About</Text>

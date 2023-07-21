@@ -9,9 +9,9 @@ import {
   ScrollView,
 } from 'react-native';
 
-import {ForgotPasswordProp} from './types'
+import {ForgotPasswordProps} from './types'
 
-const ForgotPassword = ({navigation}: ForgotPasswordProp): React.JSX.Element => {
+const ForgotPassword : React.FC<ForgotPasswordProps> = ({navigation}) => {
   const logo = require('../Icons/RWLogo.png');
   const loginImage = require('../Images/TruckLogin.png');
   const emailIcon = require('../Icons/EmailLogo.png');

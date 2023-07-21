@@ -6,12 +6,12 @@ import Contact from '../screens/Contact';
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = (): React.JSX.Element => {
+const DrawerNavigator : React.FC = () => {
   return (
     <Drawer.Navigator
     screenOptions={{headerShown:true}}
     backBehavior='history'> 
-      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="Home" component={Home}/>
       <Drawer.Screen name="About" component={About} />
       <Drawer.Screen name="Contact" component={Contact} />
     </Drawer.Navigator>
