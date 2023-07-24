@@ -8,10 +8,10 @@ export type RootStackParamList = {
   Main: undefined;
 };
 
-const App = (): React.JSX.Element => {
+const App: React.FC = (): React.JSX.Element => {
   return (
     <SafeAreaView style={styles.container}>
-      <RootNavigator/>
+      <RootNavigator />
     </SafeAreaView>
   );
 };

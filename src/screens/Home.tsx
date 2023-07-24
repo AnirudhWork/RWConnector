@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, Button, Text, View} from 'react-native';
 import Dropdown from '../Components/DropDown';
 
 const Home: React.FC = () => {
-  const [selected, setSelected] = useState<{ label: string; value: string } | undefined>(undefined);
+  const [selected, setSelected] = useState<
+    {label: string; value: string} | undefined
+  >(undefined);
   const data = [
-    { label: 'One', value: '1' },
-    { label: 'Two', value: '2' },
-    { label: 'Three', value: '3' },
-    { label: 'Four', value: '4' },
-    { label: 'Five', value: '5' },
+    {label: 'Truck 72', value: '1'},
+    {label: 'Truck 73', value: '2'},
+    {label: 'Truck 101', value: '3'},
+    {label: 'Truck 102', value: '4'},
+    {label: 'Truck 201', value: '5'},
   ];
 
   return (
     <View style={styles.container}>
-      {selected && (
-        <Text>
-          Selected: label = {selected.label} and value = {selected.value}
-        </Text>
-      )}
       <Dropdown label="Select Truck" data={data} onSelect={setSelected} />
+      {selected && (
+        <Text style={{marginHorizontal: 10}}>Selected: {selected.label}</Text>
+      )}
     </View>
   );
 };

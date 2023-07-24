@@ -1,28 +1,29 @@
-import { Icon } from '@rneui/themed';
-import React, { FC, ReactElement, useRef, useState } from 'react';
+import React, {FC, ReactElement, useRef, useState} from 'react';
 import {
   FlatList,
-  FlatListProps,
   ListRenderItem,
   Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
-import { IProps } from './types';
+import {IProps} from './types';
 
-const Dropdown: FC<IProps> = ({ label, data, onSelect }) => {
+const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
   const DropdownButton = useRef<TouchableOpacity>(null);
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState<any>(undefined);
   const [dropdownTop, setDropdownTop] = useState(0);
+  const chevron_down = require('../Icons/chevron-down.png');
 
   const toggleDropdown = (): void => {
     visible ? setVisible(false) : openDropdown();
   };
 
   const openDropdown = (): void => {
+    //calculating the position of the button
     DropdownButton.current?.measure((x, y, width, height, pageX, pageY) => {
       setDropdownTop(pageY + height);
     });
@@ -35,10 +36,15 @@ const Dropdown: FC<IProps> = ({ label, data, onSelect }) => {
     setVisible(false);
   };
 
-  const renderItem: ListRenderItem<{ label: string; value: string }> = ({
+  const renderItem: ListRenderItem<{label: string; value: string}> = ({
     item,
   }) => (
-    <TouchableOpacity style={styles.item} onPress={() => onItemPress(item)}>
+    <TouchableOpacity
+      style={[
+        styles.item,
+        selected?.value === item.value ? styles.selectedItem : null,
+      ]}
+      onPress={() => onItemPress(item)}>
       <Text>{item.label}</Text>
     </TouchableOpacity>
   );
@@ -46,17 +52,18 @@ const Dropdown: FC<IProps> = ({ label, data, onSelect }) => {
   const renderDropdown = (): ReactElement<any, any> => {
     return (
       <Modal visible={visible} transparent animationType="none">
-        <TouchableOpacity
-          style={styles.overlay}
-          onPress={() => setVisible(false)}
-        >
-          <View style={[styles.dropdown, { top: dropdownTop }]}>
-            <FlatList
-              data={data}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => index.toString()}
-            />
-          </View>
+        <TouchableOpacity style={styles.modal_container}>
+          <TouchableOpacity
+            style={styles.overlay}
+            onPress={() => setVisible(false)}>
+            <View style={[styles.dropdown, {top: dropdownTop}]}>
+              <FlatList
+                data={data}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+              />
+            </View>
+          </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
     );
@@ -67,12 +74,10 @@ const Dropdown: FC<IProps> = ({ label, data, onSelect }) => {
       ref={DropdownButton}
       style={styles.button}
       onPress={toggleDropdown}
-    >
+      activeOpacity={0.8}>
       {renderDropdown()}
-      <Text style={styles.buttonText}>
-        {(selected && selected.label) || label}
-      </Text>
-      <Icon style={styles.icon} type="font-awesome" name='' />
+      <Text style={styles.buttonText}>{selected?.label || label}</Text>
+      <Image style={styles.icon} source={chevron_down} />
     </TouchableOpacity>
   );
 };
@@ -103,8 +108,16 @@ const styles = StyleSheet.create({
     width: '100%',
     shadowColor: '#000000',
     shadowRadius: 4,
-    shadowOffset: { height: 4, width: 0 },
+    shadowOffset: {height: 4, width: 0},
     shadowOpacity: 0.5,
+    borderColor: 'rgba(51, 51, 51, 0.50)',
+    borderWidth: 1,
+  },
+  modal_container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
   },
   overlay: {
     width: '100%',
@@ -114,6 +127,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderBottomWidth: 1,
+  },
+  selectedItem: {
+    backgroundColor: '#5897FB',
   },
 });
 

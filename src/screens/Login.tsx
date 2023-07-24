@@ -7,7 +7,7 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  KeyboardAvoidingView,
+  // KeyboardAvoidingView,
 } from 'react-native';
 
 import {LoginProps} from './types';
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor: 'red',
   },
   login_container: {
     flex: 0.6,
