@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, Button, Text, View} from 'react-native';
 import Dropdown from '../Components/DropDown';
 
-const Home: React.FC = () => {
+const Jobs: React.FC = () => {
   const [selected, setSelected] = useState<
     {label: string; value: string} | undefined
   >(undefined);
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default Jobs;

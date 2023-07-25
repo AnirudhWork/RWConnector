@@ -6,10 +6,11 @@ import Splash from '../screens/Splash';
 import Login from '../screens/Login';
 import ForgotPassword from '../screens/ForgotPassword';
 import Main from '../screens/Main';
+import Home from '../screens/Jobs';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const RootNavigator : React.FC  = () => {
+const RootNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -33,11 +34,12 @@ const RootNavigator : React.FC  = () => {
           }}
         />
         <Stack.Screen
-        name='Main'
-        component={Main}
-        options={{
-          title: 'Main'
-        }} />
+          name="Main"
+          component={Main}
+          options={{
+            title: 'Main',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

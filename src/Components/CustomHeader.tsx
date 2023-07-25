@@ -3,6 +3,7 @@ import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import { CustomHeaderProps } from '../screens/types';
 
 const CustomHeader: React.FC<CustomHeaderProps> = ({navigation}) => {
+  
   const logo = require('../Icons/RWLogo.png');
   const DrawerIcon = require('../Icons/DrawerIcon.png');
 
@@ -42,7 +43,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    // backgroundColor: 'blue',
   },
   logo: {
     width: 200,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   drawerButton: {
     paddingHorizontal: 10,
-    paddingVertical: 'auto',
+    paddingVertical: 25,
   },
   drawerIcon: {
     width: 24,
