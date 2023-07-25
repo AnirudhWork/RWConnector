@@ -29,9 +29,9 @@ const Login: React.FC<LoginProps> = ({navigation}) => {
   };
 
   return (
-    <ScrollView style={styles.container}
-    contentContainerStyle={styles.container}
-    >
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.container}>
       <View style={styles.login_container}>
         <View style={styles.login_content}>
           <View>
@@ -67,7 +67,9 @@ const Login: React.FC<LoginProps> = ({navigation}) => {
           </View>
           <View>
             <TouchableOpacity activeOpacity={0.9}>
-              <Text onPress={handleForgotPassword} style={{color: 'white'}}>
+              <Text
+                onPress={handleForgotPassword}
+                style={styles.forgetPasswordStyles}>
                 Forgot Password?
               </Text>
             </TouchableOpacity>
@@ -151,6 +153,10 @@ const styles = StyleSheet.create({
   showPassword: {
     position: 'absolute',
     right: 20,
+  },
+  forgetPasswordStyles: {
+    color: 'white',
+    marginTop: 15,
   },
 });
 

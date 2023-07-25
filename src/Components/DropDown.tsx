@@ -13,9 +13,9 @@ import {IProps} from './types';
 
 const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
   const DropdownButton = useRef<TouchableOpacity>(null);
-  const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState<any>(undefined);
-  const [dropdownTop, setDropdownTop] = useState(0);
+  const [ visible, setVisible ] = useState(false);
+  const [ selected, setSelected ] = useState<any>(undefined);
+  const [ dropdownTop, setDropdownTop ] = useState(0);
   const chevron_down = require('../Icons/chevron-down.png');
 
   const toggleDropdown = (): void => {

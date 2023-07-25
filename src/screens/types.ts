@@ -1,7 +1,13 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../App';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { ParamListBase } from '@react-navigation/native';
+import {DrawerNavigationProp} from '@react-navigation/drawer';
+import {ParamListBase} from '@react-navigation/native';
+
+export type RootStackParamList = {
+  Splash: undefined;
+  Login: undefined;
+  ForgotPassword: undefined;
+  Main: undefined;
+};
 
 export type ForgotPasswordProps = NativeStackScreenProps<
   RootStackParamList,

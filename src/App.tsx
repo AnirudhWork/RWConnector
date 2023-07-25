@@ -1,13 +1,6 @@
 import {SafeAreaView, StyleSheet} from 'react-native';
 import RootNavigator from './Navigators/RootNavigator';
 
-export type RootStackParamList = {
-  Splash: undefined;
-  Login: undefined;
-  ForgotPassword: undefined;
-  Main: undefined;
-};
-
 const App: React.FC = (): React.JSX.Element => {
   return (
     <SafeAreaView style={styles.container}>
