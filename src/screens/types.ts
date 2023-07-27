@@ -6,7 +6,7 @@ export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   ForgotPassword: undefined;
-  Main: undefined;
+  DrawerNavigationContainer: undefined;
 };
 
 export type ForgotPasswordProps = NativeStackScreenProps<
@@ -18,8 +18,13 @@ export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
-export type MainProps = NativeStackScreenProps<RootStackParamList, 'Main'>;
+export type MainProps = NativeStackScreenProps<RootStackParamList, 'DrawerNavigationContainer'>;
 
 export type CustomHeaderProps = {
   navigation: DrawerNavigationProp<ParamListBase, string, undefined>;
+};
+
+export type TDropDownDataProps = {
+  label: string;
+  value: string;
 };

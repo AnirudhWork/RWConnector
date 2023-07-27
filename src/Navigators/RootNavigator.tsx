@@ -1,12 +1,11 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../App';
+import {RootStackParamList} from '../screens/types';
 import Splash from '../screens/Splash';
 import Login from '../screens/Login';
 import ForgotPassword from '../screens/ForgotPassword';
-import Main from '../screens/Main';
-import Home from '../screens/Jobs';
+import DrawerNavigationContainer from '../screens/DrawerNavigationContainer';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -34,10 +33,10 @@ const RootNavigator: React.FC = () => {
           }}
         />
         <Stack.Screen
-          name="Main"
-          component={Main}
+          name="DrawerNavigationContainer"
+          component={DrawerNavigationContainer}
           options={{
-            title: 'Main',
+            title: 'DrawerNavigationContainer',
           }}
         />
       </Stack.Navigator>

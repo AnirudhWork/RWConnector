@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {StyleSheet, Button, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import Dropdown from '../Components/DropDown';
+import {TDropDownDataProps} from '../screens/types';
 
 const Jobs: React.FC = () => {
-  const [selected, setSelected] = useState<
-    {label: string; value: string} | undefined
-  >(undefined);
+  const [selected, setSelected] = useState<TDropDownDataProps | undefined>(
+    undefined
+  );
   const data = [
     {label: 'Truck 72', value: '1'},
     {label: 'Truck 73', value: '2'},

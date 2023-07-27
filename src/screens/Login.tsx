@@ -25,7 +25,7 @@ const Login: React.FC<LoginProps> = ({navigation}) => {
 
   let handleSubmit = () => {
     // navigation.replace('Main');
-    navigation.navigate('Main');
+    navigation.navigate('DrawerNavigationContainer');
   };
 
   return (
@@ -61,7 +61,7 @@ const Login: React.FC<LoginProps> = ({navigation}) => {
             </View>
           </View>
           <View style={styles.button_container}>
-            <TouchableOpacity activeOpacity={0.7} onPress={handleSubmit}>
+            <TouchableOpacity activeOpacity={0.9} onPress={handleSubmit}>
               <Text style={styles.button}>Login</Text>
             </TouchableOpacity>
           </View>

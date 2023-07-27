@@ -1,9 +1,8 @@
 import React, {FC} from 'react';
 import {StyleSheet, View} from 'react-native';
 import DrawerNavigator from '../Navigators/DrawerNavigator';
-import Home from './Jobs';
 
-const Main: FC = () => {
+const DrawerNavigationContainer: FC = () => {
   return (
     <View style={styles.container}>
       <DrawerNavigator />
@@ -17,4 +16,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Main;
+export default DrawerNavigationContainer;
