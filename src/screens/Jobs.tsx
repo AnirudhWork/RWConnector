@@ -5,7 +5,7 @@ import {TDropDownDataProps} from '../screens/types';
 
 const Jobs: React.FC = () => {
   const [selected, setSelected] = useState<TDropDownDataProps | undefined>(
-    undefined
+    undefined,
   );
   const data = [
     {label: 'Truck 72', value: '1'},

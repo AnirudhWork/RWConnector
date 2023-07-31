@@ -6,6 +6,7 @@ import Splash from '../screens/Splash';
 import Login from '../screens/Login';
 import ForgotPassword from '../screens/ForgotPassword';
 import DrawerNavigationContainer from '../screens/DrawerNavigationContainer';
+import LoginBackground from '../screens/LoginBackground';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -23,6 +24,13 @@ const RootNavigator: React.FC = () => {
           component={Login}
           options={{
             title: 'Login Page',
+          }}
+        />
+        <Stack.Screen
+          name="LoginBackground"
+          component={LoginBackground}
+          options={{
+            title: 'LoginBackground Page',
           }}
         />
         <Stack.Screen

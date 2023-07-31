@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -6,18 +6,36 @@ import {
   Image,
   TextInput,
   StyleSheet,
-  ScrollView,
+  Keyboard,
 } from 'react-native';
 
 import {ForgotPasswordProps} from './types';
 // import axios from 'axios';
 
-const ForgotPassword: React.FC<ForgotPasswordProps> = ({navigation}) => {
-  const logo = require('../Icons/RWLogo.png');
-  const loginImage = require('../Images/TruckLogin.png');
+const ForgotPassword: React.FC<ForgotPasswordProps> = ({
+  navigation,
+  setIsForgotPassword,
+  setSubmitted,
+}) => {
   const emailIcon = require('../Icons/EmailLogo.png');
-  const [submitted, setSubmitted] = useState(false);
+
   const [email, setEmail] = useState('');
+  const refEmail = useRef<TextInput>(null);
+
+  const keyboardDidHideCallback = () => {
+    refEmail.current?.blur();
+  };
+
+  useEffect(() => {
+    const keyboardDidHideSubscription = Keyboard.addListener(
+      'keyboardDidHide',
+      keyboardDidHideCallback,
+    );
+
+    return () => {
+      keyboardDidHideSubscription?.remove();
+    };
+  }, []);
 
   const handleSubmit = () => {
     // const url = 'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg/auth/login';
@@ -26,89 +44,52 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({navigation}) => {
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
+      setIsForgotPassword(false); // display Login screen again
     }, 2000);
   };
 
-  const handleBackButton = () => {
-    navigation.navigate('Login');
-  };
-
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{flex: 1}}>
-      <View style={styles.login_container}>
-        <View style={styles.login_content}>
-          <View>
-            <Image source={logo} />
-          </View>
-          <View style={styles.input_container}>
-            <View style={styles.input_icon_container}>
-              <Image source={emailIcon} style={styles.input_icons} />
-              <TextInput
-                style={styles.input}
-                placeholder="Email Id"
-                placeholderTextColor="#BCBCBC"
-                value={email}
-                onChangeText={setEmail}
-              />
-            </View>
-          </View>
-          <View style={styles.button_container}>
-            <TouchableOpacity activeOpacity={0.9} onPress={handleSubmit}>
-              <Text style={styles.button}>Submit</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity onPress={handleBackButton} activeOpacity={0.9}>
-              <Text style={{color: 'white'}}>Return To Login Screen</Text>
-            </TouchableOpacity>
-          </View>
+    <View style={styles.container}>
+      <View style={styles.input_container}>
+        <View style={styles.input_icon_container}>
+          <Image source={emailIcon} style={styles.input_icons} />
+          <TextInput
+            style={styles.input}
+            placeholder="Email Id"
+            placeholderTextColor="#BCBCBC"
+            value={email}
+            onChangeText={setEmail}
+            inputMode="email"
+            ref={refEmail}
+          />
         </View>
-        {submitted && (
-          <View style={styles.confirmationMessage_container}>
-            <View style={styles.confirmationMessage_content}>
-              <Text style={styles.confirmationMessage}>
-                Password successfully sent to email provided
-              </Text>
-            </View>
-          </View>
-        )}
+        <View style={styles.button_container}>
+          <TouchableOpacity activeOpacity={0.9} onPress={handleSubmit}>
+            <Text style={styles.button}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity
+            onPress={() => setIsForgotPassword(false)}
+            activeOpacity={0.5}>
+            <Text style={{color: 'white'}}>Return To Login Screen</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.image_container}>
-        <Image style={styles.image} source={loginImage} />
-      </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  login_container: {
-    flex: 0.6,
     width: '100%',
-    justifyContent: 'space-evenly',
     alignItems: 'center',
-    backgroundColor: '#000',
-  },
-  image_container: {
-    flex: 0.4,
-    width: '100%',
-  },
-  login_content: {
-    width: '100%',
-    height: '70%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    // backgroundColor: 'crimson',
-  },
-  image: {
-    width: '100%',
-    flex: 1,
+    justifyContent: 'center',
   },
   input_container: {
     width: '90%',
+    height: '90%',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   input_icon_container: {
@@ -150,27 +131,6 @@ const styles = StyleSheet.create({
   showPassword: {
     position: 'absolute',
     right: 20,
-  },
-  confirmationMessage_container: {
-    width: '80%',
-    backgroundColor: 'rgba(217, 237, 247, 1)',
-    padding: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  confirmationMessage_content: {
-    width: '100%',
-    height: 'auto',
-    // backgroundColor: 'lightpink',
-  },
-  confirmationMessage: {
-    color: '#037F01',
-    textAlign: 'center',
-    fontFamily: 'Inter',
-    fontSize: 14,
-    fontStyle: 'normal',
-    fontWeight: '700',
   },
 });
 
