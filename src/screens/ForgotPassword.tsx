@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import {ForgotPasswordProps} from './types';
-// import axios from 'axios';
+import axios from 'axios';
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({
   navigation,
@@ -37,14 +37,56 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
     };
   }, []);
 
-  const handleSubmit = () => {
-    // const url = 'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg/auth/login';
-    // axios.post(url).then(res => console.log(res.data)).catch(err => console.log("There was an error fetching data", err));
+  const handleSubmit = async () => {
+    const url =
+      'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg/auth/forgotpwd';
+
+    const data = {
+      email: email,
+    };
+
+    const _header = {
+      header: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    if (!email) {
+      console.warn('Please enter an email address');
+      return;
+    }
+    // console.log('\n\nRequest info:', url, data, header);
+
+    // const instance = axios.create({
+    //   baseURL: 'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg',
+    //   timeout: 6000,
+    //   headers: header,
+    //   responseType: 'json',
+    // });
+
+    // axios.defaults.timeout = 10000;
+
+    axios
+      .post(url, data)
+      .then(res => console.log(JSON.stringify(res.data)))
+      .catch(err => {
+        console.log('error resp', JSON.stringify(err.response));
+        if (err.response) {
+          console.log('Response Data:', err.response.data);
+          console.log('Response Status:', err.response.status);
+          console.log('Response Headers:', err.response.headers);
+        } else if (err.request) {
+          console.log('Request Error:', JSON.stringify(err.request));
+        } else {
+          console.log('Error:', err.message);
+        }
+        console.log('Config:', err.config);
+      });
 
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
-      setIsForgotPassword(false); // display Login screen again
+      setIsForgotPassword(false);
     }, 2000);
   };
 
@@ -61,6 +103,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
             onChangeText={setEmail}
             inputMode="email"
             ref={refEmail}
+            returnKeyType="done"
+            onSubmitEditing={handleSubmit}
           />
         </View>
         <View style={styles.button_container}>

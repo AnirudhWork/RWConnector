@@ -6,12 +6,22 @@ import {
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
+// import axios from 'axios';
 
 const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
   const drawerClose = require('../Icons/DrawerCross.png');
 
+  // const baseURL = 'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg';
+
   const handleDrawerClosure = () => {
     props.navigation.closeDrawer();
+  };
+
+  const handleLogOut = () => {
+    props.navigation.reset({
+      index: 0,
+      routes: [{name: 'Login'}],
+    });
   };
 
   return (
@@ -35,7 +45,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
             <DrawerItemList {...props} />
             <DrawerItem
               label="Logout"
-              onPress={() => props.navigation.navigate('Login')}
+              onPress={handleLogOut}
               labelStyle={styles.textStyle}
             />
           </View>
@@ -65,7 +75,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 15,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: '#C8E6CA',
@@ -73,15 +83,16 @@ const styles = StyleSheet.create({
   textStyle: {
     color: '#C8E6CA',
     fontFamily: 'Roboto',
-    fontSize: 14,
+    fontSize: 16,
     fontStyle: 'normal',
     fontWeight: '400',
     lineHeight: 20,
+    paddingVertical: 5,
   },
   userStyle: {
     color: '#FFF',
     fontFamily: 'Roboto',
-    fontSize: 18,
+    fontSize: 20,
     fontStyle: 'normal',
     fontWeight: '700',
     lineHeight: 20,

@@ -10,28 +10,34 @@ import {
 } from 'react-native';
 import React, {LegacyRef, useEffect, useRef, useState} from 'react';
 import {LoginBackgroundProps} from './types';
+import axios from 'axios';
+import loginUser from '../Api/LoginAPI';
+import CustomMessagePopup from '../Components/CustomMessagePopup';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
   setIsForgotPassword,
 }) => {
+  // <-- Images and Icons -->
   const usernameIcon = require('../Icons/Username.png');
   const passwordIcon = require('../Icons/PasswordLock.png');
   const passwordShownIcon = require('../Icons/PasswordShown.png');
   const passwordHiddenIcon = require('../Icons/PasswordHidden.png');
 
+  // <-- useState declarations -->
   let [passwordShown, setPasswordShown] = useState({
     showPassword: false,
     passwordIcon: passwordHiddenIcon,
   });
+  const [passwordValue, setPasswordValue] = useState('');
+  const [userNameValue, setUsernameValue] = useState('');
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [popUpMessage, setPopUpMessage] = useState('');
+  // const [isLoading, setIsLoading] = useState(false);
 
+  // <-- useRef declarations -->
   const refPassword = useRef<TextInput>(null);
   const refUsername = useRef<TextInput>(null);
-
-  const keyboardDidHideCallback = () => {
-    refUsername.current?.blur();
-    refPassword.current?.blur();
-  };
 
   useEffect(() => {
     const keyboardDidHideSubscription = Keyboard.addListener(
@@ -44,6 +50,12 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
     };
   }, []);
 
+  // <-- Functions -->
+  const keyboardDidHideCallback = () => {
+    refUsername.current?.blur();
+    refPassword.current?.blur();
+  };
+
   let handleShowPassword = () => {
     setPasswordShown(previousIcon => ({
       showPassword: !previousIcon.showPassword,
@@ -53,13 +65,48 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
     }));
   };
 
-  let handleSubmit = () => {
-    // navigation.replace('Main');
-    navigation.navigate('DrawerNavigationContainer');
+  let handleSubmit = async () => {
+    if (!userNameValue.trim() || !passwordValue.trim()) {
+      setPopUpMessage('Please fill all the required fields');
+      setShowPopUp(true);
+    } else {
+      try {
+        const response = await loginUser(userNameValue, passwordValue);
+        if (response.status === 200) {
+          // remove all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'DrawerNavigationContainer'}],
+          });
+        }
+      } catch (error) {
+        const knownError = error as any;
+        if (axios.isCancel(error)) {
+          setPopUpMessage('Request interrupted, Please try again!');
+        } else if (knownError.response && knownError.response.status === 401) {
+          setPopUpMessage('Invalid username or password!');
+        } else if (knownError.request) {
+          setPopUpMessage(
+            `Network Error: Please check your internet connection and try again!`,
+          );
+        } else {
+          setPopUpMessage('Error processing request. Please try again!');
+        }
+        setShowPopUp(true);
+      }
+    }
   };
 
   return (
     <View style={styles.login_content}>
+      {showPopUp && (
+        <CustomMessagePopup
+          message={popUpMessage}
+          visible={showPopUp}
+          setShowPopUp={setShowPopUp}
+          setPopUpMessage={setPopUpMessage}
+        />
+      )}
       <View style={styles.input_container}>
         <View style={styles.input_icon_container}>
           <Image source={usernameIcon} style={styles.input_icons} />
@@ -69,6 +116,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
             placeholderTextColor="#BCBCBC"
             returnKeyType="next"
             ref={refUsername}
+            onChangeText={text => setUsernameValue(text)}
             onSubmitEditing={() => {
               refPassword.current?.focus();
             }}
@@ -83,9 +131,8 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
             placeholderTextColor="#BCBCBC"
             secureTextEntry={passwordShown.showPassword}
             returnKeyType="done"
-            onSubmitEditing={() => {
-              navigation.navigate('DrawerNavigationContainer');
-            }}
+            onChangeText={text => setPasswordValue(text)}
+            onSubmitEditing={handleSubmit}
           />
           <Pressable
             hitSlop={10}
@@ -114,6 +161,8 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
 };
 
 export default LoginBackground;
+
+// <-- Styles -->
 
 const styles = StyleSheet.create({
   login_content: {

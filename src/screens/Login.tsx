@@ -10,7 +10,6 @@ const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
   const [submitted, setSubmitted] = useState(false);
   const loginImage = require('../Images/TruckLogin.png');
   const logo = require('../Icons/RWLogo.png');
-
   return (
     <ScrollView
       style={styles.container}
@@ -69,7 +68,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    zIndex: 2,
   },
   content: {
     width: '100%',

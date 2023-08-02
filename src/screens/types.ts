@@ -8,6 +8,7 @@ export type RootStackParamList = {
   Login: undefined;
   ForgotPassword: undefined;
   DrawerNavigationContainer: undefined;
+  CustomDrawer: undefined;
 };
 
 export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'> & {
