@@ -15,6 +15,7 @@ import CustomMessagePopup from '../Components/CustomMessagePopup';
 import Loading from '../Components/Loading';
 import {stringMd5} from 'react-native-quick-md5';
 import Api from '../Api/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
@@ -91,6 +92,10 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
 
         const response = await Api(header, data, endPoint);
         if (response.status === 200) {
+          // Save login state and token to AsyncStorage
+          await AsyncStorage.setItem('isLoggedIn', 'true');
+          await AsyncStorage.setItem('userToken', response.data.token);
+
           // remove all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
           navigation.reset({
             index: 0,

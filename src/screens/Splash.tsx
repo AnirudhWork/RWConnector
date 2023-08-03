@@ -1,11 +1,20 @@
 import {StyleSheet, View, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SplashProps} from './types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash: React.FC<SplashProps> = ({navigation}) => {
-  setTimeout(() => {
-    navigation.replace('Login');
-  }, 2500);
+  useEffect(() => {
+    checkInitialRoute();
+  }, []);
+
+  const checkInitialRoute = async () => {
+    const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
+    const route = isLoggedIn ? 'DrawerNavigationContainer' : 'Login';
+    setTimeout(() => {
+      navigation.replace(route);
+    }, 2500);
+  };
 
   const logo = require('../Icons/RWLogo.png');
   return (

@@ -6,6 +6,7 @@ import {
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import axios from 'axios';
 
 const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
@@ -17,7 +18,10 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
     props.navigation.closeDrawer();
   };
 
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
+    // Remove login state and token from AsyncStorage on logout
+    await AsyncStorage.removeItem('isLoggedIn');
+    await AsyncStorage.removeItem('userToken');
     props.navigation.reset({
       index: 0,
       routes: [{name: 'Login'}],
