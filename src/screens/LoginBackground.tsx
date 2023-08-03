@@ -11,8 +11,10 @@ import {
 import React, {LegacyRef, useEffect, useRef, useState} from 'react';
 import {LoginBackgroundProps} from './types';
 import axios from 'axios';
-import loginUser from '../Api/LoginAPI';
 import CustomMessagePopup from '../Components/CustomMessagePopup';
+import Loading from '../Components/Loading';
+import {stringMd5} from 'react-native-quick-md5';
+import Api from '../Api/api';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
@@ -33,7 +35,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   const [userNameValue, setUsernameValue] = useState('');
   const [showPopUp, setShowPopUp] = useState(false);
   const [popUpMessage, setPopUpMessage] = useState('');
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // <-- useRef declarations -->
   const refPassword = useRef<TextInput>(null);
@@ -65,13 +67,29 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
     }));
   };
 
+  // <-- Api -->
   let handleSubmit = async () => {
     if (!userNameValue.trim() || !passwordValue.trim()) {
       setPopUpMessage('Please fill all the required fields');
       setShowPopUp(true);
     } else {
+      setIsLoading(true);
       try {
-        const response = await loginUser(userNameValue, passwordValue);
+        const passwordHashValue = stringMd5(passwordValue);
+        const data = {
+          uname: userNameValue,
+          pwd: passwordHashValue,
+          'app-version': '1',
+          'os-version': '1',
+          'device-type': 'a',
+        };
+        const header = {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        };
+        const endPoint = '/auth/login';
+
+        const response = await Api(header, data, endPoint);
         if (response.status === 200) {
           // remove all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
           navigation.reset({
@@ -93,6 +111,8 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
           setPopUpMessage('Error processing request. Please try again!');
         }
         setShowPopUp(true);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -107,6 +127,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
           setPopUpMessage={setPopUpMessage}
         />
       )}
+      {isLoading && <Loading visible={isLoading} />}
       <View style={styles.input_container}>
         <View style={styles.input_icon_container}>
           <Image source={usernameIcon} style={styles.input_icons} />

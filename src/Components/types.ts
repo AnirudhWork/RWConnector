@@ -10,3 +10,7 @@ export type CustomMessagePopupProps = {
   setShowPopUp: (value: boolean) => void;
   setPopUpMessage: (value: string) => void;
 };
+
+export type LoadingProps = {
+  visible: boolean;
+};

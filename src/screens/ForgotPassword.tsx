@@ -11,6 +11,9 @@ import {
 
 import {ForgotPasswordProps} from './types';
 import axios from 'axios';
+import Api from '../Api/api';
+import CustomMessagePopup from '../Components/CustomMessagePopup';
+import Loading from '../Components/Loading';
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({
   navigation,
@@ -20,11 +23,11 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
   const emailIcon = require('../Icons/EmailLogo.png');
 
   const [email, setEmail] = useState('');
-  const refEmail = useRef<TextInput>(null);
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [popUpMessage, setPopUpMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const keyboardDidHideCallback = () => {
-    refEmail.current?.blur();
-  };
+  const refEmail = useRef<TextInput>(null);
 
   useEffect(() => {
     const keyboardDidHideSubscription = Keyboard.addListener(
@@ -37,61 +40,75 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
     };
   }, []);
 
+  const keyboardDidHideCallback = () => {
+    refEmail.current?.blur();
+  };
+
+  const isValidEmail = (email: string) => {
+    // Regular expression for basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // <-- Apis -->
+
   const handleSubmit = async () => {
-    const url =
-      'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg/auth/forgotpwd';
-
-    const data = {
-      email: email,
-    };
-
-    const _header = {
-      header: {
-        'Content-Type': 'application/json',
-      },
-    };
-
     if (!email) {
-      console.warn('Please enter an email address');
-      return;
-    }
-    // console.log('\n\nRequest info:', url, data, header);
+      setPopUpMessage('Please enter an email address');
+      setShowPopUp(true);
+    } else if (!isValidEmail(email)) {
+      setPopUpMessage('Please enter a valid email address');
+      setShowPopUp(true);
+    } else {
+      setIsLoading(true);
+      try {
+        const data = {
+          email: email,
+        };
+        const header = {
+          'Content-Type': 'application/json',
+        };
+        const endPoint = '/auth/forgotpwd';
 
-    // const instance = axios.create({
-    //   baseURL: 'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg',
-    //   timeout: 6000,
-    //   headers: header,
-    //   responseType: 'json',
-    // });
-
-    // axios.defaults.timeout = 10000;
-
-    axios
-      .post(url, data)
-      .then(res => console.log(JSON.stringify(res.data)))
-      .catch(err => {
-        console.log('error resp', JSON.stringify(err.response));
-        if (err.response) {
-          console.log('Response Data:', err.response.data);
-          console.log('Response Status:', err.response.status);
-          console.log('Response Headers:', err.response.headers);
-        } else if (err.request) {
-          console.log('Request Error:', JSON.stringify(err.request));
-        } else {
-          console.log('Error:', err.message);
+        const response = await Api(header, data, endPoint);
+        if (response.status === 200) {
+          setSubmitted(true);
+          setTimeout(() => {
+            setSubmitted(false);
+            setIsForgotPassword(false);
+          }, 2000);
         }
-        console.log('Config:', err.config);
-      });
-
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setIsForgotPassword(false);
-    }, 2000);
+      } catch (error) {
+        const knownError = error as any;
+        if (axios.isCancel(error)) {
+          setPopUpMessage('Request interrupted, Please try again!');
+        } else if (knownError.response && knownError.response.status === 401) {
+          setPopUpMessage('Email Address does not exist.');
+        } else if (knownError.request) {
+          setPopUpMessage(
+            'Network Error: Please check your internet connection and try again!',
+          );
+        } else {
+          setPopUpMessage('Error processing request, Please try again!');
+        }
+        setShowPopUp(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
+      {showPopUp && (
+        <CustomMessagePopup
+          message={popUpMessage}
+          visible={showPopUp}
+          setShowPopUp={setShowPopUp}
+          setPopUpMessage={setPopUpMessage}
+        />
+      )}
+      {isLoading && <Loading visible={isLoading} />}
       <View style={styles.input_container}>
         <View style={styles.input_icon_container}>
           <Image source={emailIcon} style={styles.input_icons} />

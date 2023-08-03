@@ -39,7 +39,7 @@ const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
           <View style={styles.confirmationMessage_container}>
             <View style={styles.confirmationMessage_content}>
               <Text style={styles.confirmationMessage}>
-                Password successfully sent to email provided
+                Password successfully sent to the provided Email Address.
               </Text>
             </View>
           </View>
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
+    elevation: 24,
   },
   content: {
     width: '100%',
