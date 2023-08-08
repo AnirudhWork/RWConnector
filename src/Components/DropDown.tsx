@@ -10,6 +10,7 @@ import {
   Image,
 } from 'react-native';
 import {IProps} from './types';
+import {ITruckProps} from '../screens/types';
 
 const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
   const DropdownButton = useRef<TouchableOpacity>(null);
@@ -30,22 +31,20 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
     setVisible(true);
   };
 
-  const onItemPress = (item: any): void => {
+  const onItemPress = (item: ITruckProps): void => {
     setSelected(item);
     onSelect(item);
     setVisible(false);
   };
 
-  const renderItem: ListRenderItem<{label: string; value: string}> = ({
-    item,
-  }) => (
+  const renderItem: ListRenderItem<ITruckProps> = ({item}) => (
     <TouchableOpacity
       style={[
         styles.item,
-        selected?.value === item.value ? styles.selectedItem : null,
+        selected?.name === item.name ? styles.selectedItem : null,
       ]}
       onPress={() => onItemPress(item)}>
-      <Text>{item.label}</Text>
+      <Text>{item.name}</Text>
     </TouchableOpacity>
   );
 
@@ -76,7 +75,7 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
       onPress={toggleDropdown}
       activeOpacity={0.8}>
       {renderDropdown()}
-      <Text style={styles.buttonText}>{selected?.label || label}</Text>
+      <Text style={styles.buttonText}>{selected?.name || label}</Text>
       <Image style={styles.icon} source={chevron_down} />
     </TouchableOpacity>
   );

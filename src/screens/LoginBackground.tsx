@@ -16,6 +16,7 @@ import Loading from '../Components/Loading';
 import {stringMd5} from 'react-native-quick-md5';
 import Api from '../Api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useAuth} from '../Components/AuthContext';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
@@ -29,7 +30,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
 
   // <-- useState declarations -->
   let [passwordShown, setPasswordShown] = useState({
-    showPassword: false,
+    showPassword: true,
     passwordIcon: passwordHiddenIcon,
   });
   const [passwordValue, setPasswordValue] = useState('');
@@ -37,6 +38,9 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   const [showPopUp, setShowPopUp] = useState(false);
   const [popUpMessage, setPopUpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // <-- useContext declarations -->
+  const {userToken, setUserToken} = useAuth();
 
   // <-- useRef declarations -->
   const refPassword = useRef<TextInput>(null);
@@ -47,18 +51,20 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
       'keyboardDidHide',
       keyboardDidHideCallback,
     );
-
     return () => {
       keyboardDidHideSubscription?.remove();
     };
   }, []);
 
   // <-- Functions -->
+
+  // <-- Handle Hardware Back Button -->
   const keyboardDidHideCallback = () => {
     refUsername.current?.blur();
     refPassword.current?.blur();
   };
 
+  // <-- Show/Hide Password -->
   let handleShowPassword = () => {
     setPasswordShown(previousIcon => ({
       showPassword: !previousIcon.showPassword,
@@ -70,12 +76,14 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
 
   // <-- Api -->
   let handleSubmit = async () => {
+    // // <-- Field Validation -->
     if (!userNameValue.trim() || !passwordValue.trim()) {
       setPopUpMessage('Please fill all the required fields');
       setShowPopUp(true);
     } else {
       setIsLoading(true);
       try {
+        // <-- Login POST request -->
         const passwordHashValue = stringMd5(passwordValue);
         const data = {
           uname: userNameValue,
@@ -90,12 +98,15 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         };
         const endPoint = '/auth/login';
 
+        // <-- Handling Response -->
         const response = await Api(header, data, endPoint);
         if (response.status === 200) {
           // Save login state and token to AsyncStorage
-          await AsyncStorage.setItem('isLoggedIn', 'true');
           await AsyncStorage.setItem('userToken', response.data.token);
+          // <-- Setting token to useContext state -->
 
+          setUserToken(response.data.token);
+          console.log(userToken);
           // remove all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
           navigation.reset({
             index: 0,
@@ -121,6 +132,8 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
       }
     }
   };
+
+  // <-- Activity -->
 
   return (
     <View style={styles.login_content}>

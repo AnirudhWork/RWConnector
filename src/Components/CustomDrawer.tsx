@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
@@ -7,29 +7,110 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import axios from 'axios';
+import Api from '../Api/api';
+import CustomMessagePopup from './CustomMessagePopup';
+import Loading from './Loading';
+import axios from 'axios';
+import {useAuth} from './AuthContext';
 
 const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
+  // <-- Images and Icons -->
+
   const drawerClose = require('../Icons/DrawerCross.png');
 
-  // const baseURL = 'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg';
+  // <-- useState Declarations -->
+
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [popUpMessage, setPopUpMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {userToken, setUserToken} = useAuth();
+
+  // <-- DrawerClosure on 'X' icon press -->
 
   const handleDrawerClosure = () => {
     props.navigation.closeDrawer();
   };
 
+  // <-- Logout Api -->
+
   const handleLogOut = async () => {
-    // Remove login state and token from AsyncStorage on logout
-    await AsyncStorage.removeItem('isLoggedIn');
-    await AsyncStorage.removeItem('userToken');
-    props.navigation.reset({
-      index: 0,
-      routes: [{name: 'Login'}],
-    });
+    setIsLoading(true);
+
+    // <-- Checking if token exist -->
+
+    if (!userToken) {
+      setIsLoading(false);
+      console.log('Access token not found:', userToken);
+      setUserToken(null);
+      await AsyncStorage.removeItem('userToken');
+      props.navigation.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      });
+      return;
+    }
+
+    // <-- Expiring the token if it exist -->
+
+    const endPoint = '/auth/logout';
+    const headers = {
+      Authorization: `Bearer ${userToken}`,
+    };
+
+    try {
+      const response = await Api(headers, null, endPoint);
+      if (response.status === 200) {
+        await AsyncStorage.removeItem('userToken');
+        setUserToken(null);
+        props.navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
+      }
+    } catch (error) {
+      const KnownError = error as any;
+      // <-- If request is canceled -->
+      if (axios.isCancel(error)) {
+        setPopUpMessage('Request interrupted, please try again!');
+        setShowPopUp(true);
+        // <-- If response from server is 401 -->
+      } else if (KnownError.response && KnownError.response.status === 401) {
+        await AsyncStorage.removeItem('userToken');
+        setUserToken(null);
+        props.navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
+        // <-- If there is error sending request to the server -->
+      } else if (KnownError.request) {
+        setPopUpMessage(
+          'Network Error! Please check your internet connection and try again!',
+        );
+        setShowPopUp(true);
+        // <-- All other cases -->
+      } else {
+        setPopUpMessage('Error while trying to logout. Please try again!');
+        setShowPopUp(true);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  // <-- Activity -->
 
   return (
     <View style={styles.container}>
+      {showPopUp && (
+        <CustomMessagePopup
+          visible={showPopUp}
+          message={popUpMessage}
+          setPopUpMessage={setPopUpMessage}
+          setShowPopUp={setShowPopUp}
+        />
+      )}
+      {isLoading && <Loading visible={isLoading} />}
       <View style={styles.image_container}>
         <Pressable onPress={handleDrawerClosure} hitSlop={10}>
           <Image source={drawerClose} />
@@ -60,6 +141,8 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
 };
 
 export default CustomDrawer;
+
+// <-- Styles -->
 
 const styles = StyleSheet.create({
   container: {

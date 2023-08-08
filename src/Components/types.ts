@@ -1,7 +1,10 @@
+import {Dispatch, SetStateAction} from 'react';
+import {ITruckProps} from '../screens/types';
+
 export interface IProps {
   label: string;
-  data: Array<{label: string; value: string}>;
-  onSelect: (item: {label: string; value: string}) => void;
+  data: Array<ITruckProps>;
+  onSelect: (item: ITruckProps) => void;
 }
 
 export type CustomMessagePopupProps = {
@@ -14,3 +17,8 @@ export type CustomMessagePopupProps = {
 export type LoadingProps = {
   visible: boolean;
 };
+
+export type AuthContextType = {
+  userToken: null | string;
+  setUserToken: Dispatch<SetStateAction<null | string>>;
+} | null;

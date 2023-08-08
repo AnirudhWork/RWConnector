@@ -46,3 +46,9 @@ export type TDropDownDataProps = {
   label: string;
   value: string;
 };
+
+export interface ITruckProps {
+  id: number;
+  name: string;
+  note: string;
+}
