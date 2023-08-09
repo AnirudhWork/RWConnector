@@ -83,7 +83,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
     } else {
       setIsLoading(true);
       try {
-        // <-- Login POST request -->
+        // <-- API parameters -->
         const passwordHashValue = stringMd5(passwordValue);
         const data = {
           uname: userNameValue,
@@ -98,16 +98,13 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         };
         const endPoint = '/auth/login';
 
-        // <-- Handling Response -->
+        // <-- Token generation (Login) -->
         const response = await Api(header, data, endPoint);
         if (response.status === 200) {
-          // Save login state and token to AsyncStorage
           await AsyncStorage.setItem('userToken', response.data.token);
-          // <-- Setting token to useContext state -->
-
           setUserToken(response.data.token);
           console.log(userToken);
-          // remove all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
+          // removes all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
           navigation.reset({
             index: 0,
             routes: [{name: 'DrawerNavigationContainer'}],

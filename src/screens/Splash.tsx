@@ -9,7 +9,7 @@ const Splash: React.FC<SplashProps> = ({navigation}) => {
   }, []);
 
   const checkInitialRoute = async () => {
-    const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
+    const isLoggedIn = await AsyncStorage.getItem('userToken');
     const route = isLoggedIn ? 'DrawerNavigationContainer' : 'Login';
     setTimeout(() => {
       navigation.replace(route);

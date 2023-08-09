@@ -11,10 +11,8 @@ export type RootStackParamList = {
   CustomDrawer: undefined;
 };
 
-export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'> & {
-  setIsForgotPassword: (value: boolean) => void;
-  setSubmitted: (value: boolean) => void;
-} & (LoginBackgroundProps | ForgotPasswordProps);
+export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'> &
+  (LoginBackgroundProps | ForgotPasswordProps);
 
 export type LoginBackgroundProps = NativeStackScreenProps<
   RootStackParamList,

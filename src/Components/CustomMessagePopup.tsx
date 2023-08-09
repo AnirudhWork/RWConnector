@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  Modal,
-  Text,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
+import {StyleSheet, View, Modal, Text, TouchableOpacity} from 'react-native';
 import {CustomMessagePopupProps} from './types';
 
 const CustomMessagePopup: React.FC<CustomMessagePopupProps> = ({
@@ -14,8 +7,6 @@ const CustomMessagePopup: React.FC<CustomMessagePopupProps> = ({
   setShowPopUp,
   setPopUpMessage,
 }) => {
-  // const background_image = require('../Images/Popup-Background-Oneplus2.png');
-
   const handleClearMessage = () => {
     setShowPopUp(false);
     setPopUpMessage('');
@@ -28,9 +19,6 @@ const CustomMessagePopup: React.FC<CustomMessagePopupProps> = ({
       visible={visible}
       onRequestClose={() => {}}>
       <View style={styles.modalContainer}>
-        {/* <ImageBackground
-          source={background_image}
-          > */}
         <View style={styles.modalContent}>
           <View>
             <Text style={[styles.message, {textAlign: 'left'}]}>{message}</Text>
@@ -42,7 +30,6 @@ const CustomMessagePopup: React.FC<CustomMessagePopupProps> = ({
             <Text style={styles.clearMessageButtonText}>Ok</Text>
           </TouchableOpacity>
         </View>
-        {/* </ImageBackground> */}
       </View>
     </Modal>
   );

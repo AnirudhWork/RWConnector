@@ -7,13 +7,17 @@ import getAPI from '../Api/getAPI';
 import axios from 'axios';
 import CustomMessagePopup from '../Components/CustomMessagePopup';
 import Loading from '../Components/Loading';
+import {DrawerContentComponentProps} from '@react-navigation/drawer';
+import {useAuth} from '../Components/AuthContext';
 
-const Jobs: React.FC = () => {
+const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
   const [selected, setSelected] = useState<ITruckProps | undefined>(undefined);
   const [data, setData] = useState<ITruckProps[]>([]);
   const [showPopUp, setShowPopUp] = useState(false);
   const [popUpMessage, setPopUpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const {setUserToken} = useAuth();
 
   useEffect(() => {
     let truckData = async () => {
@@ -38,6 +42,17 @@ const Jobs: React.FC = () => {
           setPopUpMessage('Invalid Login! Please login again');
         } else if (knownError?.response?.status === 402) {
           setPopUpMessage('Session Expired');
+          setShowPopUp(true);
+          AsyncStorage.removeItem('userToken');
+          setUserToken(null);
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'Login',
+              },
+            ],
+          });
         } else if (knownError.request) {
           console.log(knownError.request);
           setPopUpMessage(
