@@ -30,7 +30,7 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
 
       try {
         setIsLoading(true);
-        const response = await getAPI(header, endPoint);
+        const response = await getAPI(endPoint, header);
         if (response.status === 200) {
           setData(response.data['truck-list']);
         }

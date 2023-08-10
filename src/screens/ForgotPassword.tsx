@@ -70,7 +70,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
         };
         const endPoint = '/auth/forgotpwd';
 
-        const response = await Api(header, data, endPoint);
+        const response = await Api(endPoint, header, data);
         if (response.status === 200) {
           setSubmitted(true);
           setTimeout(() => {
@@ -132,7 +132,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
         <View>
           <TouchableOpacity
             onPress={() => setIsForgotPassword(false)}
-            activeOpacity={0.5} hitSlop={20}>
+            activeOpacity={0.5}
+            hitSlop={20}>
             <Text style={styles.backButton}>Return To Login Screen</Text>
           </TouchableOpacity>
         </View>

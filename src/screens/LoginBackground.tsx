@@ -99,7 +99,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         const endPoint = '/auth/login';
 
         // <-- Token generation (Login) -->
-        const response = await Api(header, data, endPoint);
+        const response = await Api(endPoint, header, data);
         if (response.status === 200) {
           await AsyncStorage.setItem('userToken', response.data.token);
           setUserToken(response.data.token);
@@ -122,6 +122,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
           );
         } else {
           setPopUpMessage('Error processing request. Please try again!');
+          console.log('\n\n\n\nError:', error);
         }
         setShowPopUp(true);
       } finally {
@@ -133,7 +134,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   // <-- Activity -->
 
   return (
-    <View style={styles.login_content}>
+    <View style={styles.container}>
       {showPopUp && (
         <CustomMessagePopup
           message={popUpMessage}
@@ -153,6 +154,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
             returnKeyType="next"
             ref={refUsername}
             onChangeText={text => setUsernameValue(text)}
+            blurOnSubmit={false}
             onSubmitEditing={() => {
               refPassword.current?.focus();
             }}
@@ -178,12 +180,12 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
           </Pressable>
         </View>
       </View>
-      <View style={styles.button_container}>
-        <TouchableOpacity activeOpacity={0.5} onPress={handleSubmit}>
-          <Text style={styles.button}>Login</Text>
-        </TouchableOpacity>
-      </View>
-      <View>
+
+      <TouchableOpacity activeOpacity={0.5} onPress={handleSubmit}>
+        <Text style={styles.button}>Login</Text>
+      </TouchableOpacity>
+
+      <View style={{alignItems: 'center'}}>
         <TouchableOpacity
           activeOpacity={0.5}
           hitSlop={20}
@@ -202,11 +204,9 @@ export default LoginBackground;
 // <-- Styles -->
 
 const styles = StyleSheet.create({
-  login_content: {
-    width: '100%',
-    height: '100%',
+  container: {
+    flex: 1,
     justifyContent: 'space-evenly',
-    alignItems: 'center',
   },
   input_container: {
     width: '90%',
@@ -223,23 +223,19 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingHorizontal: 60,
     color: '#000',
-    fontSize: 14,
+    fontSize: 16,
     backgroundColor: 'white',
     width: '100%',
     borderColor: '#C2C2C2',
   },
-  button_container: {
-    width: '80%',
-    justifyContent: 'center',
-  },
   button: {
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 50,
-    width: '100%',
-    color: 'white',
-    fontSize: 14,
     backgroundColor: '#007F00',
+    borderRadius: 50,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    color: 'white',
+    fontSize: 16,
     textAlign: 'center',
     textTransform: 'uppercase',
   },
@@ -254,7 +250,6 @@ const styles = StyleSheet.create({
   },
   forgetPasswordStyles: {
     color: 'white',
-    marginTop: 15,
     fontSize: 16,
   },
 });

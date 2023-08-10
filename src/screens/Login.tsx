@@ -1,4 +1,11 @@
-import {View, Image, StyleSheet, ScrollView, Text} from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  ScrollView,
+  Text,
+  Dimensions,
+} from 'react-native';
 import LoginBackground from './LoginBackground';
 import ForgotPassword from './ForgotPassword';
 
@@ -10,55 +17,61 @@ const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
   const [submitted, setSubmitted] = useState(false);
   const loginImage = require('../Images/TruckLogin.png');
   const logo = require('../Icons/RWLogo.png');
+  const {height} = Dimensions.get('window');
+
   return (
-    <ScrollView
-      style={styles.container}
-      automaticallyAdjustKeyboardInsets={true}
-      contentContainerStyle={styles.scrollViewContent}>
-      <View style={styles.content_container}>
-        <View style={styles.content}>
-          <View>
-            <Image source={logo} />
+    <View style={styles.container}>
+      <ScrollView
+        automaticallyAdjustKeyboardInsets={true}
+        contentContainerStyle={{flexGrow: 1}}>
+        {/* 1 View */}
+        <View style={styles.content_container}>
+          <Image source={logo} />
+          <View style={styles.content}>
+            {/* Dynamic View Starts */}
+            {isForgotPassword ? (
+              <ForgotPassword
+                navigation={navigation}
+                route={route}
+                setIsForgotPassword={setIsForgotPassword}
+                setSubmitted={setSubmitted}
+              />
+            ) : (
+              <LoginBackground
+                setIsForgotPassword={setIsForgotPassword}
+                navigation={navigation}
+                route={route}
+              />
+            )}
+            {/* Dynamic View Ends */}
           </View>
-          {isForgotPassword ? (
-            <ForgotPassword
-              navigation={navigation}
-              route={route}
-              setIsForgotPassword={setIsForgotPassword}
-              setSubmitted={setSubmitted}
-            />
-          ) : (
-            <LoginBackground
-              setIsForgotPassword={setIsForgotPassword}
-              navigation={navigation}
-              route={route}
-            />
+          {/* ForgotPW Confirmation View */}
+          {submitted && (
+            <View style={styles.confirmationMessage_container}>
+              <View style={styles.confirmationMessage_content}>
+                <Text style={styles.confirmationMessage}>
+                  Password successfully sent to the provided Email Address.
+                </Text>
+              </View>
+            </View>
           )}
         </View>
-        {submitted && (
-          <View style={styles.confirmationMessage_container}>
-            <View style={styles.confirmationMessage_content}>
-              <Text style={styles.confirmationMessage}>
-                Password successfully sent to the provided Email Address.
-              </Text>
-            </View>
-          </View>
-        )}
-      </View>
-      <View style={styles.image_container}>
-        <Image style={styles.image} resizeMode="stretch" source={loginImage} />
-      </View>
-    </ScrollView>
+        {/* 2 View */}
+        <View style={styles.image_container}>
+          <Image
+            style={styles.image}
+            resizeMode="stretch"
+            source={loginImage}
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-  },
-  scrollViewContent: {
-    flexGrow: 1,
   },
   content_container: {
     flex: 1,
@@ -66,23 +79,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
     elevation: 24,
   },
   content: {
     width: '100%',
-    height: '80%',
-    justifyContent: 'space-between',
+    height: '70%',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   image_container: {
     width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   image: {
-    width: '100%',
-    height: undefined,
     aspectRatio: 3 / 2,
+    height: undefined,
+    width: '100%',
   },
   confirmationMessage_container: {
     width: '80%',
