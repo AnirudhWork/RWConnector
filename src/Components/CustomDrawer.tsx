@@ -54,12 +54,9 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
     // <-- Expiring the token if it exist -->
 
     const endPoint = '/auth/logout';
-    const headers = {
-      Authorization: `Bearer ${userToken}`,
-    };
 
     try {
-      const response = await Api(headers, null, endPoint);
+      const response = await Api(endPoint);
       if (response.status === 200) {
         await AsyncStorage.removeItem('userToken');
         setUserToken(null);

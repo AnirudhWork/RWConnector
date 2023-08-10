@@ -186,6 +186,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
       <View>
         <TouchableOpacity
           activeOpacity={0.5}
+          hitSlop={20}
           onPress={() => {
             setIsForgotPassword(true);
           }}>
@@ -203,8 +204,8 @@ export default LoginBackground;
 const styles = StyleSheet.create({
   login_content: {
     width: '100%',
-    height: '80%',
-    justifyContent: 'space-between',
+    height: '100%',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   input_container: {
@@ -254,5 +255,6 @@ const styles = StyleSheet.create({
   forgetPasswordStyles: {
     color: 'white',
     marginTop: 15,
+    fontSize: 16,
   },
 });

@@ -132,8 +132,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
         <View>
           <TouchableOpacity
             onPress={() => setIsForgotPassword(false)}
-            activeOpacity={0.5}>
-            <Text style={{color: 'white'}}>Return To Login Screen</Text>
+            activeOpacity={0.5} hitSlop={20}>
+            <Text style={styles.backButton}>Return To Login Screen</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   input_container: {
     width: '90%',
-    height: '90%',
+    height: '80%',
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
@@ -189,9 +189,9 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 2,
   },
-  showPassword: {
-    position: 'absolute',
-    right: 20,
+  backButton: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
