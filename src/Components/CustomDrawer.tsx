@@ -7,7 +7,7 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Api from '../Api/api';
+import Api from '../Api/postAPI';
 import CustomMessagePopup from './CustomMessagePopup';
 import Loading from './Loading';
 import axios from 'axios';
@@ -16,7 +16,7 @@ import {useAuth} from './AuthContext';
 const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
   // <-- Images and Icons -->
 
-  const drawerClose = require('../Icons/DrawerCross.png');
+  const drawerClose = require('../Assets/Icons/DrawerCross.png');
 
   // <-- useState Declarations -->
 

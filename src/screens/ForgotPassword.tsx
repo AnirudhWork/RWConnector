@@ -11,7 +11,7 @@ import {
 
 import {ForgotPasswordProps} from './types';
 import axios from 'axios';
-import Api from '../Api/api';
+import Api from '../Api/postAPI';
 import CustomMessagePopup from '../Components/CustomMessagePopup';
 import Loading from '../Components/Loading';
 
@@ -20,7 +20,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
   setIsForgotPassword,
   setSubmitted,
 }) => {
-  const emailIcon = require('../Icons/EmailLogo.png');
+  const emailIcon = require('../Assets/Icons/EmailLogo.png');
 
   const [email, setEmail] = useState('');
   const [showPopUp, setShowPopUp] = useState(false);

@@ -17,7 +17,7 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState<any>(undefined);
   const [dropdownTop, setDropdownTop] = useState(0);
-  const chevron_down = require('../Icons/chevron-down.png');
+  const chevron_down = require('../Assets/Icons/chevron-down.png');
 
   const toggleDropdown = (): void => {
     visible ? setVisible(false) : openDropdown();

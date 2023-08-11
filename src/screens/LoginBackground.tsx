@@ -14,7 +14,7 @@ import axios from 'axios';
 import CustomMessagePopup from '../Components/CustomMessagePopup';
 import Loading from '../Components/Loading';
 import {stringMd5} from 'react-native-quick-md5';
-import Api from '../Api/api';
+import Api from '../Api/postAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAuth} from '../Components/AuthContext';
 
@@ -23,10 +23,10 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   setIsForgotPassword,
 }) => {
   // <-- Images and Icons -->
-  const usernameIcon = require('../Icons/Username.png');
-  const passwordIcon = require('../Icons/PasswordLock.png');
-  const passwordShownIcon = require('../Icons/PasswordShown.png');
-  const passwordHiddenIcon = require('../Icons/PasswordHidden.png');
+  const usernameIcon = require('../Assets/Icons/Username.png');
+  const passwordIcon = require('../Assets/Icons/PasswordLock.png');
+  const passwordShownIcon = require('../Assets/Icons/PasswordShown.png');
+  const passwordHiddenIcon = require('../Assets/Icons/PasswordHidden.png');
 
   // <-- useState declarations -->
   let [passwordShown, setPasswordShown] = useState({

@@ -4,8 +4,8 @@ import { CustomHeaderProps } from '../screens/types';
 
 const CustomHeader: React.FC<CustomHeaderProps> = ({navigation}) => {
   
-  const logo = require('../Icons/RWLogo.png');
-  const DrawerIcon = require('../Icons/DrawerIcon.png');
+  const logo = require('../Assets/Icons/RWLogo.png');
+  const DrawerIcon = require('../Assets/Icons/DrawerIcon.png');
 
   const openDrawer = () => {
     navigation.openDrawer();

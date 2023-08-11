@@ -16,7 +16,7 @@ const Splash: React.FC<SplashProps> = ({navigation}) => {
     }, 2500);
   };
 
-  const logo = require('../Icons/RWLogo.png');
+  const logo = require('../Assets/Icons/RWLogo.png');
   return (
     <View style={styles.container}>
       <Image source={logo}></Image>

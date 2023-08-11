@@ -1,7 +1,6 @@
 import React, {FC} from 'react';
 import {StyleSheet, View} from 'react-native';
 import DrawerNavigator from '../Navigators/DrawerNavigator';
-import AuthProvider from '../Components/AuthProvider';
 
 const DrawerNavigationContainer: FC = () => {
   return (

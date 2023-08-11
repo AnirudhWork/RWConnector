@@ -1,11 +1,4 @@
-import {
-  View,
-  Image,
-  StyleSheet,
-  ScrollView,
-  Text,
-  Dimensions,
-} from 'react-native';
+import {View, Image, StyleSheet, ScrollView, Text} from 'react-native';
 import LoginBackground from './LoginBackground';
 import ForgotPassword from './ForgotPassword';
 
@@ -15,9 +8,8 @@ import {useState} from 'react';
 const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
   let [isForgotPassword, setIsForgotPassword] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const loginImage = require('../Images/TruckLogin.png');
-  const logo = require('../Icons/RWLogo.png');
-  const {height} = Dimensions.get('window');
+  const loginImage = require('../Assets/Images/TruckLogin.png');
+  const logo = require('../Assets/Icons/RWLogo.png');
 
   return (
     <View style={styles.container}>
