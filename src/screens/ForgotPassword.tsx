@@ -110,26 +110,28 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
       )}
       {isLoading && <Loading visible={isLoading} />}
       <View style={styles.input_container}>
-        <View style={styles.input_icon_container}>
-          <Image source={emailIcon} style={styles.input_icons} />
-          <TextInput
-            style={styles.input}
-            placeholder="Email Id"
-            placeholderTextColor="#BCBCBC"
-            value={email}
-            onChangeText={setEmail}
-            inputMode="email"
-            ref={refEmail}
-            returnKeyType="done"
-            onSubmitEditing={handleSubmit}
-          />
+        <View style={{alignItems: 'center', width: '100%'}}>
+          <View style={styles.input_icon_container}>
+            <Image source={emailIcon} style={styles.input_icons} />
+            <TextInput
+              style={styles.input}
+              placeholder="Email Id"
+              placeholderTextColor="#BCBCBC"
+              value={email}
+              onChangeText={setEmail}
+              inputMode="email"
+              ref={refEmail}
+              returnKeyType="done"
+              onSubmitEditing={handleSubmit}
+            />
+          </View>
+          <View style={styles.submitButtonContainer}>
+            <TouchableOpacity onPress={handleSubmit}>
+              <Text style={styles.submitButtonText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.button_container}>
-          <TouchableOpacity activeOpacity={0.9} onPress={handleSubmit}>
-            <Text style={styles.button}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
           <TouchableOpacity
             onPress={() => setIsForgotPassword(false)}
             activeOpacity={0.5}
@@ -149,9 +151,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input_container: {
-    width: '90%',
-    height: '80%',
-    justifyContent: 'space-evenly',
+    width: '80%',
+    height: '70%',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   input_icon_container: {
@@ -171,11 +173,17 @@ const styles = StyleSheet.create({
     borderColor: '#C2C2C2',
   },
   button_container: {
-    width: '80%',
+    width: '100%',
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  button: {
-    padding: 10,
+  submitButtonContainer: {
+    width: '100%',
+    marginTop: 10,
+  },
+  submitButtonText: {
+    paddingHorizontal: 10,
+    paddingVertical: 15,
     borderWidth: 1,
     borderRadius: 50,
     width: '100%',
@@ -192,7 +200,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
   },
 });
 

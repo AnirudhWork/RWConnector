@@ -21,15 +21,17 @@ const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
   const {height} = Dimensions.get('window');
 
   return (
-    <ScrollView automaticallyAdjustKeyboardInsets={true}>
+    <ScrollView
+      automaticallyAdjustKeyboardInsets={true}
+      contentContainerStyle={{minHeight: height - 25}}>
       {/* Main Container */}
-      <View style={{height: height}}>
+      <View style={{flex: 1}}>
         {/* 1 View */}
         <View style={styles.content_container}>
-          <View>
-            <Image source={logo} />
-          </View>
           <View style={styles.content}>
+            <View>
+              <Image source={logo} />
+            </View>
             {/* Dynamic View Starts */}
             {isForgotPassword ? (
               <ForgotPassword
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content_container: {
-    flex: 1,
+    height: '70%',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -87,18 +89,18 @@ const styles = StyleSheet.create({
   },
   content: {
     width: '100%',
-    height: '70%',
-    justifyContent: 'space-evenly',
+    height: '80%',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   image_container: {
+    flex: 1,
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
   },
   image: {
-    aspectRatio: 3 / 2,
-    height: undefined,
+    height: '100%',
     width: '100%',
   },
   confirmationMessage_container: {

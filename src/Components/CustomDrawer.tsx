@@ -59,7 +59,6 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
       const response = await Api(endPoint);
       if (response.status === 200) {
         await AsyncStorage.removeItem('userToken');
-        await AsyncStorage.removeItem('expiryDate');
         setUserToken(null);
         props.navigation.reset({
           index: 0,

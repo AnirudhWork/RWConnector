@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Pressable,
   Keyboard,
 } from 'react-native';
 import React, {LegacyRef, useEffect, useRef, useState} from 'react';
@@ -46,23 +45,23 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   const refPassword = useRef<TextInput>(null);
   const refUsername = useRef<TextInput>(null);
 
-  useEffect(() => {
-    const keyboardDidHideSubscription = Keyboard.addListener(
-      'keyboardDidHide',
-      keyboardDidHideCallback,
-    );
-    return () => {
-      keyboardDidHideSubscription?.remove();
-    };
-  }, []);
+  // useEffect(() => {
+  //   const keyboardDidHideSubscription = Keyboard.addListener(
+  //     'keyboardDidHide',
+  //     keyboardDidHideCallback,
+  //   );
+  //   return () => {
+  //     keyboardDidHideSubscription?.remove();
+  //   };
+  // }, []);
 
   // <-- Functions -->
 
   // <-- Handle Hardware Back Button -->
-  const keyboardDidHideCallback = () => {
-    refUsername.current?.blur();
-    refPassword.current?.blur();
-  };
+  // const keyboardDidHideCallback = () => {
+  //   refUsername.current?.blur();
+  //   refPassword.current?.blur();
+  // };
 
   // <-- Show/Hide Password -->
   let handleShowPassword = () => {
@@ -103,10 +102,6 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         if (response.status === 200) {
           console.log('\n\n\nData:', response.data);
           await AsyncStorage.setItem('userToken', response.data.token);
-          await AsyncStorage.setItem(
-            'expiryDate',
-            JSON.stringify(response.data['expire-time']),
-          );
           setUserToken(response.data.token);
           // removes all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
           navigation.reset({
@@ -186,11 +181,14 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         </View>
       </View>
 
-      <TouchableOpacity activeOpacity={0.5} onPress={handleSubmit}>
-        <Text style={styles.button}>Login</Text>
-      </TouchableOpacity>
-
       <View style={{alignItems: 'center'}}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={handleSubmit}
+          style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           activeOpacity={0.5}
           hitSlop={20}
@@ -214,8 +212,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   input_container: {
-    width: '90%',
+    width: '80%',
     alignItems: 'center',
+    marginTop: 20,
   },
   input_icon_container: {
     flexDirection: 'row',
@@ -234,11 +233,15 @@ const styles = StyleSheet.create({
     borderColor: '#C2C2C2',
   },
   button: {
+    width: '100%',
     backgroundColor: '#007F00',
     borderRadius: 50,
     borderWidth: 1,
     paddingHorizontal: 10,
-    paddingVertical: 12,
+    paddingVertical: 15,
+    marginBottom: 20,
+  },
+  buttonText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
@@ -255,6 +258,6 @@ const styles = StyleSheet.create({
   },
   forgetPasswordStyles: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
   },
 });
