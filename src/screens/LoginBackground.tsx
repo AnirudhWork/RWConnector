@@ -176,12 +176,13 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
             onChangeText={text => setPasswordValue(text)}
             onSubmitEditing={handleSubmit}
           />
-          <Pressable
+          <TouchableOpacity
+            activeOpacity={0.5}
             hitSlop={10}
             style={styles.showPassword}
             onPress={handleShowPassword}>
             <Image source={passwordShown.passwordIcon} />
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
 

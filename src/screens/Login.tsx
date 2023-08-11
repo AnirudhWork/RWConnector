@@ -1,4 +1,11 @@
-import {View, Image, StyleSheet, ScrollView, Text} from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  ScrollView,
+  Text,
+  Dimensions,
+} from 'react-native';
 import LoginBackground from './LoginBackground';
 import ForgotPassword from './ForgotPassword';
 
@@ -11,14 +18,17 @@ const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
   const loginImage = require('../Assets/Images/TruckLogin.png');
   const logo = require('../Assets/Icons/RWLogo.png');
 
+  const {height} = Dimensions.get('window');
+
   return (
-    <View style={styles.container}>
-      <ScrollView
-        automaticallyAdjustKeyboardInsets={true}
-        contentContainerStyle={{flexGrow: 1}}>
+    <ScrollView automaticallyAdjustKeyboardInsets={true}>
+      {/* Main Container */}
+      <View style={{height: height}}>
         {/* 1 View */}
         <View style={styles.content_container}>
-          <Image source={logo} />
+          <View>
+            <Image source={logo} />
+          </View>
           <View style={styles.content}>
             {/* Dynamic View Starts */}
             {isForgotPassword ? (
@@ -56,8 +66,8 @@ const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
             source={loginImage}
           />
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -84,7 +94,7 @@ const styles = StyleSheet.create({
   image_container: {
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   image: {
     aspectRatio: 3 / 2,
