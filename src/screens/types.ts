@@ -36,6 +36,11 @@ export type MainProps = NativeStackScreenProps<
   'DrawerNavigationContainer'
 >;
 
+export type DrawerNavigationContainerProps = NativeStackScreenProps<
+  RootStackParamList,
+  'DrawerNavigationContainer'
+>;
+
 export type CustomHeaderProps = {
   navigation: DrawerNavigationProp<ParamListBase, string, undefined>;
 };

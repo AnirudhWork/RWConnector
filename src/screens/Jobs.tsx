@@ -82,7 +82,7 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
         (isLoading && <Loading visible={isLoading} />)}
       <Dropdown label="Select Truck" data={data} onSelect={setSelected} />
       {selected && (
-        <Text style={{marginHorizontal: 10}}>Selected: {selected.name}</Text>
+        <Text style={{marginHorizontal: 10}}>Selected: {selected.id}</Text>
       )}
     </View>
   );

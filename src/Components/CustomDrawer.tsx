@@ -59,6 +59,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
       const response = await Api(endPoint);
       if (response.status === 200) {
         await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('expiryDate');
         setUserToken(null);
         props.navigation.reset({
           index: 0,
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
   },
   content_container: {
     width: '100%',
-    height: '75%',
+    height: '80%',
   },
   image_container: {
     width: '90%',

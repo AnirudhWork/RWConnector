@@ -40,7 +40,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   // <-- useContext declarations -->
-  const {userToken, setUserToken} = useAuth();
+  const {setUserToken} = useAuth();
 
   // <-- useRef declarations -->
   const refPassword = useRef<TextInput>(null);
@@ -101,9 +101,13 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         // <-- Token generation (Login) -->
         const response = await Api(endPoint, header, data);
         if (response.status === 200) {
+          console.log('\n\n\nData:', response.data);
           await AsyncStorage.setItem('userToken', response.data.token);
+          await AsyncStorage.setItem(
+            'expiryDate',
+            JSON.stringify(response.data['expire-time']),
+          );
           setUserToken(response.data.token);
-          console.log(userToken);
           // removes all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
           navigation.reset({
             index: 0,
