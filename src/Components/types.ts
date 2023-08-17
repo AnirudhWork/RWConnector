@@ -12,6 +12,8 @@ export type CustomMessagePopupProps = {
   visible: boolean;
   setShowPopUp: (value: boolean) => void;
   setPopUpMessage: (value: string) => void;
+  onClearMessage?: () => void;
+  setConfirmLogOut?: [null | boolean, Dispatch<SetStateAction<boolean>>];
 };
 
 export type LoadingProps = {
@@ -19,6 +21,6 @@ export type LoadingProps = {
 };
 
 export type AuthContextType = {
-  userToken: null | string;
-  setUserToken: Dispatch<SetStateAction<null | string>>;
+  data: null | string;
+  setData: Dispatch<SetStateAction<null | string>>;
 } | null;

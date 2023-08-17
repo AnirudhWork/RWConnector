@@ -6,9 +6,21 @@ const CustomMessagePopup: React.FC<CustomMessagePopupProps> = ({
   visible,
   setShowPopUp,
   setPopUpMessage,
+  onClearMessage,
+  setConfirmLogOut,
 }) => {
   const handleClearMessage = () => {
     setShowPopUp(false);
+    if (message === 'Session Timed Out!' && onClearMessage) {
+      setPopUpMessage('');
+      onClearMessage();
+    }
+    if (setConfirmLogOut?.[0] && onClearMessage) {
+      setShowPopUp(false);
+      setConfirmLogOut[1](false);
+      setPopUpMessage('');
+      onClearMessage();
+    }
     setPopUpMessage('');
   };
 
@@ -17,18 +29,37 @@ const CustomMessagePopup: React.FC<CustomMessagePopupProps> = ({
       animationType="fade"
       transparent={true}
       visible={visible}
-      onRequestClose={() => {}}>
+      onRequestClose={() => handleClearMessage()}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View>
             <Text style={[styles.message, {textAlign: 'left'}]}>{message}</Text>
           </View>
-          <TouchableOpacity
-            onPress={handleClearMessage}
-            style={styles.clearMessageButton}
-            hitSlop={10}>
-            <Text style={styles.clearMessageButtonText}>Ok</Text>
-          </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}>
+            {setConfirmLogOut && (
+              <TouchableOpacity
+                onPress={() => {
+                  setShowPopUp(false);
+                  setConfirmLogOut[1](false);
+                  setPopUpMessage('');
+                }}
+                style={styles.clearMessageButton}
+                hitSlop={10}>
+                <Text style={styles.clearMessageButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={handleClearMessage}
+              style={styles.clearMessageButton}
+              hitSlop={10}>
+              <Text style={styles.clearMessageButtonText}>Ok</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -53,8 +84,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#35373a',
   },
   clearMessageButton: {
-    alignItems: 'flex-end',
-    paddingRight: 5,
+    paddingHorizontal: 10,
+    marginHorizontal: 2,
   },
   clearMessageButtonText: {
     color: '#8ab4f8',
@@ -64,5 +95,6 @@ const styles = StyleSheet.create({
   message: {
     color: '#9aa0a6',
     fontSize: 14,
+    textTransform: 'capitalize',
   },
 });

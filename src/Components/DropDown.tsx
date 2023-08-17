@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, useRef, useState} from 'react';
+import React, {FC, ReactElement, useEffect, useRef, useState} from 'react';
 import {
   FlatList,
   ListRenderItem,
@@ -13,14 +13,28 @@ import {IProps} from './types';
 import {ITruckProps} from '../screens/types';
 
 const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
+  const chevron_down = require('../Assets/Icons/chevron-down.png');
+  const chevron_up = require('../Assets/Icons/chevron-up.png');
   const DropdownButton = useRef<TouchableOpacity>(null);
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState<any>(undefined);
   const [dropdownTop, setDropdownTop] = useState(0);
-  const chevron_down = require('../Assets/Icons/chevron-down.png');
+  const [chevronToggle, setChevronToggle] = useState(chevron_down);
+
+  useEffect(() => {
+    if (visible) {
+      setChevronToggle(chevron_up);
+    } else {
+      setChevronToggle(chevron_down);
+    }
+  }, [visible]);
 
   const toggleDropdown = (): void => {
-    visible ? setVisible(false) : openDropdown();
+    if (visible) {
+      setVisible(false);
+    } else {
+      openDropdown();
+    }
   };
 
   const openDropdown = (): void => {
@@ -76,7 +90,7 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
       activeOpacity={0.8}>
       {renderDropdown()}
       <Text style={styles.buttonText}>{selected?.name || label}</Text>
-      <Image style={styles.icon} source={chevron_down} />
+      <Image style={styles.icon} source={chevronToggle} />
     </TouchableOpacity>
   );
 };
@@ -87,8 +101,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(51, 51, 51, 0.50)',
     borderWidth: 1,
     alignItems: 'center',
-    backgroundColor: '#efefef',
-    margin: 10,
+    backgroundColor: '#fff',
+    marginRight: 3,
     height: 50,
     zIndex: 1,
   },
@@ -100,11 +114,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+    height: 40,
   },
   dropdown: {
     position: 'absolute',
     backgroundColor: '#fff',
     width: '100%',
+    maxHeight: 245,
     shadowColor: '#000000',
     shadowRadius: 4,
     shadowOffset: {height: 4, width: 0},

@@ -11,6 +11,12 @@ export type RootStackParamList = {
   CustomDrawer: undefined;
 };
 
+export type RootDrawerParamList = {
+  Jobs: undefined;
+};
+
+export type TJobsProps = DrawerNavigationProp<RootDrawerParamList, 'Jobs'>;
+
 export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'> &
   (LoginBackgroundProps | ForgotPasswordProps);
 

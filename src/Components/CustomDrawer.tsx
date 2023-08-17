@@ -7,7 +7,7 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Api from '../Api/postAPI';
+import POST_API from '../Api/postAPI';
 import CustomMessagePopup from './CustomMessagePopup';
 import Loading from './Loading';
 import axios from 'axios';
@@ -23,13 +23,24 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [popUpMessage, setPopUpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [handleLogOutConfirmation, setHandleLogOutConfirmation] =
+    useState(false);
 
-  const {userToken, setUserToken} = useAuth();
+  // <-- useContext -->
+  const {data} = useAuth();
 
   // <-- DrawerClosure on 'X' icon press -->
 
   const handleDrawerClosure = () => {
     props.navigation.closeDrawer();
+  };
+
+  // <-- Confirm Logout Pop-up -->
+
+  const confirmLogOut = () => {
+    setPopUpMessage('Are you sure you want to log out?');
+    setHandleLogOutConfirmation(true);
+    setShowPopUp(true);
   };
 
   // <-- Logout Api -->
@@ -39,11 +50,12 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
 
     // <-- Checking if token exist -->
 
+    const userToken = await AsyncStorage.getItem('userToken');
     if (!userToken) {
       setIsLoading(false);
-      console.log('Access token not found:', userToken);
-      setUserToken(null);
+      console.log('\n\nuserToken not found:', userToken);
       await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('username');
       props.navigation.reset({
         index: 0,
         routes: [{name: 'Login'}],
@@ -56,10 +68,11 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
     const endPoint = '/auth/logout';
 
     try {
-      const response = await Api(endPoint);
+      const response = await POST_API(endPoint);
       if (response.status === 200) {
+        console.log('\n\nlogout successful:', response.status);
         await AsyncStorage.removeItem('userToken');
-        setUserToken(null);
+        await AsyncStorage.removeItem('username');
         props.navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
@@ -72,21 +85,27 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
         setPopUpMessage('Request interrupted, please try again!');
         setShowPopUp(true);
         // <-- If response from server is 401 -->
-      } else if (KnownError.response && KnownError.response.status === 401) {
+      } else if (KnownError.response?.status === 401) {
+        console.log(
+          'Invalid response from server:',
+          KnownError.response?.status,
+        );
         await AsyncStorage.removeItem('userToken');
-        setUserToken(null);
+        await AsyncStorage.removeItem('username');
         props.navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
         });
         // <-- If there is error sending request to the server -->
       } else if (KnownError.request) {
+        console.log('\n\nRequest error:', KnownError.request);
         setPopUpMessage(
           'Network Error! Please check your internet connection and try again!',
         );
         setShowPopUp(true);
         // <-- All other cases -->
       } else {
+        console.log('\n\nError', KnownError);
         setPopUpMessage('Error while trying to logout. Please try again!');
         setShowPopUp(true);
       }
@@ -105,6 +124,11 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
           message={popUpMessage}
           setPopUpMessage={setPopUpMessage}
           setShowPopUp={setShowPopUp}
+          onClearMessage={handleLogOut}
+          setConfirmLogOut={[
+            handleLogOutConfirmation,
+            setHandleLogOutConfirmation,
+          ]}
         />
       )}
       {isLoading && <Loading visible={isLoading} />}
@@ -119,7 +143,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
             <Text style={styles.textStyle}>Welcome</Text>
           </View>
           <View>
-            <Text style={styles.userStyle}>Michael John</Text>
+            <Text style={styles.userStyle}>{data}</Text>
           </View>
         </View>
         <DrawerContentScrollView {...props}>
@@ -127,7 +151,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
             <DrawerItemList {...props} />
             <DrawerItem
               label="Logout"
-              onPress={handleLogOut}
+              onPress={confirmLogOut}
               labelStyle={styles.textStyle}
             />
           </View>

@@ -1,11 +1,14 @@
 import React from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import {
+  DrawerContentComponentProps,
+  createDrawerNavigator,
+} from '@react-navigation/drawer';
 import CustomHeader from '../Components/CustomHeader';
 import CustomDrawer from '../Components/CustomDrawer';
 import Jobs from '../screens/Jobs';
 import {StyleSheet} from 'react-native';
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator<DrawerContentComponentProps>();
 
 const DrawerNavigator: React.FC = () => {
   return (

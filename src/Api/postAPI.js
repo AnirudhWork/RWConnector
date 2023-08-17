@@ -1,11 +1,10 @@
-import axiosInstance from './Interceptor'; // Update the import path
+import axiosInstance from './Interceptor';
 
-const Api = async (endPoint, headerObj, dataObj) => {
+const POST_API = async (endPoint, headerObj, dataObj) => {
   try {
     const response = await axiosInstance.post(endPoint, dataObj, {
       headers: headerObj,
     });
-    console.log('\n\n\nResponse from API call:', response);
     return response; // return the response if status code is 200
   } catch (error) {
     // Since the error is re-thrown, it will be propagated up the call stack to the nearest enclosing error handler, where it can be caught and handled.
@@ -13,4 +12,4 @@ const Api = async (endPoint, headerObj, dataObj) => {
   }
 };
 
-export default Api;
+export default POST_API;

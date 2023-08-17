@@ -4,13 +4,17 @@ import {AuthContext} from './AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthProvider = ({children}: {children: ReactNode}) => {
-  const [userToken, setUserToken] = useState<null | string>(null);
+  const [data, setData] = useState<null | string>(null);
 
   useEffect(() => {
     const fetchUserToken = async () => {
       try {
-        const token = await AsyncStorage.getItem('userToken');
-        setUserToken(token);
+        const username = await AsyncStorage.getItem('username');
+        console.log('\n\n\nAsyncStorage data:', username);
+        if (username) {
+          console.log('Entered if statement!');
+          setData(username);
+        }
       } catch (error) {
         console.error('Error fetching user token:', error);
       }
@@ -19,8 +23,8 @@ const AuthProvider = ({children}: {children: ReactNode}) => {
   }, []);
 
   const value: AuthContextType = useMemo(
-    () => ({userToken, setUserToken}),
-    [userToken, setUserToken],
+    () => ({data, setData}),
+    [data, setData],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

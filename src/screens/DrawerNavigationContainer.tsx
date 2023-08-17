@@ -1,9 +1,6 @@
-import React, {FC, useEffect} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import DrawerNavigator from '../Navigators/DrawerNavigator';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import postAPI from '../Api/postAPI';
-import axios from 'axios';
 import {DrawerNavigationContainerProps} from './types';
 
 const DrawerNavigationContainer: React.FC<

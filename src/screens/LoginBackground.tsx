@@ -5,15 +5,14 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Keyboard,
 } from 'react-native';
-import React, {LegacyRef, useEffect, useRef, useState} from 'react';
+import React, {LegacyRef, useRef, useState} from 'react';
 import {LoginBackgroundProps} from './types';
 import axios from 'axios';
 import CustomMessagePopup from '../Components/CustomMessagePopup';
 import Loading from '../Components/Loading';
 import {stringMd5} from 'react-native-quick-md5';
-import Api from '../Api/postAPI';
+import POST_API from '../Api/postAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAuth} from '../Components/AuthContext';
 
@@ -27,6 +26,9 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   const passwordShownIcon = require('../Assets/Icons/PasswordShown.png');
   const passwordHiddenIcon = require('../Assets/Icons/PasswordHidden.png');
 
+  // <-- useContext -->
+  const {setData} = useAuth();
+
   // <-- useState declarations -->
   let [passwordShown, setPasswordShown] = useState({
     showPassword: true,
@@ -37,9 +39,6 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   const [showPopUp, setShowPopUp] = useState(false);
   const [popUpMessage, setPopUpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // <-- useContext declarations -->
-  const {setUserToken} = useAuth();
 
   // <-- useRef declarations -->
   const refPassword = useRef<TextInput>(null);
@@ -98,11 +97,12 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         const endPoint = '/auth/login';
 
         // <-- Token generation (Login) -->
-        const response = await Api(endPoint, header, data);
+        const response = await POST_API(endPoint, header, data);
         if (response.status === 200) {
           console.log('\n\n\nData:', response.data);
+          await AsyncStorage.setItem('username', userNameValue);
+          setData(userNameValue);
           await AsyncStorage.setItem('userToken', response.data.token);
-          setUserToken(response.data.token);
           // removes all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
           navigation.reset({
             index: 0,
@@ -231,6 +231,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '100%',
     borderColor: '#C2C2C2',
+    fontWeight: '500',
   },
   button: {
     width: '100%',

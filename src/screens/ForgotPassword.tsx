@@ -11,7 +11,7 @@ import {
 
 import {ForgotPasswordProps} from './types';
 import axios from 'axios';
-import Api from '../Api/postAPI';
+import POST_API from '../Api/postAPI';
 import CustomMessagePopup from '../Components/CustomMessagePopup';
 import Loading from '../Components/Loading';
 
@@ -70,7 +70,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
         };
         const endPoint = '/auth/forgotpwd';
 
-        const response = await Api(endPoint, header, data);
+        const response = await POST_API(endPoint, header, data);
         if (response.status === 200) {
           setSubmitted(true);
           setTimeout(() => {
