@@ -1,8 +1,8 @@
 import axiosInstance from './Interceptor';
 
-const POST_API = async (endPoint, headerObj, dataObj) => {
+const GET_API = async (endPoint: string, headerObj?: any) => {
   try {
-    const response = await axiosInstance.post(endPoint, dataObj, {
+    const response = await axiosInstance.get(endPoint, {
       headers: headerObj,
     });
     return response; // return the response if status code is 200
@@ -12,4 +12,4 @@ const POST_API = async (endPoint, headerObj, dataObj) => {
   }
 };
 
-export default POST_API;
+export default GET_API;

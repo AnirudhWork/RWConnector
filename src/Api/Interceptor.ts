@@ -58,24 +58,26 @@ axiosInstance.interceptors.response.use(
             }
           } catch (error) {
             secondRequest = false;
+            const knowError = error as any;
             console.log(
               '\n\n\n\n\ntry & catch error on 2nd request:',
-              error,
+              knowError,
               '\n\n\n\nerror status code:',
-              error.response.status,
+              knowError.response.status,
             );
-            return Promise.reject(error);
+            return Promise.reject(knowError);
           }
         }
       } catch (error) {
+        const knowError = error as any;
         secondRequest = false;
         console.log(
           '\n\n\n Error renewing token:',
-          error,
+          knowError,
           '\n\n\nStatus code of renew token error:',
-          error.response.status,
+          knowError.response.status,
         );
-        return Promise.reject(error);
+        return Promise.reject(knowError);
       }
     }
     console.log('Pura rejected:', error);

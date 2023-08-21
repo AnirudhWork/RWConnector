@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
+import {StyleSheet, Text, View, Image} from 'react-native';
 import React, {useState} from 'react';
 import {
   DrawerContentComponentProps,
@@ -12,6 +12,7 @@ import CustomMessagePopup from './CustomMessagePopup';
 import Loading from './Loading';
 import axios from 'axios';
 import {useAuth} from './AuthContext';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
   // <-- Images and Icons -->
@@ -132,18 +133,21 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
         />
       )}
       {isLoading && <Loading visible={isLoading} />}
-      <View style={styles.image_container}>
-        <Pressable onPress={handleDrawerClosure} hitSlop={10}>
-          <Image source={drawerClose} />
-        </Pressable>
+      <View style={styles.drawerCloseIconContainer}>
+        <TouchableOpacity
+          onPress={handleDrawerClosure}
+          hitSlop={20}
+          style={styles.drawerCloseButton}>
+          <Image source={drawerClose} style={styles.drawerCloseIcon} />
+        </TouchableOpacity>
       </View>
-      <View style={styles.content_container}>
+      <View style={styles.contentContainer}>
         <View style={styles.content}>
           <View>
-            <Text style={styles.textStyle}>Welcome</Text>
+            <Text style={styles.titleText}>Welcome</Text>
           </View>
           <View>
-            <Text style={styles.userStyle}>{data}</Text>
+            <Text style={styles.userNameText}>{data}</Text>
           </View>
         </View>
         <DrawerContentScrollView {...props}>
@@ -152,16 +156,27 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
             <DrawerItem
               label="Logout"
               onPress={confirmLogOut}
-              labelStyle={styles.textStyle}
+              labelStyle={styles.titleText}
             />
+            <View
+              style={{
+                backgroundColor: '#007F00',
+                marginVertical: 10,
+                paddingVertical: 15,
+              }}>
+              <TouchableOpacity style={{paddingHorizontal: 15}}>
+                <Text
+                  style={{color: '#C8E6CA', fontSize: 15, fontWeight: '600'}}>
+                  Jobs
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </DrawerContentScrollView>
       </View>
     </View>
   );
 };
-
-export default CustomDrawer;
 
 // <-- Styles -->
 
@@ -172,40 +187,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content_container: {
+  contentContainer: {
     width: '100%',
     height: '80%',
   },
-  image_container: {
-    width: '90%',
+  drawerCloseIconContainer: {
+    width: '100%',
     alignItems: 'flex-end',
-    paddingBottom: 20,
+    marginBottom: 25,
+  },
+  drawerCloseButton: {
+    paddingHorizontal: 23,
+    paddingVertical: 10,
+  },
+  drawerCloseIcon: {
+    height: 20,
   },
   content: {
     paddingHorizontal: 15,
     paddingVertical: 15,
-    borderTopWidth: 2,
-    borderBottomWidth: 2,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
     borderColor: '#C8E6CA',
   },
-  textStyle: {
-    color: '#C8E6CA',
-    fontFamily: 'Roboto',
-    fontSize: 16,
+  titleText: {
+    color: '#FFF',
+    fontSize: 15,
     fontStyle: 'normal',
     fontWeight: '400',
-    lineHeight: 20,
-    paddingVertical: 5,
   },
-  userStyle: {
+  userNameText: {
     color: '#FFF',
-    fontFamily: 'Roboto',
-    fontSize: 20,
+    fontSize: 14,
     fontStyle: 'normal',
     fontWeight: '700',
-    lineHeight: 20,
   },
   itemListStyle: {
     marginVertical: 10,
   },
 });
+
+export default CustomDrawer;

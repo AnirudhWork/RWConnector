@@ -19,7 +19,6 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({navigation}) => {
         <TouchableOpacity
           onPress={openDrawer}
           style={styles.drawerButton}
-          activeOpacity={0.8}
           hitSlop={15}>
           <Image
             source={DrawerIcon}
@@ -36,7 +35,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     backgroundColor: 'black',
-    height: 105,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -56,13 +55,11 @@ const styles = StyleSheet.create({
     height: 60,
   },
   drawerButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 25,
-    marginRight: 15,
+    marginRight: 20,
   },
   drawerIcon: {
     width: 24,
-    height: 20,
+    height: 15,
   },
 });
 

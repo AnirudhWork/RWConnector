@@ -38,7 +38,7 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
   };
 
   const openDropdown = (): void => {
-    //calculating the position of the button
+    //calculating the position of the DropDownButton
     DropdownButton.current?.measure((x, y, width, height, pageX, pageY) => {
       setDropdownTop(pageY + height);
     });
@@ -58,7 +58,7 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
         selected?.name === item.name ? styles.selectedItem : null,
       ]}
       onPress={() => onItemPress(item)}>
-      <Text>{item.name}</Text>
+      <Text style={styles.itemText}>{item.name}</Text>
     </TouchableOpacity>
   );
 
@@ -69,7 +69,7 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
           <TouchableOpacity
             style={styles.overlay}
             onPress={() => setVisible(false)}>
-            <View style={[styles.dropdown, {top: dropdownTop}]}>
+            <View style={[styles.dropDownItemsContainer, {top: dropdownTop}]}>
               <FlatList
                 data={data}
                 renderItem={renderItem}
@@ -85,28 +85,29 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
   return (
     <TouchableOpacity
       ref={DropdownButton}
-      style={styles.button}
+      style={styles.DropDownButton}
       onPress={toggleDropdown}
       activeOpacity={0.8}>
       {renderDropdown()}
-      <Text style={styles.buttonText}>{selected?.name || label}</Text>
+      <Text style={styles.DropDownButtonText}>{selected?.name || label}</Text>
       <Image style={styles.icon} source={chevronToggle} />
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
+  DropDownButton: {
     flexDirection: 'row',
-    borderColor: 'rgba(51, 51, 51, 0.50)',
+    borderColor: '#DCDDDF',
     borderWidth: 1,
+    borderRadius: 3,
     alignItems: 'center',
     backgroundColor: '#fff',
     marginRight: 3,
     height: 50,
     zIndex: 1,
   },
-  buttonText: {
+  DropDownButtonText: {
     flex: 1,
     textAlign: 'left',
     color: 'rgba(51, 51, 51, 0.50)',
@@ -116,17 +117,17 @@ const styles = StyleSheet.create({
     marginRight: 10,
     height: 40,
   },
-  dropdown: {
+  dropDownItemsContainer: {
     position: 'absolute',
-    backgroundColor: '#fff',
     width: '100%',
-    maxHeight: 245,
+    maxHeight: 210,
     shadowColor: '#000000',
     shadowRadius: 4,
     shadowOffset: {height: 4, width: 0},
     shadowOpacity: 0.5,
-    borderColor: 'rgba(51, 51, 51, 0.50)',
+    borderColor: 'rgba(220, 221, 223, 0.3)',
     borderWidth: 1,
+    backgroundColor: '#fff',
   },
   modal_container: {
     flex: 1,
@@ -142,6 +143,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderBottomWidth: 1,
+    borderColor: 'rgba(220, 221, 223, 0.3)',
+  },
+  itemText: {
+    fontSize: 15,
   },
   selectedItem: {
     backgroundColor: '#5897FB',

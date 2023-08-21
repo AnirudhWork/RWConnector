@@ -23,13 +23,14 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
   const [popUpMessage, setPopUpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isTruckNoteVisible, setIsTruckNoteVisible] = useState(true);
-  const [jobsData, setJobsData] = useState<IJobsProps[]>([]);
+  const [jobsData, setJobsData] = useState<IJobsProps[] | undefined>(undefined);
   const [chevronToggle, setChevronToggle] = useState(chevron_down);
 
   // <-- useEffects -->
 
   useEffect(() => {
     truckList();
+    console.log('\n\n\nSelected:', selected);
   }, []);
 
   useEffect(() => {
@@ -80,6 +81,7 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
 
   const getJobDetailsByTruckId = async () => {
     const endPoint = `/jobs/list/${selected?.id}`;
+    setIsTruckNoteVisible(true);
     try {
       setIsLoading(true);
       const response = await GET_API(endPoint);
@@ -154,7 +156,7 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
           <TouchableOpacity
             style={styles.truckNoteButton}
             onPress={() => setIsTruckNoteVisible(!isTruckNoteVisible)}>
-            <Text>Truck Note</Text>
+            <Text style={styles.truckNoteTitle}>Truck Note</Text>
             <Image source={chevronToggle} style={styles.icon} />
           </TouchableOpacity>
           {isTruckNoteVisible && (
@@ -162,18 +164,18 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
           )}
         </View>
       )}
-      {jobsData && jobsData.length > 0 ? (
+      {jobsData && jobsData.length > 0 && (
         <View
           style={{
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: 'green',
           }}>
           {jobsData.map((jobsData: any) => (
             <Text key={jobsData.id}>{jobsData['job-name']}</Text>
           ))}
         </View>
-      ) : (
+      )}
+      {jobsData && jobsData.length < 1 && (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text>No job is assigned yet to the selected truck</Text>
         </View>
@@ -189,17 +191,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  truckNoteContainer: {
-    marginHorizontal: 10,
-    padding: 7,
-    backgroundColor: '#e8e8e8',
-  },
-  truckNoteButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 5,
-  },
   icon: {
     height: 30,
   },
@@ -207,18 +198,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingHorizontal: 13,
+    paddingTop: 13,
     marginBottom: 5,
   },
   dropDownContainer: {
     flex: 1,
   },
   refreshButton: {
-    borderColor: 'rgba(51, 51, 51, 0.50)',
+    borderColor: '#DCDDDF',
     padding: 12,
     borderWidth: 1,
     alignContent: 'center',
+    borderRadius: 3,
   },
   refreshImage: {
     width: 24,
@@ -226,6 +218,23 @@ const styles = StyleSheet.create({
   },
   truckNote: {
     paddingVertical: 5,
+    marginHorizontal: 5,
+  },
+  truckNoteContainer: {
+    marginHorizontal: 13,
+    padding: 7,
+    backgroundColor: '#e8e8e8',
+    borderRadius: 3,
+  },
+  truckNoteButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 5,
+    marginHorizontal: 5,
+  },
+  truckNoteTitle: {
+    fontSize: 13,
   },
 });
 
