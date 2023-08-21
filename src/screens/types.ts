@@ -61,3 +61,20 @@ export interface ITruckProps {
   name: string;
   note: string;
 }
+
+export interface IJobsProps {
+  id: number;
+  'bol-num': number;
+  'truck-id': number;
+  'job-name': string;
+  'job-type': number;
+  'job-date': number;
+  'job-end-date': number;
+  'job-addr': string;
+  'job-addr2': string;
+  'job-city': string;
+  'job-state': string;
+  'job-zip': string;
+  'job-notes': string;
+  'job-locked': number;
+}
