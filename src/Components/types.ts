@@ -20,7 +20,12 @@ export type LoadingProps = {
   visible: boolean;
 };
 
+export interface UserData {
+  username: string | null;
+  appVersion: string | null;
+}
+
 export type AuthContextType = {
-  data: null | string;
-  setData: Dispatch<SetStateAction<null | string>>;
+  data: UserData | null;
+  setData: Dispatch<SetStateAction<UserData | null>>;
 } | null;

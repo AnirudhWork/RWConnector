@@ -1,22 +1,23 @@
 import {ReactNode, useState, useMemo, useEffect} from 'react';
-import {AuthContextType} from './types';
+import {AuthContextType, UserData} from './types';
 import {AuthContext} from './AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthProvider = ({children}: {children: ReactNode}) => {
-  const [data, setData] = useState<null | string>(null);
+  const [data, setData] = useState<UserData | null>(null);
 
   useEffect(() => {
     const fetchUserToken = async () => {
       try {
         const username = await AsyncStorage.getItem('username');
-        console.log('\n\n\nAsyncStorage data:', username);
-        if (username) {
-          console.log('Entered if statement!');
-          setData(username);
+        const appVersion = await AsyncStorage.getItem('appVersion');
+        console.log('\n\n\nAsyncStorage username:', username);
+        console.log('\n\n\nAsyncStorage appVersion:', appVersion);
+        if (username && appVersion) {
+          setData({username, appVersion});
         }
       } catch (error) {
-        console.error('Error fetching user token:', error);
+        console.error('Error fetching username from AsyncStorage:', error);
       }
     };
     fetchUserToken();

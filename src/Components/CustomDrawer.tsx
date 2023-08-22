@@ -147,32 +147,36 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
             <Text style={styles.titleText}>Welcome</Text>
           </View>
           <View>
-            <Text style={styles.userNameText}>{data}</Text>
+            <Text style={styles.userNameText}>{data?.username}</Text>
           </View>
         </View>
         <DrawerContentScrollView {...props}>
-          <View style={styles.itemListStyle}>
-            <DrawerItemList {...props} />
-            <DrawerItem
+          <View>
+            {/* <DrawerItemList {...props} />*/}
+            <View>
+              <TouchableOpacity style={styles.customDrawerActiveItemContainer}>
+                <Text style={styles.customDrawerItem}>Jobs</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity
+                style={styles.customDrawerInactiveItemContainer}
+                onPress={confirmLogOut}>
+                <Text style={styles.customDrawerItem}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+            {/* <DrawerItem
               label="Logout"
               onPress={confirmLogOut}
               labelStyle={styles.titleText}
-            />
-            <View
-              style={{
-                backgroundColor: '#007F00',
-                marginVertical: 10,
-                paddingVertical: 15,
-              }}>
-              <TouchableOpacity style={{paddingHorizontal: 15}}>
-                <Text
-                  style={{color: '#C8E6CA', fontSize: 15, fontWeight: '600'}}>
-                  Jobs
-                </Text>
-              </TouchableOpacity>
-            </View>
+            /> */}
           </View>
         </DrawerContentScrollView>
+        <View style={styles.appVersionContainer}>
+          <Text style={styles.appVersionText}>
+            App version - {data?.appVersion}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -183,7 +187,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4E5549',
+    backgroundColor: '#4e5549',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -207,7 +211,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderTopWidth: 1,
-    borderBottomWidth: 1,
     borderColor: '#C8E6CA',
   },
   titleText: {
@@ -222,8 +225,30 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: '700',
   },
-  itemListStyle: {
-    marginVertical: 10,
+  customDrawerActiveItemContainer: {
+    backgroundColor: '#007f00',
+    paddingVertical: 15,
+    paddingHorizontal: 18,
+    borderColor: '#C8E6CA',
+    borderTopWidth: 2,
+  },
+  customDrawerInactiveItemContainer: {
+    paddingVertical: 15,
+    paddingHorizontal: 18,
+    backgroundColor: 'transparent',
+  },
+  customDrawerItem: {
+    color: '#C8E6CA',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  appVersionContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  appVersionText: {
+    color: '#bedbc0',
+    marginTop: 60,
   },
 });
 

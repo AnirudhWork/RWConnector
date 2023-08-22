@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     height: '80%',
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 40,
   },
   drawerButtonContainer: {
     position: 'absolute',

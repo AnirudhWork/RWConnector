@@ -147,8 +147,15 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
             truckList();
             getJobDetailsByTruckId();
           }}
+          disabled={!selected}
           style={styles.refreshButton}>
-          <Image source={refresh} style={styles.refreshImage} />
+          <Image
+            source={refresh}
+            style={[
+              styles.refreshImage,
+              !selected ? {tintColor: '#ccc'} : null,
+            ]}
+          />
         </TouchableOpacity>
       </View>
       {selected && (

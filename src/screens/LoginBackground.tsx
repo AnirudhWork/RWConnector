@@ -99,10 +99,13 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         // <-- Token generation (Login) -->
         const response = await POST_API(endPoint, header, data);
         if (response.status === 200) {
+          const appVersion = response.data['latest-app-ver'];
+          console.log('app version:', appVersion);
           console.log('\n\n\nData:', response.data);
           await AsyncStorage.setItem('username', userNameValue);
-          setData(userNameValue);
+          await AsyncStorage.setItem('appVersion', appVersion);
           await AsyncStorage.setItem('userToken', response.data.token);
+          setData({username: userNameValue, appVersion: appVersion});
           // removes all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
           navigation.reset({
             index: 0,
