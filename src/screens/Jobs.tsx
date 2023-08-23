@@ -4,7 +4,10 @@ import Dropdown from '../Components/DropDown';
 import {ITruckProps, IJobsProps} from '../screens/types';
 import GET_API from '../Api/getAPI';
 import axios from 'axios';
-import CustomMessagePopup from '../Components/CustomMessagePopup';
+import {
+  SimpleAlert,
+  AlertWithOneActionableOption,
+} from '../Components/SimpleAlert';
 import Loading from '../Components/Loading';
 import {DrawerContentComponentProps} from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,8 +22,6 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
   // <-- useState declarations -->
   const [selected, setSelected] = useState<ITruckProps | undefined>(undefined);
   const [data, setData] = useState<ITruckProps[]>([]);
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [popUpMessage, setPopUpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isTruckNoteVisible, setIsTruckNoteVisible] = useState(true);
   const [jobsData, setJobsData] = useState<IJobsProps[] | undefined>(undefined);
@@ -30,7 +31,6 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
 
   useEffect(() => {
     truckList();
-    console.log('\n\n\nSelected:', selected);
   }, []);
 
   useEffect(() => {
@@ -58,20 +58,23 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
     } catch (error) {
       const knownError = error as any;
       if (axios.isCancel(error)) {
-        setPopUpMessage('Request interrupted. Try again!');
+        SimpleAlert('', 'Request interrupted. Try again!');
       } else if (
         knownError.response ||
         knownError?.response?.status === 401 ||
         knownError?.response?.status === 402
       ) {
-        await AsyncStorage.removeItem('userToken');
-        await AsyncStorage.removeItem('username');
-        setPopUpMessage('Session Timed Out!');
+        AlertWithOneActionableOption(
+          '',
+          'Session expired!',
+          'Ok',
+          false,
+          handleLogOut,
+        );
       } else {
         console.log('\n\n\n\nerror:', error);
-        setPopUpMessage('Error processing request. Try again!');
+        SimpleAlert('', 'Error processing request. Try again!');
       }
-      setShowPopUp(true);
     } finally {
       setIsLoading(false);
     }
@@ -91,20 +94,25 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
     } catch (error) {
       const knownError = error as any;
       if (axios.isCancel(error)) {
-        setPopUpMessage('Request interrupted. Try again!');
+        SimpleAlert('', 'Request interrupted. Try again!');
       } else if (knownError?.response?.status === 400) {
-        setPopUpMessage('Truck does not exist. Reload and try again!');
+        SimpleAlert('', 'Truck does not exist. Reload and try again!');
       } else if (
         knownError.response ||
         knownError?.response?.status === 401 ||
         knownError?.response?.status === 402
       ) {
-        setPopUpMessage('Session Timed Out!');
+        AlertWithOneActionableOption(
+          '',
+          'Session expired!',
+          'Ok',
+          false,
+          handleLogOut,
+        );
       } else {
         console.log('\n\n\n\nerror:', error);
-        setPopUpMessage('Error processing request. Try again!');
+        SimpleAlert('', 'Error processing request. Try again!');
       }
-      setShowPopUp(true);
     } finally {
       setIsLoading(false);
     }
@@ -114,6 +122,8 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
 
   const handleLogOut = () => {
     AsyncStorage.removeItem('userToken');
+    AsyncStorage.removeItem('appVersion');
+    AsyncStorage.removeItem('username');
     navigation.reset({
       index: 0,
       routes: [
@@ -128,16 +138,7 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {(showPopUp && (
-        <CustomMessagePopup
-          message={popUpMessage}
-          visible={showPopUp}
-          setPopUpMessage={setPopUpMessage}
-          setShowPopUp={setShowPopUp}
-          onClearMessage={handleLogOut}
-        />
-      )) ||
-        (isLoading && <Loading visible={isLoading} />)}
+      {isLoading && <Loading visible={isLoading} />}
       <View style={styles.dropDownRfContainer}>
         <View style={styles.dropDownContainer}>
           <Dropdown label="Select Truck" data={data} onSelect={setSelected} />

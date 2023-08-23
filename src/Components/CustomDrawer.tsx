@@ -3,12 +3,10 @@ import React, {useState} from 'react';
 import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
-  DrawerItem,
-  DrawerItemList,
 } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import POST_API from '../Api/postAPI';
-import CustomMessagePopup from './CustomMessagePopup';
+import {AlertWithTwoActionableOptions, SimpleAlert} from './SimpleAlert';
 import Loading from './Loading';
 import axios from 'axios';
 import {useAuth} from './AuthContext';
@@ -21,13 +19,10 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
 
   // <-- useState Declarations -->
 
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [popUpMessage, setPopUpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [handleLogOutConfirmation, setHandleLogOutConfirmation] =
-    useState(false);
 
   // <-- useContext -->
+
   const {data} = useAuth();
 
   // <-- DrawerClosure on 'X' icon press -->
@@ -39,9 +34,19 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
   // <-- Confirm Logout Pop-up -->
 
   const confirmLogOut = () => {
-    setPopUpMessage('Are you sure you want to log out?');
-    setHandleLogOutConfirmation(true);
-    setShowPopUp(true);
+    props.navigation.closeDrawer();
+    AlertWithTwoActionableOptions(
+      '',
+      'Are you sure you want to logout?',
+      'Yes',
+      'No',
+      true,
+      executeAction => {
+        if (executeAction) {
+          handleLogOut();
+        }
+      },
+    );
   };
 
   // <-- Logout Api -->
@@ -83,8 +88,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
       const KnownError = error as any;
       // <-- If request is canceled -->
       if (axios.isCancel(error)) {
-        setPopUpMessage('Request interrupted, please try again!');
-        setShowPopUp(true);
+        SimpleAlert('', 'Request interrupted, please try again!');
         // <-- If response from server is 401 -->
       } else if (KnownError.response?.status === 401) {
         console.log(
@@ -100,15 +104,14 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
         // <-- If there is error sending request to the server -->
       } else if (KnownError.request) {
         console.log('\n\nRequest error:', KnownError.request);
-        setPopUpMessage(
+        SimpleAlert(
+          '',
           'Network Error! Please check your internet connection and try again!',
         );
-        setShowPopUp(true);
         // <-- All other cases -->
       } else {
         console.log('\n\nError', KnownError);
-        setPopUpMessage('Error while trying to logout. Please try again!');
-        setShowPopUp(true);
+        SimpleAlert('', 'Error while trying to logout. Please try again!');
       }
     } finally {
       setIsLoading(false);
@@ -119,24 +122,10 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
 
   return (
     <View style={styles.container}>
-      {showPopUp && (
-        <CustomMessagePopup
-          visible={showPopUp}
-          message={popUpMessage}
-          setPopUpMessage={setPopUpMessage}
-          setShowPopUp={setShowPopUp}
-          onClearMessage={handleLogOut}
-          setConfirmLogOut={[
-            handleLogOutConfirmation,
-            setHandleLogOutConfirmation,
-          ]}
-        />
-      )}
       {isLoading && <Loading visible={isLoading} />}
       <View style={styles.drawerCloseIconContainer}>
         <TouchableOpacity
           onPress={handleDrawerClosure}
-          hitSlop={20}
           style={styles.drawerCloseButton}>
           <Image source={drawerClose} style={styles.drawerCloseIcon} />
         </TouchableOpacity>
@@ -198,11 +187,11 @@ const styles = StyleSheet.create({
   drawerCloseIconContainer: {
     width: '100%',
     alignItems: 'flex-end',
-    marginBottom: 25,
+    marginBottom: 15,
   },
   drawerCloseButton: {
     paddingHorizontal: 23,
-    paddingVertical: 10,
+    paddingVertical: 20,
   },
   drawerCloseIcon: {
     height: 20,

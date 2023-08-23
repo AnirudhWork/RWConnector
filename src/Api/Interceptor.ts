@@ -80,7 +80,7 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(knowError);
       }
     }
-    console.log('Pura rejected:', error);
+    console.log('Fully rejected', error);
     return Promise.reject(error);
   },
 );

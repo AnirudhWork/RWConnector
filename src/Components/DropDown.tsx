@@ -125,8 +125,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOffset: {height: 4, width: 0},
     shadowOpacity: 0.5,
-    borderColor: 'rgba(220, 221, 223, 0.3)',
-    borderWidth: 1,
     backgroundColor: '#fff',
   },
   modal_container: {

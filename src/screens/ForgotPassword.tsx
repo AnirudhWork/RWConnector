@@ -12,7 +12,7 @@ import {
 import {ForgotPasswordProps} from './types';
 import axios from 'axios';
 import POST_API from '../Api/postAPI';
-import CustomMessagePopup from '../Components/CustomMessagePopup';
+import SimpleAlert from '../Components/SimpleAlert';
 import Loading from '../Components/Loading';
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({
@@ -101,7 +101,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
   return (
     <View style={styles.container}>
       {showPopUp && (
-        <CustomMessagePopup
+        <SimpleAlert
           message={popUpMessage}
           visible={showPopUp}
           setShowPopUp={setShowPopUp}

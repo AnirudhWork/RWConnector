@@ -9,7 +9,7 @@ import {
 import React, {LegacyRef, useRef, useState} from 'react';
 import {LoginBackgroundProps} from './types';
 import axios from 'axios';
-import CustomMessagePopup from '../Components/CustomMessagePopup';
+import SimpleAlert from '../Components/SimpleAlert';
 import Loading from '../Components/Loading';
 import {stringMd5} from 'react-native-quick-md5';
 import POST_API from '../Api/postAPI';
@@ -138,7 +138,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   return (
     <View style={styles.container}>
       {showPopUp && (
-        <CustomMessagePopup
+        <SimpleAlert
           message={popUpMessage}
           visible={showPopUp}
           setShowPopUp={setShowPopUp}

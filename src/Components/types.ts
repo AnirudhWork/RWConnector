@@ -7,15 +7,6 @@ export interface IProps {
   onSelect: (item: ITruckProps) => void;
 }
 
-export type CustomMessagePopupProps = {
-  message: string;
-  visible: boolean;
-  setShowPopUp: (value: boolean) => void;
-  setPopUpMessage: (value: string) => void;
-  onClearMessage?: () => void;
-  setConfirmLogOut?: [null | boolean, Dispatch<SetStateAction<boolean>>];
-};
-
 export type LoadingProps = {
   visible: boolean;
 };
