@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import POST_API from '../Api/postAPI';
-import {AlertWithTwoActionableOptions, SimpleAlert} from './SimpleAlert';
+import {AlertWithTwoActionableOptions, SimpleAlert} from '../Utils/SimpleAlert';
 import Loading from './Loading';
 import axios from 'axios';
 import {useAuth} from './AuthContext';
@@ -56,12 +56,12 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
 
     // <-- Checking if token exist -->
 
-    const userToken = await AsyncStorage.getItem('userToken');
+    const userToken = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
     if (!userToken) {
       setIsLoading(false);
       console.log('\n\nuserToken not found:', userToken);
-      await AsyncStorage.removeItem('userToken');
-      await AsyncStorage.removeItem('username');
+      await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
+      await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.USERNAME);
       props.navigation.reset({
         index: 0,
         routes: [{name: 'Login'}],
@@ -77,8 +77,8 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
       const response = await POST_API(endPoint);
       if (response.status === 200) {
         console.log('\n\nlogout successful:', response.status);
-        await AsyncStorage.removeItem('userToken');
-        await AsyncStorage.removeItem('username');
+        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
+        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.USERNAME);
         props.navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
@@ -95,8 +95,8 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
           'Invalid response from server:',
           KnownError.response?.status,
         );
-        await AsyncStorage.removeItem('userToken');
-        await AsyncStorage.removeItem('username');
+        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
+        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.USERNAME);
         props.navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],

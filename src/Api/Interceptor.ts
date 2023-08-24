@@ -12,7 +12,7 @@ let secondRequest = false;
 
 axiosInstance.interceptors.request.use(
   async config => {
-    const accessToken = await AsyncStorage.getItem('userToken');
+    const accessToken = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
@@ -45,7 +45,7 @@ axiosInstance.interceptors.response.use(
         console.log('Cloned configuration:', cloneConfig);
         const renewToken = await axiosInstance('/auth/renew');
         if (renewToken.status === 200) {
-          await AsyncStorage.setItem('userToken', renewToken.data.token);
+          await AsyncStorage.setItem(ASYNC_STORAGE_KEY.AUTH_TOKEN, renewToken.data.token);
           try {
             const response = await axiosInstance(cloneConfig);
             if (response.status === 200) {

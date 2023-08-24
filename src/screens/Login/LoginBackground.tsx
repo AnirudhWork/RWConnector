@@ -7,14 +7,17 @@ import {
   TextInput,
 } from 'react-native';
 import React, {LegacyRef, useRef, useState} from 'react';
-import {LoginBackgroundProps} from './types';
+import {LoginBackgroundProps} from '../types';
 import axios from 'axios';
-import SimpleAlert from '../Components/SimpleAlert';
-import Loading from '../Components/Loading';
-import {stringMd5} from 'react-native-quick-md5';
-import POST_API from '../Api/postAPI';
+import {SimpleAlert} from '../../Utils/SimpleAlert';
+import Loading from '../../Components/Loading';
+
+import POST_API from '../../Api/postAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useAuth} from '../Components/AuthContext';
+import {useAuth} from '../../Components/AuthContext';
+import {LOGIN_ERROR_ALERTS, encryptPassword} from './constants';
+import {API_ENDPOINT, commonHeaders} from '../../Api/constants';
+import {SCREEN_NAMES} from '../../Navigators/constants';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
@@ -76,13 +79,12 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   let handleSubmit = async () => {
     // // <-- Field Validation -->
     if (!userNameValue.trim() || !passwordValue.trim()) {
-      setPopUpMessage('Please fill all the required fields');
-      setShowPopUp(true);
+      SimpleAlert('', LOGIN_ERROR_ALERTS.EMPTY_FIELDS);
     } else {
       setIsLoading(true);
       try {
         // <-- API parameters -->
-        const passwordHashValue = stringMd5(passwordValue);
+        const passwordHashValue = encryptPassword(passwordValue);
         const data = {
           uname: userNameValue,
           pwd: passwordHashValue,
@@ -90,26 +92,27 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
           'os-version': '1',
           'device-type': 'a',
         };
-        const header = {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        };
-        const endPoint = '/auth/login';
 
         // <-- Token generation (Login) -->
-        const response = await POST_API(endPoint, header, data);
+        const response = await POST_API(
+          API_ENDPOINT.LOGIN,
+          commonHeaders,
+          data,
+        );
         if (response.status === 200) {
           const appVersion = response.data['latest-app-ver'];
           console.log('app version:', appVersion);
           console.log('\n\n\nData:', response.data);
-          await AsyncStorage.setItem('username', userNameValue);
-          await AsyncStorage.setItem('appVersion', appVersion);
-          await AsyncStorage.setItem('userToken', response.data.token);
+          await AsyncStorage.setItem(ASYNC_STORAGE_KEY.USERNAME, userNameValue);
+          await AsyncStorage.setItem(ASYNC_STORAGE_KEY.APP_VERSION, appVersion);
+          await AsyncStorage.setItem(
+            ASYNC_STORAGE_KEY.AUTH_TOKEN,
+            response.data.token,
+          );
           setData({username: userNameValue, appVersion: appVersion});
-          // removes all the screens from the stack and replace it with a new stack where the DrawerNavigationContainer is the first element in the new stack.
           navigation.reset({
             index: 0,
-            routes: [{name: 'DrawerNavigationContainer'}],
+            routes: [{name: SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER}],
           });
         }
       } catch (error) {
@@ -137,14 +140,6 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
 
   return (
     <View style={styles.container}>
-      {showPopUp && (
-        <SimpleAlert
-          message={popUpMessage}
-          visible={showPopUp}
-          setShowPopUp={setShowPopUp}
-          setPopUpMessage={setPopUpMessage}
-        />
-      )}
       {isLoading && <Loading visible={isLoading} />}
       <View style={styles.input_container}>
         <View style={styles.input_icon_container}>

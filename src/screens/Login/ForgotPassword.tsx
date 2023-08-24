@@ -9,14 +9,13 @@ import {
   Keyboard,
 } from 'react-native';
 
-import {ForgotPasswordProps} from './types';
+import {ForgotPasswordProps} from '../types';
 import axios from 'axios';
-import POST_API from '../Api/postAPI';
-import SimpleAlert from '../Components/SimpleAlert';
-import Loading from '../Components/Loading';
+import POST_API from '../../Api/postAPI';
+import {SimpleAlert} from '../../Utils/SimpleAlert';
+import Loading from '../../Components/Loading';
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({
-  navigation,
   setIsForgotPassword,
   setSubmitted,
 }) => {
@@ -46,7 +45,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
 
   const isValidEmail = (email: string) => {
     // Regular expression for basic email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     return emailRegex.test(email);
   };
 
@@ -100,14 +99,6 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
 
   return (
     <View style={styles.container}>
-      {showPopUp && (
-        <SimpleAlert
-          message={popUpMessage}
-          visible={showPopUp}
-          setShowPopUp={setShowPopUp}
-          setPopUpMessage={setPopUpMessage}
-        />
-      )}
       {isLoading && <Loading visible={isLoading} />}
       <View style={styles.input_container}>
         <View style={{alignItems: 'center', width: '100%'}}>

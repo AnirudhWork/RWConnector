@@ -1,7 +1,13 @@
 import {Alert} from 'react-native';
 
 export const SimpleAlert = (title: string, message: string) => {
-  Alert.alert(title, message);
+  const buttons = [
+    {
+      text: 'ok',
+      onPress: () => {},
+    },
+  ];
+  Alert.alert(title, message, buttons, {cancelable: true});
 };
 
 export const AlertWithOneActionableOption = (

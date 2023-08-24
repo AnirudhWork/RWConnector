@@ -7,7 +7,7 @@ import axios from 'axios';
 import {
   SimpleAlert,
   AlertWithOneActionableOption,
-} from '../Components/SimpleAlert';
+} from '../Utils/SimpleAlert';
 import Loading from '../Components/Loading';
 import {DrawerContentComponentProps} from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -121,9 +121,9 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
   // <-- Logout api -->
 
   const handleLogOut = () => {
-    AsyncStorage.removeItem('userToken');
+    AsyncStorage.removeItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
     AsyncStorage.removeItem('appVersion');
-    AsyncStorage.removeItem('username');
+    AsyncStorage.removeItem(ASYNC_STORAGE_KEY.USERNAME);
     navigation.reset({
       index: 0,
       routes: [

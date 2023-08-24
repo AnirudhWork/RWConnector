@@ -1,6 +1,6 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
-import {ParamListBase} from '@react-navigation/native';
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -17,20 +17,16 @@ export type RootDrawerParamList = {
 
 export type TJobsProps = DrawerNavigationProp<RootDrawerParamList, 'Jobs'>;
 
-export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'> &
-  (LoginBackgroundProps | ForgotPasswordProps);
+export type LoginProps = {
+  navigation: NavigationProp<any, any>;
+};
 
-export type LoginBackgroundProps = NativeStackScreenProps<
-  RootStackParamList,
-  'LoginBackground'
-> & {
+export type LoginBackgroundProps = {
+  navigation: NavigationProp<any, any>;
   setIsForgotPassword: (value: boolean) => void;
 };
 
-export type ForgotPasswordProps = NativeStackScreenProps<
-  RootStackParamList,
-  'ForgotPassword'
-> & {
+export type ForgotPasswordProps = {
   setIsForgotPassword: (value: boolean) => void;
   setSubmitted: (value: boolean) => void;
 };

@@ -9,8 +9,10 @@ const AuthProvider = ({children}: {children: ReactNode}) => {
   useEffect(() => {
     const fetchUserToken = async () => {
       try {
-        const username = await AsyncStorage.getItem('username');
-        const appVersion = await AsyncStorage.getItem('appVersion');
+        const username = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.USERNAME);
+        const appVersion = await AsyncStorage.getItem(
+          ASYNC_STORAGE_KEY.APP_VERSION,
+        );
         console.log('\n\n\nAsyncStorage username:', username);
         console.log('\n\n\nAsyncStorage appVersion:', appVersion);
         if (username && appVersion) {

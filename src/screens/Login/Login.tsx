@@ -9,10 +9,10 @@ import {
 import LoginBackground from './LoginBackground';
 import ForgotPassword from './ForgotPassword';
 
-import {LoginProps} from './types';
+import {LoginProps} from '../types';
 import {useState} from 'react';
 
-const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
+const Login: React.FC<LoginProps> = ({navigation}: LoginProps) => {
   let [isForgotPassword, setIsForgotPassword] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const loginImage = require('../Assets/Images/TruckLogin.png');
@@ -35,8 +35,6 @@ const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
             {/* Dynamic View Starts */}
             {isForgotPassword ? (
               <ForgotPassword
-                navigation={navigation}
-                route={route}
                 setIsForgotPassword={setIsForgotPassword}
                 setSubmitted={setSubmitted}
               />
@@ -44,7 +42,6 @@ const Login: React.FC<LoginProps> = ({navigation, route}: LoginProps) => {
               <LoginBackground
                 setIsForgotPassword={setIsForgotPassword}
                 navigation={navigation}
-                route={route}
               />
             )}
             {/* Dynamic View Ends */}
