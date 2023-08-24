@@ -2,7 +2,7 @@ import {stringMd5} from 'react-native-quick-md5';
 
 export enum LOGIN_ERROR_ALERTS {
   EMPTY_FIELDS = 'Please fill all the required fields!',
-  INVALID_EMAIL = 'Please enter an email address!',
+  INVALID_EMAIL = 'Please enter a valid email address!',
   LOGIN_API_ERR = 'Invalid Username or Password!',
   FORGOT_PW_ERR = 'Invalid Email ID!',
 }

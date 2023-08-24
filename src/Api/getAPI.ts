@@ -1,6 +1,6 @@
 import axiosInstance from './Interceptor';
 
-const GET_API = async (endPoint: string, headerObj?: any) => {
+const getApi = async (endPoint: string, headerObj?: any) => {
   try {
     const response = await axiosInstance.get(endPoint, {
       headers: headerObj,
@@ -12,4 +12,4 @@ const GET_API = async (endPoint: string, headerObj?: any) => {
   }
 };
 
-export default GET_API;
+export default getApi;

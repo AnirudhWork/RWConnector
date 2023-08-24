@@ -1,6 +1,6 @@
 import axiosInstance from './Interceptor';
 
-const POST_API = async (endPoint: string, headerObj?: any, dataObj?: any) => {
+const postApi = async (endPoint: string, headerObj?: any, dataObj?: any) => {
   try {
     const response = await axiosInstance.post(endPoint, dataObj, {
       headers: headerObj,
@@ -12,4 +12,4 @@ const POST_API = async (endPoint: string, headerObj?: any, dataObj?: any) => {
   }
 };
 
-export default POST_API;
+export default postApi;

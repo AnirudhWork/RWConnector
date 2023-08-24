@@ -2,16 +2,15 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
 import Dropdown from '../Components/DropDown';
 import {ITruckProps, IJobsProps} from '../screens/types';
-import GET_API from '../Api/getAPI';
+import getApi from '../Api/getAPI';
 import axios from 'axios';
-import {
-  SimpleAlert,
-  AlertWithOneActionableOption,
-} from '../Utils/SimpleAlert';
+import {SimpleAlert, AlertWithOneActionableOption} from '../Utils/SimpleAlert';
 import Loading from '../Components/Loading';
 import {DrawerContentComponentProps} from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {API_ENDPOINT} from '../Api/constants';
+import {ASYNC_STORAGE_KEY} from '../Utils/constants';
 
 const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
   // <-- Images and Icons -->
@@ -51,7 +50,7 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
     const endPoint = '/trucks';
     try {
       setIsLoading(true);
-      const response = await GET_API(endPoint);
+      const response = await getApi(endPoint);
       if (response.status === 200) {
         setData(response.data['truck-list']);
       }
@@ -83,11 +82,12 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
   // <-- Jobs api -->
 
   const getJobDetailsByTruckId = async () => {
-    const endPoint = `/jobs/list/${selected?.id}`;
     setIsTruckNoteVisible(true);
     try {
       setIsLoading(true);
-      const response = await GET_API(endPoint);
+      const response = await getApi(
+        API_ENDPOINT.GET_JOBS_FOR_TRUCK + `/${selected?.id}`,
+      );
       if (response.status === 200) {
         setJobsData(response.data['job-list']);
       }

@@ -12,22 +12,23 @@ import axios from 'axios';
 import {SimpleAlert} from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
 
-import POST_API from '../../Api/postAPI';
+import postApi from '../../Api/postAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAuth} from '../../Components/AuthContext';
 import {LOGIN_ERROR_ALERTS, encryptPassword} from './constants';
 import {API_ENDPOINT, commonHeaders} from '../../Api/constants';
 import {SCREEN_NAMES} from '../../Navigators/constants';
+import { ASYNC_STORAGE_KEY } from '../../Utils/constants';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
   setIsForgotPassword,
 }) => {
   // <-- Images and Icons -->
-  const usernameIcon = require('../Assets/Icons/Username.png');
-  const passwordIcon = require('../Assets/Icons/PasswordLock.png');
-  const passwordShownIcon = require('../Assets/Icons/PasswordShown.png');
-  const passwordHiddenIcon = require('../Assets/Icons/PasswordHidden.png');
+  const usernameIcon = require('../../Assets/Icons/Username.png');
+  const passwordIcon = require('../../Assets/Icons/PasswordLock.png');
+  const passwordShownIcon = require('../../Assets/Icons/PasswordShown.png');
+  const passwordHiddenIcon = require('../../Assets/Icons/PasswordHidden.png');
 
   // <-- useContext -->
   const {setData} = useAuth();
@@ -94,11 +95,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         };
 
         // <-- Token generation (Login) -->
-        const response = await POST_API(
-          API_ENDPOINT.LOGIN,
-          commonHeaders,
-          data,
-        );
+        const response = await postApi(API_ENDPOINT.LOGIN, commonHeaders, data);
         if (response.status === 200) {
           const appVersion = response.data['latest-app-ver'];
           console.log('app version:', appVersion);

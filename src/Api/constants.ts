@@ -17,3 +17,10 @@ export enum API_ENDPOINT {
   UPDATE_FILE_UPLOAD_STATUS = '/files/complete',
   SUBMIT_JOB = '/jobs/{{JOB_ID}}',
 }
+
+export enum API_ERR_MSG {
+  INTERNET_ERR = 'Network Error: Please check your internet connection and try again!',
+  ERR = 'Error processing request.',
+  REQ_CANCEL_ERR = 'Request interrupted, Please try again!',
+  LOGOUT_ERR = 'Session Expired!',
+}

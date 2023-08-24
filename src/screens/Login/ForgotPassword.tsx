@@ -11,19 +11,19 @@ import {
 
 import {ForgotPasswordProps} from '../types';
 import axios from 'axios';
-import POST_API from '../../Api/postAPI';
+import postApi from '../../Api/postAPI';
 import {SimpleAlert} from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
+import {LOGIN_ERROR_ALERTS} from './constants';
+import {API_ENDPOINT, API_ERR_MSG, commonHeaders} from '../../Api/constants';
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({
   setIsForgotPassword,
   setSubmitted,
 }) => {
-  const emailIcon = require('../Assets/Icons/EmailLogo.png');
+  const emailIcon = require('../../Assets/Icons/EmailLogo.png');
 
   const [email, setEmail] = useState('');
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [popUpMessage, setPopUpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const refEmail = useRef<TextInput>(null);
@@ -53,23 +53,20 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
 
   const handleSubmit = async () => {
     if (!email) {
-      setPopUpMessage('Please enter an email address');
-      setShowPopUp(true);
+      SimpleAlert('', LOGIN_ERROR_ALERTS.EMPTY_FIELDS);
     } else if (!isValidEmail(email)) {
-      setPopUpMessage('Please enter a valid email address');
-      setShowPopUp(true);
+      SimpleAlert('', LOGIN_ERROR_ALERTS.INVALID_EMAIL);
     } else {
       setIsLoading(true);
       try {
         const data = {
           email: email,
         };
-        const header = {
-          'Content-Type': 'application/json',
-        };
-        const endPoint = '/auth/forgotpwd';
-
-        const response = await POST_API(endPoint, header, data);
+        const response = await postApi(
+          API_ENDPOINT.FORGOT_PW,
+          commonHeaders,
+          data,
+        );
         if (response.status === 200) {
           setSubmitted(true);
           setTimeout(() => {
@@ -80,17 +77,14 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
       } catch (error) {
         const knownError = error as any;
         if (axios.isCancel(error)) {
-          setPopUpMessage('Request interrupted, Please try again!');
+          SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
         } else if (knownError.response && knownError.response.status === 401) {
-          setPopUpMessage('Email Address does not exist.');
+          SimpleAlert('', LOGIN_ERROR_ALERTS.FORGOT_PW_ERR);
         } else if (knownError.request) {
-          setPopUpMessage(
-            'Network Error: Please check your internet connection and try again!',
-          );
+          SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
         } else {
-          setPopUpMessage('Error processing request, Please try again!');
+          SimpleAlert('', API_ERR_MSG.ERR);
         }
-        setShowPopUp(true);
       } finally {
         setIsLoading(false);
       }

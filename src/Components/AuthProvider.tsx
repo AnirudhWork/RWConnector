@@ -2,6 +2,7 @@ import {ReactNode, useState, useMemo, useEffect} from 'react';
 import {AuthContextType, UserData} from './types';
 import {AuthContext} from './AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ASYNC_STORAGE_KEY} from '../Utils/constants';
 
 const AuthProvider = ({children}: {children: ReactNode}) => {
   const [data, setData] = useState<UserData | null>(null);

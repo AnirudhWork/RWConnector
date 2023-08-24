@@ -4,7 +4,6 @@ export const SimpleAlert = (title: string, message: string) => {
   const buttons = [
     {
       text: 'ok',
-      onPress: () => {},
     },
   ];
   Alert.alert(title, message, buttons, {cancelable: true});

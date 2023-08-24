@@ -11,12 +11,13 @@ import ForgotPassword from './ForgotPassword';
 
 import {LoginProps} from '../types';
 import {useState} from 'react';
+import {FORGOT_PW_SUCCESS_ALERT} from './constants';
 
 const Login: React.FC<LoginProps> = ({navigation}: LoginProps) => {
   let [isForgotPassword, setIsForgotPassword] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const loginImage = require('../Assets/Images/TruckLogin.png');
-  const logo = require('../Assets/Icons/RWLogo.png');
+  const loginImage = require('../../Assets/Images/TruckLogin.png');
+  const logo = require('../../Assets/Icons/RWLogo.png');
 
   const {height} = Dimensions.get('window');
 
@@ -51,7 +52,7 @@ const Login: React.FC<LoginProps> = ({navigation}: LoginProps) => {
             <View style={styles.confirmationMessage_container}>
               <View style={styles.confirmationMessage_content}>
                 <Text style={styles.confirmationMessage}>
-                  Password successfully sent to the provided Email Address.
+                  {FORGOT_PW_SUCCESS_ALERT.RESET_SUCCESS}
                 </Text>
               </View>
             </View>

@@ -1,5 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API_ENDPOINT} from './constants';
+import {ASYNC_STORAGE_KEY} from '../Utils/constants';
 
 const BASE_URL = 'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg';
 
@@ -12,11 +14,11 @@ let secondRequest = false;
 
 axiosInstance.interceptors.request.use(
   async config => {
-    const accessToken = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
-    if (accessToken) {
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
+    const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
-    console.log('\n\n\n\nAccess Token:', accessToken);
+    console.log('\n\n\n\nAccess Token:', token);
     console.log('\n\n\n\nInterceptor config:', config);
     return config;
   },
@@ -35,7 +37,9 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async error => {
+    const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
     if (
+      token &&
       (error.response.status === 401 || error.response.status === 402) &&
       !secondRequest
     ) {
@@ -43,9 +47,12 @@ axiosInstance.interceptors.response.use(
       const cloneConfig = {...error.config};
       try {
         console.log('Cloned configuration:', cloneConfig);
-        const renewToken = await axiosInstance('/auth/renew');
+        const renewToken = await axiosInstance(API_ENDPOINT.RENEW_TOKEN);
         if (renewToken.status === 200) {
-          await AsyncStorage.setItem(ASYNC_STORAGE_KEY.AUTH_TOKEN, renewToken.data.token);
+          await AsyncStorage.setItem(
+            ASYNC_STORAGE_KEY.AUTH_TOKEN,
+            renewToken.data.token,
+          );
           try {
             const response = await axiosInstance(cloneConfig);
             if (response.status === 200) {
