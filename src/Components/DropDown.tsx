@@ -86,10 +86,15 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
     <TouchableOpacity
       ref={DropdownButton}
       style={styles.DropDownButton}
-      onPress={toggleDropdown}
-      activeOpacity={0.8}>
+      onPress={toggleDropdown}>
       {renderDropdown()}
-      <Text style={styles.DropDownButtonText}>{selected?.name || label}</Text>
+      <Text
+        style={[
+          styles.DropDownButtonText,
+          selected ? {color: '#000000'} : {color: '#BCBCBC'},
+        ]}>
+        {selected?.name || label}
+      </Text>
       <Image style={styles.icon} source={chevronToggle} />
     </TouchableOpacity>
   );
@@ -110,8 +115,9 @@ const styles = StyleSheet.create({
   DropDownButtonText: {
     flex: 1,
     textAlign: 'left',
-    color: 'rgba(51, 51, 51, 0.50)',
     marginHorizontal: 10,
+    fontFamily: 'Inter-Regular',
+    fontSize: 14,
   },
   icon: {
     marginRight: 10,

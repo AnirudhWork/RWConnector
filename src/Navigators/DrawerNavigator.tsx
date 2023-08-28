@@ -1,14 +1,15 @@
 import React from 'react';
 import {
-  DrawerContentComponentProps,
+  // DrawerContentComponentProps,
   createDrawerNavigator,
 } from '@react-navigation/drawer';
 import CustomHeader from '../Components/CustomHeader';
 import CustomDrawer from '../Components/CustomDrawer';
-import Jobs from '../screens/Jobs';
+import TruckList from '../screens/truck_selection/TrucksList';
 import {StyleSheet} from 'react-native';
+import {RootDrawerParamList} from '../screens/types';
 
-const Drawer = createDrawerNavigator<DrawerContentComponentProps>();
+const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 const DrawerNavigator: React.FC = () => {
   return (
@@ -22,7 +23,7 @@ const DrawerNavigator: React.FC = () => {
       }}
       backBehavior="history"
       drawerContent={props => <CustomDrawer {...props} />}>
-      <Drawer.Screen name="Jobs" component={Jobs} />
+      <Drawer.Screen name="TruckList" component={TruckList} />
     </Drawer.Navigator>
   );
 };

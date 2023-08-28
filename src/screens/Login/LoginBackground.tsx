@@ -16,9 +16,9 @@ import postApi from '../../Api/postAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAuth} from '../../Components/AuthContext';
 import {LOGIN_ERROR_ALERTS, encryptPassword} from './constants';
-import {API_ENDPOINT, commonHeaders} from '../../Api/constants';
+import {API_ENDPOINT, API_ERR_MSG, commonHeaders} from '../../Api/constants';
 import {SCREEN_NAMES} from '../../Navigators/constants';
-import { ASYNC_STORAGE_KEY } from '../../Utils/constants';
+import {ASYNC_STORAGE_KEY} from '../../Utils/constants';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
@@ -40,8 +40,6 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   });
   const [passwordValue, setPasswordValue] = useState('');
   const [userNameValue, setUsernameValue] = useState('');
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [popUpMessage, setPopUpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   // <-- useRef declarations -->
@@ -115,18 +113,15 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
       } catch (error) {
         const knownError = error as any;
         if (axios.isCancel(error)) {
-          setPopUpMessage('Request interrupted, Please try again!');
+          SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
         } else if (knownError.response && knownError.response.status === 401) {
-          setPopUpMessage('Invalid username or password!');
+          SimpleAlert('', LOGIN_ERROR_ALERTS.LOGIN_API_ERR);
         } else if (knownError.request) {
-          setPopUpMessage(
-            `Network Error: Please check your internet connection and try again!`,
-          );
+          SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
         } else {
-          setPopUpMessage('Error processing request. Please try again!');
+          SimpleAlert('', API_ERR_MSG.ERR);
           console.log('\n\n\n\nError:', error);
         }
-        setShowPopUp(true);
       } finally {
         setIsLoading(false);
       }

@@ -1,6 +1,6 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {DrawerNavigationProp} from '@react-navigation/drawer';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { NavigationHelpers, NavigationProp, ParamListBase } from '@react-navigation/native';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -12,10 +12,12 @@ export type RootStackParamList = {
 };
 
 export type RootDrawerParamList = {
-  Jobs: undefined;
+  TruckList: undefined;
 };
 
-export type TJobsProps = DrawerNavigationProp<RootDrawerParamList, 'Jobs'>;
+export type TTruckListProps = {
+  navigation: DrawerNavigationProp<any, any>,
+}
 
 export type LoginProps = {
   navigation: NavigationProp<any, any>;
@@ -23,12 +25,12 @@ export type LoginProps = {
 
 export type LoginBackgroundProps = {
   navigation: NavigationProp<any, any>;
-  setIsForgotPassword: (value: boolean) => void;
+  setIsForgotPassword: ( value: boolean ) => void;
 };
 
 export type ForgotPasswordProps = {
-  setIsForgotPassword: (value: boolean) => void;
-  setSubmitted: (value: boolean) => void;
+  setIsForgotPassword: ( value: boolean ) => void;
+  setSubmitted: ( value: boolean ) => void;
 };
 
 export type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;

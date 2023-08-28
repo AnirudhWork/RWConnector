@@ -1,22 +1,26 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
-import Dropdown from '../Components/DropDown';
-import {ITruckProps, IJobsProps} from '../screens/types';
-import getApi from '../Api/getAPI';
+import Dropdown from '../../Components/DropDown';
+import {ITruckProps, IJobsProps, TTruckListProps} from '../types';
+import getApi from '../../Api/getAPI';
 import axios from 'axios';
-import {SimpleAlert, AlertWithOneActionableOption} from '../Utils/SimpleAlert';
-import Loading from '../Components/Loading';
+import {
+  SimpleAlert,
+  AlertWithOneActionableOption,
+} from '../../Utils/SimpleAlert';
+import Loading from '../../Components/Loading';
 import {DrawerContentComponentProps} from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {API_ENDPOINT} from '../Api/constants';
-import {ASYNC_STORAGE_KEY} from '../Utils/constants';
+import {API_ENDPOINT} from '../../Api/constants';
+import {ASYNC_STORAGE_KEY} from '../../Utils/constants';
+import Jobs from './Jobs';
 
-const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
+const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   // <-- Images and Icons -->
-  const chevron_down = require('../Assets/Icons/chevron-down.png');
-  const chevron_up = require('../Assets/Icons/chevron-up.png');
-  const refresh = require('../Assets/Icons/ic_refresh.png');
+  const chevron_down = require('../../Assets/Icons/chevron-down.png');
+  const chevron_up = require('../../Assets/Icons/chevron-up.png');
+  const refresh = require('../../Assets/Icons/ic_refresh.png');
 
   // <-- useState declarations -->
   const [selected, setSelected] = useState<ITruckProps | undefined>(undefined);
@@ -168,21 +172,16 @@ const Jobs: React.FC<DrawerContentComponentProps> = ({navigation}) => {
             <Image source={chevronToggle} style={styles.icon} />
           </TouchableOpacity>
           {isTruckNoteVisible && (
-            <Text style={styles.truckNote}>{selected.note}</Text>
+            <Text
+              style={styles.truckNote}
+              ellipsizeMode={'tail'}
+              numberOfLines={3}>
+              {selected.note}
+            </Text>
           )}
         </View>
       )}
-      {jobsData && jobsData.length > 0 && (
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          {jobsData.map((jobsData: any) => (
-            <Text key={jobsData.id}>{jobsData['job-name']}</Text>
-          ))}
-        </View>
-      )}
+      {jobsData && jobsData.length > 0 && <Jobs />}
       {jobsData && jobsData.length < 1 && (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text>No job is assigned yet to the selected truck</Text>
@@ -227,6 +226,7 @@ const styles = StyleSheet.create({
   truckNote: {
     paddingVertical: 5,
     marginHorizontal: 5,
+    color: '#333333',
   },
   truckNoteContainer: {
     marginHorizontal: 13,
@@ -242,8 +242,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   truckNoteTitle: {
+    color: '#8A8A8A',
     fontSize: 13,
   },
 });
 
-export default Jobs;
+export default TruckList;

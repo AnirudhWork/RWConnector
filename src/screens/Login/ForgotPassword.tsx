@@ -45,7 +45,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
 
   const isValidEmail = (email: string) => {
     // Regular expression for basic email format validation
-    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    // const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w\w+)+$/;
     return emailRegex.test(email);
   };
 
