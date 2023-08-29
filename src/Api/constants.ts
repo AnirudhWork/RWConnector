@@ -1,6 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ASYNC_STORAGE_KEY } from "../Utils/constants";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { AsyncStorageUtils } from "../Utils/constants";
+import { NavigationProp } from "@react-navigation/native";
+import { SCREEN_NAMES } from "../Navigators/constants";
 
 export const commonHeaders = {
   'Content-Type': 'application/json',
@@ -46,16 +46,10 @@ export const STATUS_CODES = {
   NO_INTERNET: -1,
 };
 
-export const handleLogOut = ( navigation: DrawerNavigationProp<any, any> ) => {
-  AsyncStorage.removeItem( ASYNC_STORAGE_KEY.AUTH_TOKEN );
-  AsyncStorage.removeItem( 'appVersion' );
-  AsyncStorage.removeItem( ASYNC_STORAGE_KEY.USERNAME );
+export const logoutAndNavigateToLoginScreen = ( navigation: NavigationProp<any, any> ) => {
+  AsyncStorageUtils.clearAllUserData();
   navigation.reset( {
     index: 0,
-    routes: [
-      {
-        name: 'Login',
-      },
-    ],
+    routes: [{ name: SCREEN_NAMES.LOGIN, }],
   } );
 };

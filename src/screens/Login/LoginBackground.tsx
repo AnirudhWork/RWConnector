@@ -16,9 +16,14 @@ import postApi from '../../Api/postAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAuth} from '../../Components/AuthContext';
 import {LOGIN_ERROR_ALERTS, encryptPassword} from './constants';
-import {API_ENDPOINT, API_ERR_MSG, commonHeaders} from '../../Api/constants';
+import {
+  API_ENDPOINT,
+  API_ERR_MSG,
+  STATUS_CODES,
+  commonHeaders,
+} from '../../Api/constants';
 import {SCREEN_NAMES} from '../../Navigators/constants';
-import {ASYNC_STORAGE_KEY} from '../../Utils/constants';
+import {ASYNC_STORAGE_KEY, AsyncStorageUtils} from '../../Utils/constants';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
@@ -76,7 +81,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
 
   // <-- Api -->
   let handleSubmit = async () => {
-    // // <-- Field Validation -->
+    // <-- Field Validation -->
     if (!userNameValue.trim() || !passwordValue.trim()) {
       SimpleAlert('', LOGIN_ERROR_ALERTS.EMPTY_FIELDS);
     } else {
@@ -94,17 +99,13 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
 
         // <-- Token generation (Login) -->
         const response = await postApi(API_ENDPOINT.LOGIN, commonHeaders, data);
-        if (response.status === 200) {
-          const appVersion = response.data['latest-app-ver'];
-          console.log('app version:', appVersion);
-          console.log('\n\n\nData:', response.data);
-          await AsyncStorage.setItem(ASYNC_STORAGE_KEY.USERNAME, userNameValue);
-          await AsyncStorage.setItem(ASYNC_STORAGE_KEY.APP_VERSION, appVersion);
-          await AsyncStorage.setItem(
-            ASYNC_STORAGE_KEY.AUTH_TOKEN,
-            response.data.token,
-          );
-          setData({username: userNameValue, appVersion: appVersion});
+        if (response.status === STATUS_CODES.SUCCESS) {
+          console.log('\n\n\nLogin api response data:', response.data);
+          AsyncStorageUtils.setLoginResponse(response.data);
+          setData({
+            username: userNameValue,
+            appVersion: response.data['latest-app-ver'],
+          });
           navigation.reset({
             index: 0,
             routes: [{name: SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER}],
@@ -114,13 +115,16 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         const knownError = error as any;
         if (axios.isCancel(error)) {
           SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
-        } else if (knownError.response && knownError.response.status === 401) {
+        } else if (
+          knownError.response &&
+          knownError.response.status === STATUS_CODES.UNAUTHORIZED
+        ) {
           SimpleAlert('', LOGIN_ERROR_ALERTS.LOGIN_API_ERR);
         } else if (knownError.request) {
           SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
         } else {
           SimpleAlert('', API_ERR_MSG.ERR);
-          console.log('\n\n\n\nError:', error);
+          console.log('\n\n\n\nLogin API Error:', error);
         }
       } finally {
         setIsLoading(false);

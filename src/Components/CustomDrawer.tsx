@@ -1,20 +1,26 @@
 import {StyleSheet, Text, View, Image} from 'react-native';
 import React, {useState} from 'react';
 import {
-  DrawerContentComponentProps,
   DrawerContentScrollView,
+  DrawerNavigationProp,
 } from '@react-navigation/drawer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import postApi from '../Api/postAPI';
 import {AlertWithTwoActionableOptions, SimpleAlert} from '../Utils/SimpleAlert';
 import Loading from './Loading';
 import axios from 'axios';
 import {useAuth} from './AuthContext';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {ASYNC_STORAGE_KEY} from '../Utils/constants';
-import {API_ENDPOINT} from '../Api/constants';
+import {AsyncStorageUtils} from '../Utils/constants';
+import {
+  API_ENDPOINT,
+  API_ERR_MSG,
+  STATUS_CODES,
+  logoutAndNavigateToLoginScreen,
+} from '../Api/constants';
+import {CustomDrawerNavigationProps} from './types';
+import {SCREEN_NAMES} from '../Navigators/constants';
 
-const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
+const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
   // <-- Images and Icons -->
 
   const drawerClose = require('../Assets/Icons/DrawerCross.png');
@@ -30,13 +36,20 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
   // <-- DrawerClosure on 'X' icon press -->
 
   const handleDrawerClosure = () => {
-    props.navigation.closeDrawer();
+    navigation.closeDrawer();
+  };
+
+  // <-- On Jobs button click -->
+
+  const returnToDashboard = () => {
+    navigation.closeDrawer();
+    navigation.navigate(SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER);
   };
 
   // <-- Confirm Logout Pop-up -->
 
   const confirmLogOut = () => {
-    props.navigation.closeDrawer();
+    navigation.closeDrawer();
     AlertWithTwoActionableOptions(
       '',
       'Are you sure you want to logout?',
@@ -58,62 +71,43 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
 
     // <-- Checking if token exist -->
 
-    const userToken = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
+    const userToken = await AsyncStorageUtils.getUserToken();
     if (!userToken) {
       setIsLoading(false);
-      console.log('\n\nuserToken not found:', userToken);
-      await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.APP_VERSION);
-      await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.USERNAME);
-      props.navigation.reset({
-        index: 0,
-        routes: [{name: 'Login'}],
-      });
-      return;
+      console.log('\n\n\nLogout API, user token not found:', userToken);
+      logoutAndNavigateToLoginScreen(navigation);
     }
 
     // <-- Expiring the token if it exist -->
 
     try {
       const response = await postApi(API_ENDPOINT.LOGOUT);
-      if (response.status === 200) {
-        console.log('\n\nlogout successful:', response.status);
-        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
-        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.USERNAME);
-        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.APP_VERSION);
-        props.navigation.reset({
-          index: 0,
-          routes: [{name: 'Login'}],
-        });
+      if (response.status === STATUS_CODES.SUCCESS) {
+        logoutAndNavigateToLoginScreen(navigation);
       }
     } catch (error) {
       const KnownError = error as any;
       // <-- If request is canceled -->
       if (axios.isCancel(error)) {
-        SimpleAlert('', 'Request interrupted, please try again!');
+        SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
         // <-- If response from server is 401 -->
-      } else if (KnownError.response?.status === 401) {
+      } else if (
+        KnownError.response ||
+        KnownError.response?.status === STATUS_CODES.UNAUTHORIZED
+      ) {
         console.log(
           'Invalid response from server:',
           KnownError.response?.status,
         );
-        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
-        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.USERNAME);
-        await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.APP_VERSION);
-        props.navigation.reset({
-          index: 0,
-          routes: [{name: 'Login'}],
-        });
+        logoutAndNavigateToLoginScreen(navigation);
         // <-- If there is error sending request to the server -->
       } else if (KnownError.request) {
         console.log('\n\nRequest error:', KnownError.request);
-        SimpleAlert(
-          '',
-          'Network Error! Please check your internet connection and try again!',
-        );
+        SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
         // <-- All other cases -->
       } else {
         console.log('\n\nError', KnownError);
-        SimpleAlert('', 'Error while trying to logout. Please try again!');
+        SimpleAlert('', API_ERR_MSG.ERR);
       }
     } finally {
       setIsLoading(false);
@@ -141,11 +135,13 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = props => {
             <Text style={styles.userNameText}>{data?.username}</Text>
           </View>
         </View>
-        <DrawerContentScrollView {...props}>
+        <DrawerContentScrollView>
           <View>
-            {/* <DrawerItemList {...props} />*/}
+            {/* <DrawerItemList />*/}
             <View>
-              <TouchableOpacity style={styles.customDrawerActiveItemContainer}>
+              <TouchableOpacity
+                style={styles.customDrawerActiveItemContainer}
+                onPress={returnToDashboard}>
                 <Text style={styles.customDrawerItem}>Jobs</Text>
               </TouchableOpacity>
             </View>

@@ -1,8 +1,7 @@
 import {StyleSheet, View, Image} from 'react-native';
 import React, {useEffect} from 'react';
 import {SplashProps} from './types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ASYNC_STORAGE_KEY} from '../Utils/constants';
+import {AsyncStorageUtils} from '../Utils/constants';
 
 const Splash: React.FC<SplashProps> = ({navigation}) => {
   useEffect(() => {
@@ -10,7 +9,7 @@ const Splash: React.FC<SplashProps> = ({navigation}) => {
   }, []);
 
   const checkInitialRoute = async () => {
-    const isLoggedIn = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
+    const isLoggedIn = await AsyncStorageUtils.getUserToken();
     console.log(isLoggedIn);
     const route = isLoggedIn ? 'DrawerNavigationContainer' : 'Login';
     setTimeout(() => {

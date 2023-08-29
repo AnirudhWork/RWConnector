@@ -4,16 +4,13 @@ import Dropdown from '../../Components/DropDown';
 import {ITruckProps, IJobsProps, TTruckListProps} from '../types';
 import getApi from '../../Api/getAPI';
 import axios from 'axios';
-import {
-  SimpleAlert,
-  AlertWithOneActionableOption,
-} from '../../Utils/SimpleAlert';
+import {SimpleAlert} from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {API_ENDPOINT, handleLogOut} from '../../Api/constants';
-import {ASYNC_STORAGE_KEY} from '../../Utils/constants';
+import {API_ENDPOINT, API_ERR_MSG, STATUS_CODES} from '../../Api/constants';
 import Jobs from './Jobs';
+import {TRUCK_API_ERR_MSG} from './constants';
+import {logoutSessionExpired} from '../../Utils/constants';
 
 const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   // <-- Images and Icons -->
@@ -23,7 +20,7 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
 
   // <-- useState declarations -->
   const [selected, setSelected] = useState<ITruckProps | undefined>(undefined);
-  const [data, setData] = useState<ITruckProps[]>([]);
+  const [truckData, setTruckData] = useState<ITruckProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isTruckNoteVisible, setIsTruckNoteVisible] = useState(true);
   const [jobsData, setJobsData] = useState<IJobsProps[] | undefined>(undefined);
@@ -50,28 +47,25 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   // <-- Truck list api -->
 
   const truckList = async () => {
-    const endPoint = '/trucks';
     try {
       setIsLoading(true);
-      const response = await getApi(endPoint);
-      if (response.status === 200) {
-        setData(response.data['truck-list']);
+      const response = await getApi(API_ENDPOINT.GET_TRUCKS);
+      if (response.status === STATUS_CODES.SUCCESS) {
+        setTruckData(response.data['truck-list']);
       }
     } catch (error) {
       const knownError = error as any;
       if (axios.isCancel(error)) {
-        SimpleAlert('', 'Request interrupted. Try again!');
+        SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
       } else if (
         knownError.response ||
         knownError?.response?.status === 401 ||
         knownError?.response?.status === 402
       ) {
-        AlertWithOneActionableOption('', 'Session expired!', 'Ok', false, () =>
-          handleLogOut(navigation),
-        );
+        logoutSessionExpired(navigation);
       } else {
         console.log('\n\n\n\nerror:', error);
-        SimpleAlert('', 'Error processing request. Try again!');
+        SimpleAlert('', API_ERR_MSG.ERR);
       }
     } finally {
       setIsLoading(false);
@@ -87,26 +81,24 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
       const response = await getApi(
         API_ENDPOINT.GET_JOBS_FOR_TRUCK + `/${selected?.id}`,
       );
-      if (response.status === 200) {
+      if (response.status === STATUS_CODES.SUCCESS) {
         setJobsData(response.data['job-list']);
       }
     } catch (error) {
       const knownError = error as any;
       if (axios.isCancel(error)) {
-        SimpleAlert('', 'Request interrupted. Try again!');
-      } else if (knownError?.response?.status === 400) {
-        SimpleAlert('', 'Truck does not exist. Reload and try again!');
+        SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
+      } else if (knownError?.response?.status === STATUS_CODES.BAD_REQUEST) {
+        SimpleAlert('', TRUCK_API_ERR_MSG.NOTFOUND);
       } else if (
         knownError.response ||
         knownError?.response?.status === 401 ||
         knownError?.response?.status === 402
       ) {
-        AlertWithOneActionableOption('', 'Session expired!', 'Ok', false, () =>
-          handleLogOut(navigation),
-        );
+        logoutSessionExpired(navigation);
       } else {
         console.log('\n\n\n\nerror:', error);
-        SimpleAlert('', 'Error processing request. Try again!');
+        SimpleAlert('', API_ERR_MSG.ERR);
       }
     } finally {
       setIsLoading(false);
@@ -120,12 +112,16 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
       {isLoading && <Loading visible={isLoading} />}
       <View style={styles.dropDownRfContainer}>
         <View style={styles.dropDownContainer}>
-          <Dropdown label="Select Truck" data={data} onSelect={setSelected} />
+          <Dropdown
+            label="Select Truck"
+            data={truckData}
+            onSelect={setSelected}
+          />
         </View>
         <TouchableOpacity
           onPress={() => {
             truckList();
-            // getJobDetailsByTruckId();
+            getJobDetailsByTruckId();
           }}
           disabled={!selected}
           style={styles.refreshButton}>

@@ -1,8 +1,7 @@
 import {ReactNode, useState, useMemo, useEffect} from 'react';
 import {AuthContextType, UserData} from './types';
 import {AuthContext} from './AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ASYNC_STORAGE_KEY} from '../Utils/constants';
+import {AsyncStorageUtils} from '../Utils/constants';
 
 const AuthProvider = ({children}: {children: ReactNode}) => {
   const [data, setData] = useState<UserData | null>(null);
@@ -10,10 +9,8 @@ const AuthProvider = ({children}: {children: ReactNode}) => {
   useEffect(() => {
     const fetchUserToken = async () => {
       try {
-        const username = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.USERNAME);
-        const appVersion = await AsyncStorage.getItem(
-          ASYNC_STORAGE_KEY.APP_VERSION,
-        );
+        const username = await AsyncStorageUtils.getUsername();
+        const appVersion = await AsyncStorageUtils.getAppVersion();
         console.log('\n\n\nAsyncStorage username:', username);
         console.log('\n\n\nAsyncStorage appVersion:', appVersion);
         if (username && appVersion) {

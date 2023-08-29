@@ -1,10 +1,11 @@
-import {Dispatch, SetStateAction} from 'react';
-import {ITruckProps} from '../screens/types';
+import { Dispatch, SetStateAction } from 'react';
+import { ITruckProps } from '../screens/types';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 export interface IProps {
   label: string;
   data: Array<ITruckProps>;
-  onSelect: (item: ITruckProps) => void;
+  onSelect: ( item: ITruckProps ) => void;
 }
 
 export type LoadingProps = {
@@ -20,3 +21,7 @@ export type AuthContextType = {
   data: UserData | null;
   setData: Dispatch<SetStateAction<UserData | null>>;
 } | null;
+
+export type CustomDrawerNavigationProps = {
+  navigation: DrawerNavigationProp<any, any>
+}

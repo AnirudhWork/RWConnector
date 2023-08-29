@@ -1,95 +1,76 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_ENDPOINT} from './constants';
-import {ASYNC_STORAGE_KEY} from '../Utils/constants';
+import { API_ENDPOINT, STATUS_CODES } from './constants';
+import { AsyncStorageUtils } from '../Utils/constants';
 
 const BASE_URL = 'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg';
 
-const axiosInstance = axios.create({
+const axiosInstance = axios.create( {
   baseURL: BASE_URL,
   timeout: 10000,
-});
+} );
 
 let secondRequest = false;
 
-axiosInstance.interceptors.request.use(
-  async config => {
-    const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    console.log('\n\n\n\nAccess Token:', token);
-    console.log('\n\n\n\nInterceptor config:', config);
-    return config;
-  },
-  error => {
-    console.log('\n\n\n\nInterceptor error:', error);
-    return Promise.reject(error);
-  },
-);
+async function handleRequest( config: any ) {
+  const token = await AsyncStorageUtils.getUserToken();
+  if ( token ) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  console.log( '\n\n\nInterceptor API, Access Token:', token );
+  console.log( '\n\n\nInterceptor API config:', config );
+  return config;
+}
 
-axiosInstance.interceptors.response.use(
-  async response => {
-    console.log(
-      '\n\n\n\n\n\nSuccessful Response configuration:',
-      response.config,
-    );
-    return response;
-  },
-  async error => {
-    const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
-    if (
-      token &&
-      (error.response.status === 401 || error.response.status === 402) &&
-      !secondRequest
-    ) {
-      secondRequest = true;
-      const cloneConfig = {...error.config};
-      try {
-        console.log('Cloned configuration:', cloneConfig);
-        const renewToken = await axiosInstance(API_ENDPOINT.RENEW_TOKEN);
-        if (renewToken.status === 200) {
-          await AsyncStorage.setItem(
-            ASYNC_STORAGE_KEY.AUTH_TOKEN,
-            renewToken.data.token,
-          );
-          try {
-            const response = await axiosInstance(cloneConfig);
-            if (response.status === 200) {
-              secondRequest = false;
-              console.log(
-                '\n\n\n\n\n\n\nSuccessful Response of 2nd request',
-                response,
-              );
-              return response;
-            }
-          } catch (error) {
-            secondRequest = false;
-            const knowError = error as any;
-            console.log(
-              '\n\n\n\n\ntry & catch error on 2nd request:',
-              knowError,
-              '\n\n\n\nerror status code:',
-              knowError.response.status,
-            );
-            return Promise.reject(knowError);
-          }
-        }
-      } catch (error) {
-        const knowError = error as any;
+async function handleResponseSuccess( response: any ) {
+  console.log( '\n\n\nInterception API successful response:', response.config );
+  return response;
+}
+
+async function renewTokenAndRequest( config: any ) {
+  const cloneConfig = { ...config };
+  try {
+    const renewToken = await axiosInstance( API_ENDPOINT.RENEW_TOKEN );
+    if ( renewToken.status === STATUS_CODES.SUCCESS ) {
+      const loginResponse = await AsyncStorageUtils.getLoginResponse();
+      if ( loginResponse ) {
+        loginResponse.token = renewToken.data.token;
+        await AsyncStorageUtils.setLoginResponse( loginResponse );
+      }
+      const response = await axiosInstance( cloneConfig );
+      if ( response.status === 200 ) {
         secondRequest = false;
-        console.log(
-          '\n\n\n Error renewing token:',
-          knowError,
-          '\n\n\nStatus code of renew token error:',
-          knowError.response.status,
-        );
-        return Promise.reject(knowError);
+        console.log( '\n\n\nSuccessful interceptor response on 2nd request', response );
+        return response;
       }
     }
-    console.log('Fully rejected', error);
-    return Promise.reject(error);
-  },
-);
+  } catch ( error ) {
+    return Promise.reject( error );
+  }
+}
+
+async function handleResponseError( error: any ) {
+  const token = await AsyncStorageUtils.getUserToken();
+  if (
+    token &&
+    ( error.response.status === STATUS_CODES.UNAUTHORIZED || error.response.status === STATUS_CODES.TOKEN_EXPIRED ) &&
+    !secondRequest
+  ) {
+    secondRequest = true;
+    try {
+      return await renewTokenAndRequest( error.config );
+    } catch ( error ) {
+      return Promise.reject( error );
+    }
+  }
+  console.log( '\n\nFully rejected', error );
+  return Promise.reject( error );
+}
+
+axiosInstance.interceptors.request.use( handleRequest, error => {
+  console.log( '\n\n\nInterceptor API error while fetching token', error );
+  return Promise.reject( error );
+} );
+
+axiosInstance.interceptors.response.use( handleResponseSuccess, handleResponseError );
 
 export default axiosInstance;

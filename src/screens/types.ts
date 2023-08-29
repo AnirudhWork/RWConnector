@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { NavigationHelpers, NavigationProp, ParamListBase } from '@react-navigation/native';
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -80,4 +80,12 @@ export interface IJobsProps {
   'job-zip': string;
   'job-notes': string;
   'job-locked': number;
+}
+
+export interface ILoginDataProps {
+  uname: string,
+  token: string,
+  'expire-time': number,
+  'update-app-ver': number,
+  'latest-app-ver': string,
 }
