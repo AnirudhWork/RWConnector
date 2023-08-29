@@ -19,6 +19,11 @@ export type TTruckListProps = {
   navigation: DrawerNavigationProp<any, any>,
 }
 
+export type TJobsListProps = {
+  navigation: DrawerNavigationProp<any, any>,
+  jobsData: IJobsProps[] | undefined,
+}
+
 export type LoginProps = {
   navigation: NavigationProp<any, any>;
 };

@@ -1,3 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ASYNC_STORAGE_KEY } from "../Utils/constants";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
+
 export const commonHeaders = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
@@ -40,4 +44,18 @@ export const STATUS_CODES = {
   SERVICE_UNAVAILABLE: 503,
   GATEWAY_TIMEOUT: 504,
   NO_INTERNET: -1,
+};
+
+export const handleLogOut = ( navigation: DrawerNavigationProp<any, any> ) => {
+  AsyncStorage.removeItem( ASYNC_STORAGE_KEY.AUTH_TOKEN );
+  AsyncStorage.removeItem( 'appVersion' );
+  AsyncStorage.removeItem( ASYNC_STORAGE_KEY.USERNAME );
+  navigation.reset( {
+    index: 0,
+    routes: [
+      {
+        name: 'Login',
+      },
+    ],
+  } );
 };

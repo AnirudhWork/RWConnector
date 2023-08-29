@@ -9,10 +9,9 @@ import {
   AlertWithOneActionableOption,
 } from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
-import {DrawerContentComponentProps} from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {API_ENDPOINT} from '../../Api/constants';
+import {API_ENDPOINT, handleLogOut} from '../../Api/constants';
 import {ASYNC_STORAGE_KEY} from '../../Utils/constants';
 import Jobs from './Jobs';
 
@@ -67,12 +66,8 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
         knownError?.response?.status === 401 ||
         knownError?.response?.status === 402
       ) {
-        AlertWithOneActionableOption(
-          '',
-          'Session expired!',
-          'Ok',
-          false,
-          handleLogOut,
+        AlertWithOneActionableOption('', 'Session expired!', 'Ok', false, () =>
+          handleLogOut(navigation),
         );
       } else {
         console.log('\n\n\n\nerror:', error);
@@ -106,12 +101,8 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
         knownError?.response?.status === 401 ||
         knownError?.response?.status === 402
       ) {
-        AlertWithOneActionableOption(
-          '',
-          'Session expired!',
-          'Ok',
-          false,
-          handleLogOut,
+        AlertWithOneActionableOption('', 'Session expired!', 'Ok', false, () =>
+          handleLogOut(navigation),
         );
       } else {
         console.log('\n\n\n\nerror:', error);
@@ -120,22 +111,6 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // <-- Logout api -->
-
-  const handleLogOut = () => {
-    AsyncStorage.removeItem(ASYNC_STORAGE_KEY.AUTH_TOKEN);
-    AsyncStorage.removeItem('appVersion');
-    AsyncStorage.removeItem(ASYNC_STORAGE_KEY.USERNAME);
-    navigation.reset({
-      index: 0,
-      routes: [
-        {
-          name: 'Login',
-        },
-      ],
-    });
   };
 
   // <-- Activity -->
@@ -150,7 +125,7 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
         <TouchableOpacity
           onPress={() => {
             truckList();
-            getJobDetailsByTruckId();
+            // getJobDetailsByTruckId();
           }}
           disabled={!selected}
           style={styles.refreshButton}>
@@ -181,7 +156,9 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
           )}
         </View>
       )}
-      {jobsData && jobsData.length > 0 && <Jobs />}
+      {jobsData && jobsData.length > 0 && (
+        <Jobs navigation={navigation} jobsData={jobsData} />
+      )}
       {jobsData && jobsData.length < 1 && (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text>No job is assigned yet to the selected truck</Text>
