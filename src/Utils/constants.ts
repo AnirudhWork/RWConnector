@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ILoginDataProps } from "../screens/types";
 import { AlertWithOneActionableOption } from "./SimpleAlert";
 import { API_ERR_MSG, logoutAndNavigateToLoginScreen } from "../Api/constants";
-import { NavigationProp } from "@react-navigation/native";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 
 export enum ASYNC_STORAGE_KEY {
   LOGINRESPONSE = '@loginResponse',
@@ -65,7 +65,7 @@ export class AsyncStorageUtils {
   }
 }
 
-export const logoutSessionExpired = async ( navigation: NavigationProp<any, any> ) => {
+export const logoutSessionExpired = async ( navigation: DrawerNavigationProp<any, any> ) => {
   AlertWithOneActionableOption(
     '',
     API_ERR_MSG.LOGOUT_ERR,

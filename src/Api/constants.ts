@@ -1,6 +1,6 @@
 import { AsyncStorageUtils } from "../Utils/constants";
-import { NavigationProp } from "@react-navigation/native";
 import { SCREEN_NAMES } from "../Navigators/constants";
+import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/src/types";
 
 export const commonHeaders = {
   'Content-Type': 'application/json',
@@ -29,6 +29,10 @@ export enum API_ERR_MSG {
   LOGOUT_ERR = 'Session Expired!',
 }
 
+export enum JOBS_API_ERR {
+  JOB_NOT_FOUND = 'Jobs does not exist. Refresh and try again!',
+}
+
 export const STATUS_CODES = {
   SUCCESS: 200,
   CREATED: 201,
@@ -46,7 +50,7 @@ export const STATUS_CODES = {
   NO_INTERNET: -1,
 };
 
-export const logoutAndNavigateToLoginScreen = ( navigation: NavigationProp<any, any> ) => {
+export const logoutAndNavigateToLoginScreen = ( navigation: DrawerNavigationProp<any, any> ) => {
   AsyncStorageUtils.clearAllUserData();
   navigation.reset( {
     index: 0,

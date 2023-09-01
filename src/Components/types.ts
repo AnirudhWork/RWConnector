@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { ITruckProps } from '../screens/types';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 
 export interface IProps {
   label: string;
@@ -23,5 +23,5 @@ export type AuthContextType = {
 } | null;
 
 export type CustomDrawerNavigationProps = {
-  navigation: DrawerNavigationProp<any, any>
+  navigation: DrawerNavigationHelpers,
 }

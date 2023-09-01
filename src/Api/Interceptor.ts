@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { API_ENDPOINT, STATUS_CODES } from './constants';
-import { AsyncStorageUtils } from '../Utils/constants';
+import { AsyncStorageUtils, logoutSessionExpired } from '../Utils/constants';
+import { printLogs } from '../Utils/log-utils';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 const BASE_URL = 'https://7z1we1u08b.execute-api.us-east-1.amazonaws.com/stg';
 
@@ -16,13 +18,12 @@ async function handleRequest( config: any ) {
   if ( token ) {
     config.headers['Authorization'] = `Bearer ${token}`;
   }
-  console.log( '\n\n\nInterceptor API, Access Token:', token );
-  console.log( '\n\n\nInterceptor API config:', config );
+  printLogs( 'Interceptor successful REQUEST config:', config );
   return config;
 }
 
 async function handleResponseSuccess( response: any ) {
-  console.log( '\n\n\nInterception API successful response:', response.config );
+  printLogs( 'Interception API successful RESPONSE config:', response );
   return response;
 }
 
@@ -39,7 +40,7 @@ async function renewTokenAndRequest( config: any ) {
       const response = await axiosInstance( cloneConfig );
       if ( response.status === 200 ) {
         secondRequest = false;
-        console.log( '\n\n\nSuccessful interceptor response on 2nd request', response );
+        printLogs( 'Successful interceptor RESPONSE on 2nd request:', response );
         return response;
       }
     }
@@ -62,12 +63,12 @@ async function handleResponseError( error: any ) {
       return Promise.reject( error );
     }
   }
-  console.log( '\n\nFully rejected', error );
+  printLogs( 'Intereptor 2nd Request failed, redirecting back to Login Page. Error:', error );
   return Promise.reject( error );
 }
 
 axiosInstance.interceptors.request.use( handleRequest, error => {
-  console.log( '\n\n\nInterceptor API error while fetching token', error );
+  printLogs( 'Interceptor request error:', error );
   return Promise.reject( error );
 } );
 

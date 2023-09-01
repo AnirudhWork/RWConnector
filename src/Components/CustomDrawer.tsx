@@ -1,9 +1,6 @@
 import {StyleSheet, Text, View, Image} from 'react-native';
 import React, {useState} from 'react';
-import {
-  DrawerContentScrollView,
-  DrawerNavigationProp,
-} from '@react-navigation/drawer';
+import {DrawerContentScrollView} from '@react-navigation/drawer';
 import postApi from '../Api/postAPI';
 import {AlertWithTwoActionableOptions, SimpleAlert} from '../Utils/SimpleAlert';
 import Loading from './Loading';
@@ -17,8 +14,8 @@ import {
   STATUS_CODES,
   logoutAndNavigateToLoginScreen,
 } from '../Api/constants';
-import {CustomDrawerNavigationProps} from './types';
 import {SCREEN_NAMES} from '../Navigators/constants';
+import {CustomDrawerNavigationProps} from './types';
 
 const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
   // <-- Images and Icons -->

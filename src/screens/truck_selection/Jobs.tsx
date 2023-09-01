@@ -5,6 +5,8 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Image} from '@rneui/base';
 import moment, {unix} from 'moment';
 import {JOB_STATUS} from './constants';
+import {DRAWER_SCREEN_NAMES} from '../../Navigators/constants';
+import {DrawerActions} from '@react-navigation/native';
 
 const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
   console.log('\n\n\n\n\n\n\nJobs data:', jobsData);
@@ -40,12 +42,21 @@ const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
     );
     let convertedDT: string = `${jobDate} - ${jobEndDate}`;
 
+    // <-- Job Details navigation -->
+
+    const handleNavigation = () => {
+      navigation.dispatch(
+        DrawerActions.jumpTo(DRAWER_SCREEN_NAMES.JOB_DETAILS, {jobId: item.id}),
+      );
+    };
+
     // <-- Activity -->
 
     return (
       <TouchableOpacity
         key={item?.id}
-        style={[styles.jobCards, {backgroundColor: jobBackgroundColor}]}>
+        style={[styles.jobCards, {backgroundColor: jobBackgroundColor}]}
+        onPress={handleNavigation}>
         {/* Content container */}
         <View style={styles.jobCardContent}>
           {/* Logo */}
@@ -138,7 +149,6 @@ const styles = StyleSheet.create({
   jobCards: {
     flex: 1,
     padding: 15,
-    marginVertical: 5,
     marginBottom: 3,
     borderRadius: 3,
   },

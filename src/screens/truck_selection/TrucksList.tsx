@@ -23,7 +23,7 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   const [truckData, setTruckData] = useState<ITruckProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isTruckNoteVisible, setIsTruckNoteVisible] = useState(true);
-  const [jobsData, setJobsData] = useState<IJobsProps[] | undefined>(undefined);
+  const [jobsData, setJobsData] = useState<IJobsProps[] | null>(null);
   const [chevronToggle, setChevronToggle] = useState(chevron_down);
 
   // <-- useEffects -->
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   icon: {
-    height: 30,
+    height: 35,
   },
   dropDownRfContainer: {
     flexDirection: 'row',
@@ -204,8 +204,9 @@ const styles = StyleSheet.create({
   truckNoteContainer: {
     marginHorizontal: 13,
     padding: 7,
-    backgroundColor: '#e8e8e8',
+    backgroundColor: '#DCDDDF',
     borderRadius: 3,
+    marginBottom: 3,
   },
   truckNoteButton: {
     flexDirection: 'row',
