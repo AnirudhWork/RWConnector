@@ -1,34 +1,45 @@
-import {StyleSheet, Text, View, Image} from 'react-native';
-import React, {useState} from 'react';
-import {DrawerContentScrollView} from '@react-navigation/drawer';
-import postApi from '../Api/postAPI';
-import {AlertWithTwoActionableOptions, SimpleAlert} from '../Utils/SimpleAlert';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { DrawerContentScrollView } from '@react-navigation/drawer';
+import { AlertWithTwoActionableOptions, SimpleAlert } from '../Utils/SimpleAlert';
 import Loading from './Loading';
 import axios from 'axios';
-import {useAuth} from './AuthContext';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {AsyncStorageUtils} from '../Utils/constants';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { AsyncStorageUtils, logoutSessionExpired } from '../Utils/constants';
 import {
   API_ENDPOINT,
   API_ERR_MSG,
   STATUS_CODES,
   logoutAndNavigateToLoginScreen,
 } from '../Api/constants';
-import {SCREEN_NAMES} from '../Navigators/constants';
-import {CustomDrawerNavigationProps} from './types';
+import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
+import { CustomDrawerNavigationProps } from './types';
+import { printLogs } from '../Utils/log-utils';
+import { APIServices } from '../Api/api-services';
+import { useAuth } from './AuthContext';
 
-const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
+const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ( { navigation } ) => {
   // <-- Images and Icons -->
 
-  const drawerClose = require('../Assets/Icons/DrawerCross.png');
+  const drawerClose = require( '../Assets/Icons/DrawerCross.png' );
 
   // <-- useState Declarations -->
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState( false );
+  const [appVersion, setAppVersion] = useState<string>( '' );
+  const [username, setUsername] = useState<string>( '' );
+  let { data, setData } = useAuth();
 
-  // <-- useContext -->
+  // <-- useEffect -->
 
-  const {data} = useAuth();
+  useEffect( () => {
+    const requiredInfo = async () => {
+      setAppVersion( await AsyncStorageUtils.getAppVersion() );
+      setUsername( await AsyncStorageUtils.getUsername() );
+      console.log( 'App Version:', appVersion, 'Username:', username );
+    };
+    requiredInfo();
+  }, [] );
 
   // <-- DrawerClosure on 'X' icon press -->
 
@@ -39,8 +50,9 @@ const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
   // <-- On Jobs button click -->
 
   const returnToDashboard = () => {
+    setData( '#007f00' );
     navigation.closeDrawer();
-    navigation.navigate(SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER);
+    navigation.navigate( DRAWER_SCREEN_NAMES.TRUCK_LIST );
   };
 
   // <-- Confirm Logout Pop-up -->
@@ -54,7 +66,7 @@ const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
       'No',
       true,
       executeAction => {
-        if (executeAction) {
+        if ( executeAction ) {
           handleLogOut();
         }
       },
@@ -64,50 +76,35 @@ const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
   // <-- Logout Api -->
 
   const handleLogOut = async () => {
-    setIsLoading(true);
+    const TAG = handleLogOut.name;
+    setIsLoading( true );
 
     // <-- Checking if token exist -->
 
     const userToken = await AsyncStorageUtils.getUserToken();
-    if (!userToken) {
-      setIsLoading(false);
-      console.log('\n\n\nLogout API, user token not found:', userToken);
-      logoutAndNavigateToLoginScreen(navigation);
+    if ( !userToken ) {
+      setIsLoading( false );
+      printLogs( TAG, '| Logout API, user token not found. usertoken:', userToken );
+      logoutAndNavigateToLoginScreen( navigation );
+      return;
     }
 
     // <-- Expiring the token if it exist -->
 
     try {
-      const response = await postApi(API_ENDPOINT.LOGOUT);
-      if (response.status === STATUS_CODES.SUCCESS) {
-        logoutAndNavigateToLoginScreen(navigation);
+      const response = await new APIServices( true, navigation ).post( API_ENDPOINT.LOGOUT );
+      if ( response?.status === STATUS_CODES.SUCCESS ) {
+        logoutAndNavigateToLoginScreen( navigation );
       }
-    } catch (error) {
-      const KnownError = error as any;
-      // <-- If request is canceled -->
-      if (axios.isCancel(error)) {
-        SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
-        // <-- If response from server is 401 -->
-      } else if (
-        KnownError.response ||
-        KnownError.response?.status === STATUS_CODES.UNAUTHORIZED
-      ) {
-        console.log(
-          'Invalid response from server:',
-          KnownError.response?.status,
-        );
-        logoutAndNavigateToLoginScreen(navigation);
-        // <-- If there is error sending request to the server -->
-      } else if (KnownError.request) {
-        console.log('\n\nRequest error:', KnownError.request);
-        SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
-        // <-- All other cases -->
+    } catch ( error ) {
+      if ( axios.isCancel( error ) ) {
+        SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
       } else {
-        console.log('\n\nError', KnownError);
-        SimpleAlert('', API_ERR_MSG.ERR);
+        printLogs( TAG, '| Error', error );
+        logoutSessionExpired( navigation );
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading( false );
     }
   };
 
@@ -129,7 +126,7 @@ const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
             <Text style={styles.titleText}>Welcome</Text>
           </View>
           <View>
-            <Text style={styles.userNameText}>{data?.username}</Text>
+            <Text style={styles.userNameText}>{username}</Text>
           </View>
         </View>
         <DrawerContentScrollView>
@@ -137,7 +134,7 @@ const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
             {/* <DrawerItemList />*/}
             <View>
               <TouchableOpacity
-                style={styles.customDrawerActiveItemContainer}
+                style={[styles.customDrawerActiveItemContainer, { backgroundColor: data }]}
                 onPress={returnToDashboard}>
                 <Text style={styles.customDrawerItem}>Jobs</Text>
               </TouchableOpacity>
@@ -157,9 +154,7 @@ const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
           </View>
         </DrawerContentScrollView>
         <View style={styles.appVersionContainer}>
-          <Text style={styles.appVersionText}>
-            App version - {data?.appVersion}
-          </Text>
+          <Text style={styles.appVersionText}>App version - {appVersion}</Text>
         </View>
       </View>
     </View>
@@ -168,7 +163,7 @@ const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ({navigation}) => {
 
 // <-- Styles -->
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   container: {
     flex: 1,
     backgroundColor: '#4e5549',
@@ -210,7 +205,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   customDrawerActiveItemContainer: {
-    backgroundColor: '#007f00',
+    // backgroundColor: '#007f00',
     paddingVertical: 15,
     paddingHorizontal: 18,
     borderColor: '#C8E6CA',
@@ -234,6 +229,6 @@ const styles = StyleSheet.create({
     color: '#bedbc0',
     marginTop: 60,
   },
-});
+} );
 
 export default CustomDrawer;

@@ -27,7 +27,7 @@ export class APIServices {
 
   interceptorAPI = () => {
 
-    const instance = this.axiosInstance;
+    // const instance = this.axiosInstance;
 
     this.axiosInstance.interceptors.request.use( handleRequest, error => {
       printLogs( 'Interceptor request error:', error );
@@ -41,32 +41,34 @@ export class APIServices {
       if ( token ) {
         config.headers['Authorization'] = `Bearer ${token}`;
       }
-      printLogs( 'Interceptor successful REQUEST config:', config );
+      printLogs( 'Interceptor successful REQUEST config:', config?.data );
       return config;
     }
 
     async function handleResponseSuccess( response: any ) {
-      printLogs( 'Interception API successful RESPONSE config:', response );
-      console.log( '\n\n\nconfig:', response );
+      const TAG = handleResponseSuccess.name;
+      printLogs( 'Interception API successful RESPONSE config:', response?.data );
+      printLogs( TAG, '| RESPONSE data:', response.data );
       return response;
     }
 
     async function renewTokenAndRequest( config: any ) {
       const cloneConfig = { ...config };
-      console.log( '\n\n\nCloned Configuration:', cloneConfig );
+      const url = cloneConfig?.url;
+      console.log( 'Cloned Config URL:', url );
       try {
-        const renewToken = await instance.post( API_ENDPOINT.RENEW_TOKEN );
-        if ( renewToken.status === STATUS_CODES.SUCCESS ) {
+        const renewToken = await new APIServices( true, APIServices.navigation ).post( API_ENDPOINT.RENEW_TOKEN );
+        if ( renewToken?.status === STATUS_CODES.SUCCESS ) {
           const loginResponse = await AsyncStorageUtils.getLoginResponse();
           if ( loginResponse ) {
             loginResponse.token = renewToken.data.token;
             await AsyncStorageUtils.setLoginResponse( loginResponse );
-            printLogs( '2nd request renew token successful. New login response:', loginResponse );
+            printLogs( 'Token renewed successfully. New login response:', loginResponse?.data );
           }
-          const response = await instance.post( cloneConfig );
-          if ( response.status === STATUS_CODES.SUCCESS ) {
+          const response = await new APIServices( true, APIServices.navigation ).post( url, cloneConfig?.body );
+          if ( response?.status === STATUS_CODES.SUCCESS ) {
             APIServices.secondRequest = false;
-            printLogs( 'Successful interceptor RESPONSE on 2nd request:', response );
+            printLogs( 'Successful interceptor RESPONSE on 2nd request:', response?.data );
             return response;
           }
         }

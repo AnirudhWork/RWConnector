@@ -6,47 +6,47 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
-import {LoginBackgroundProps} from '../types';
+import React, { useRef, useState } from 'react';
+import { LoginBackgroundProps } from '../types';
 import axios from 'axios';
-import {SimpleAlert} from '../../Utils/SimpleAlert';
+import { SimpleAlert } from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
 
 // import postApi from '../../Api/postAPI';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {useAuth} from '../../Components/AuthContext';
-import {LOGIN_ERROR_ALERTS, encryptPassword} from './constants';
-import {API_ENDPOINT, API_ERR_MSG, STATUS_CODES} from '../../Api/constants';
-import {SCREEN_NAMES} from '../../Navigators/constants';
-import {AsyncStorageUtils} from '../../Utils/constants';
-import {APIServices} from '../../Api/api-services';
-import {printLogs} from '../../Utils/log-utils';
+import { LOGIN_ERROR_ALERTS, encryptPassword } from './constants';
+import { API_ENDPOINT, API_ERR_MSG, STATUS_CODES } from '../../Api/constants';
+import { SCREEN_NAMES } from '../../Navigators/constants';
+import { AsyncStorageUtils } from '../../Utils/constants';
+import { APIServices } from '../../Api/api-services';
+import { printLogs } from '../../Utils/log-utils';
 
-const LoginBackground: React.FC<LoginBackgroundProps> = ({
+const LoginBackground: React.FC<LoginBackgroundProps> = ( {
   navigation,
   setIsForgotPassword,
-}) => {
+} ) => {
   // <-- Images and Icons -->
-  const usernameIcon = require('../../Assets/Icons/Username.png');
-  const passwordIcon = require('../../Assets/Icons/PasswordLock.png');
-  const passwordShownIcon = require('../../Assets/Icons/PasswordShown.png');
-  const passwordHiddenIcon = require('../../Assets/Icons/PasswordHidden.png');
+  const usernameIcon = require( '../../Assets/Icons/Username.png' );
+  const passwordIcon = require( '../../Assets/Icons/PasswordLock.png' );
+  const passwordShownIcon = require( '../../Assets/Icons/PasswordShown.png' );
+  const passwordHiddenIcon = require( '../../Assets/Icons/PasswordHidden.png' );
 
   // <-- useContext -->
   // const {setData} = useAuth();
 
   // <-- useState declarations -->
-  let [passwordShown, setPasswordShown] = useState({
+  let [passwordShown, setPasswordShown] = useState( {
     showPassword: true,
     passwordIcon: passwordHiddenIcon,
-  });
-  const [passwordValue, setPasswordValue] = useState('');
-  const [userNameValue, setUsernameValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  } );
+  const [passwordValue, setPasswordValue] = useState( '' );
+  const [userNameValue, setUsernameValue] = useState( '' );
+  const [isLoading, setIsLoading] = useState( false );
 
   // <-- useRef declarations -->
-  const refPassword = useRef<TextInput>(null);
-  const refUsername = useRef<TextInput>(null);
+  const refPassword = useRef<TextInput>( null );
+  const refUsername = useRef<TextInput>( null );
 
   // useEffect(() => {
   //   const keyboardDidHideSubscription = Keyboard.addListener(
@@ -68,25 +68,25 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
 
   // <-- Show/Hide Password -->
   let handleShowPassword = () => {
-    setPasswordShown(previousIcon => ({
+    setPasswordShown( previousIcon => ( {
       showPassword: !previousIcon.showPassword,
       passwordIcon: previousIcon.showPassword
         ? passwordShownIcon
         : passwordHiddenIcon,
-    }));
+    } ) );
   };
 
   // <-- Api -->
   let loginVerification = async () => {
     const TAG = loginVerification.name;
     // <-- Field Validation -->
-    if (!userNameValue.trim() || !passwordValue.trim()) {
-      SimpleAlert('', LOGIN_ERROR_ALERTS.EMPTY_FIELDS);
+    if ( !userNameValue.trim() || !passwordValue.trim() ) {
+      SimpleAlert( '', LOGIN_ERROR_ALERTS.EMPTY_FIELDS );
     } else {
-      setIsLoading(true);
+      setIsLoading( true );
       try {
         // <-- API parameters -->
-        const passwordHashValue = encryptPassword(passwordValue);
+        const passwordHashValue = encryptPassword( passwordValue );
         const data = {
           uname: userNameValue,
           pwd: passwordHashValue,
@@ -96,34 +96,34 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         };
 
         // <-- Token generation (Login) -->
-        const response = await new APIServices(false, navigation).post(
+        const response = await new APIServices( false, navigation ).post(
           API_ENDPOINT.LOGIN,
           data,
         );
-        if (response?.status === STATUS_CODES.SUCCESS) {
-          printLogs(TAG, '| successful login response data:', response.data);
-          AsyncStorageUtils.setLoginResponse(response.data);
+        if ( response?.status === STATUS_CODES.SUCCESS ) {
+          printLogs( TAG, '| successful login response data:', response.data );
+          AsyncStorageUtils.setLoginResponse( response.data );
           // setData({
           //   username: userNameValue,
           //   appVersion: response.data['latest-app-ver'],
           // });
-          navigation.reset({
+          navigation.reset( {
             index: 0,
-            routes: [{name: SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER}],
-          });
+            routes: [{ name: SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER }],
+          } );
         }
-      } catch (error) {
+      } catch ( error ) {
         const knownError = error as any;
-        if (axios.isCancel(error)) {
-          SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
-        } else if (knownError.response.status === STATUS_CODES.UNAUTHORIZED) {
-          SimpleAlert('', LOGIN_ERROR_ALERTS.LOGIN_API_ERR);
+        if ( axios.isCancel( error ) ) {
+          SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
+        } else if ( knownError.response.status === STATUS_CODES.UNAUTHORIZED ) {
+          SimpleAlert( '', LOGIN_ERROR_ALERTS.LOGIN_API_ERR );
         } else {
-          SimpleAlert('', API_ERR_MSG.ERR);
-          console.log('\n\n\n\nLogin API Error:', error);
+          SimpleAlert( '', API_ERR_MSG.ERR );
+          console.log( '\n\n\n\nLogin API Error:', error );
         }
       } finally {
-        setIsLoading(false);
+        setIsLoading( false );
       }
     }
   };
@@ -142,7 +142,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
             placeholderTextColor="#BCBCBC"
             returnKeyType="next"
             ref={refUsername}
-            onChangeText={text => setUsernameValue(text)}
+            onChangeText={text => setUsernameValue( text )}
             blurOnSubmit={false}
             onSubmitEditing={() => {
               refPassword.current?.focus();
@@ -158,7 +158,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
             placeholderTextColor="#BCBCBC"
             secureTextEntry={passwordShown.showPassword}
             returnKeyType="done"
-            onChangeText={text => setPasswordValue(text)}
+            onChangeText={text => setPasswordValue( text )}
             onSubmitEditing={loginVerification}
           />
           <TouchableOpacity
@@ -171,7 +171,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         </View>
       </View>
 
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: 'center' }}>
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={loginVerification}
@@ -183,7 +183,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
           activeOpacity={0.5}
           hitSlop={20}
           onPress={() => {
-            setIsForgotPassword(true);
+            setIsForgotPassword( true );
           }}>
           <Text style={styles.forgetPasswordStyles}>Forgot Password?</Text>
         </TouchableOpacity>
@@ -194,7 +194,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
 
 // <-- Styles -->
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   container: {
     flex: 1,
     justifyContent: 'space-evenly',
@@ -249,6 +249,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
   },
-});
+} );
 
 export default LoginBackground;

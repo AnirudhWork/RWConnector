@@ -1,19 +1,19 @@
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 import React from 'react';
-import {IJobsProps, TJobsListProps} from '../types';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Image} from '@rneui/base';
-import moment, {unix} from 'moment';
-import {JOB_STATUS} from './constants';
-import {DRAWER_SCREEN_NAMES} from '../../Navigators/constants';
-import {DrawerActions} from '@react-navigation/native';
+import { IJobsProps, TJobsListProps } from '../types';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Image } from '@rneui/base';
+import moment, { unix } from 'moment';
+import { JOB_STATUS } from './constants';
+import { DRAWER_SCREEN_NAMES } from '../../Navigators/constants';
+import { DrawerActions } from '@react-navigation/native';
 
-const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
-  console.log('\n\n\n\n\n\n\nJobs data:', jobsData);
+const Jobs: React.FC<TJobsListProps> = ( { navigation, jobsData } ) => {
+  console.log( '\n\n\n\n\n\n\nJobs data:', jobsData );
 
   // <-- Cards Info -->
 
-  const renderItem = ({item}: {item: IJobsProps}) => {
+  const renderItem = ( { item }: { item: IJobsProps } ) => {
     const jobType = () => {
       return item['job-type'];
     };
@@ -29,15 +29,15 @@ const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
       jobLockStatus == JOB_STATUS.LOCKED
         ? '#5897FB4D'
         : jobLockStatus == JOB_STATUS.COMPLETED
-        ? '#D4F2D6'
-        : '#F5F5F5';
+          ? '#D4F2D6'
+          : '#F5F5F5';
 
     // <-- Date convertion -->
 
-    let jobDate: string = moment(unix(item?.['job-date'])).format(
+    let jobDate: string = moment( unix( item?.['job-date'] ) ).format(
       'DD MMM, h:mm a',
     );
-    let jobEndDate: string = moment(unix(item?.['job-end-date'])).format(
+    let jobEndDate: string = moment( unix( item?.['job-end-date'] ) ).format(
       'h:mm a',
     );
     let convertedDT: string = `${jobDate} - ${jobEndDate}`;
@@ -46,9 +46,9 @@ const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
 
     const handleNavigation = () => {
       navigation.dispatch(
-        DrawerActions.jumpTo(DRAWER_SCREEN_NAMES.JOB_DETAILS, {
+        DrawerActions.jumpTo( DRAWER_SCREEN_NAMES.JOB_DETAILS, {
           jobId: item?.id,
-        }),
+        } ),
       );
     };
 
@@ -57,7 +57,7 @@ const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
     return (
       <TouchableOpacity
         key={item?.id}
-        style={[styles.jobCards, {backgroundColor: jobBackgroundColor}]}
+        style={[styles.jobCards, { backgroundColor: jobBackgroundColor }]}
         onPress={handleNavigation}>
         {/* Content container */}
         <View style={styles.jobCardContent}>
@@ -66,8 +66,8 @@ const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
             style={[
               styles.logoContainer,
               jobType() == 1
-                ? {backgroundColor: '#5897FB'}
-                : {backgroundColor: '#FFB800'},
+                ? { backgroundColor: '#5897FB' }
+                : { backgroundColor: '#FFB800' },
             ]}>
             <Text style={styles.jobTypeIcon}>{jobType() == 1 ? 'P' : 'D'}</Text>
           </View>
@@ -94,9 +94,9 @@ const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
             {jobNotes && (
               <View style={styles.noteContainer}>
                 <Image
-                  source={require('../../Assets/Icons/ic_notes.png')}
+                  source={require( '../../Assets/Icons/ic_notes.png' )}
                   resizeMode={'contain'}
-                  style={{width: 13, height: 13}}
+                  style={{ width: 13, height: 13 }}
                 />
                 <Text
                   numberOfLines={1}
@@ -113,7 +113,7 @@ const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
             <Image
               resizeMode={'contain'}
               style={styles.arrowIcon}
-              source={require('../../Assets/Icons/gtr_icon.png')}
+              source={require( '../../Assets/Icons/gtr_icon.png' )}
             />
           </View>
         </View>
@@ -136,7 +136,7 @@ const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
 
 // <-- Styles -->
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   container: {
     flex: 1,
     marginHorizontal: 13,
@@ -228,6 +228,6 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
   },
-});
+} );
 
 export default Jobs;

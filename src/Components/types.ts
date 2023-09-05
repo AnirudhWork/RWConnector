@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { ITruckProps } from '../screens/types';
-import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
+import { DrawerNavigationHelpers, DrawerNavigationProp } from '@react-navigation/drawer/lib/typescript/src/types';
 
 export interface IProps {
   label: string;
@@ -18,10 +18,10 @@ export interface UserData {
 }
 
 export type AuthContextType = {
-  data: UserData | null;
-  setData: Dispatch<SetStateAction<UserData | null>>;
+  data: string;
+  setData: Dispatch<SetStateAction<string>>;
 } | null;
 
 export type CustomDrawerNavigationProps = {
-  navigation: DrawerNavigationHelpers,
+  navigation: DrawerNavigationProp<any, any>,
 }

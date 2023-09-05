@@ -1,30 +1,12 @@
-import {ReactNode, useState, useMemo, useEffect} from 'react';
-import {AuthContextType, UserData} from './types';
-import {AuthContext} from './AuthContext';
-import {AsyncStorageUtils} from '../Utils/constants';
+import { ReactNode, useState, useMemo } from 'react';
+import { AuthContextType } from './types';
+import { AuthContext } from './AuthContext';
 
-const AuthProvider = ({children}: {children: ReactNode}) => {
-  const [data, setData] = useState<UserData | null>(null);
-
-  useEffect(() => {
-    const fetchUserToken = async () => {
-      try {
-        const username = await AsyncStorageUtils.getUsername();
-        const appVersion = await AsyncStorageUtils.getAppVersion();
-        console.log('\n\n\nAsyncStorage username:', username);
-        console.log('\n\n\nAsyncStorage appVersion:', appVersion);
-        if (username && appVersion) {
-          setData({username, appVersion});
-        }
-      } catch (error) {
-        console.error('Error fetching username from AsyncStorage:', error);
-      }
-    };
-    fetchUserToken();
-  }, []);
+const AuthProvider = ( { children }: { children: ReactNode } ) => {
+  const [data, setData] = useState<string>( '#007f00' );
 
   const value: AuthContextType = useMemo(
-    () => ({data, setData}),
+    () => ( { data, setData } ),
     [data, setData],
   );
 
