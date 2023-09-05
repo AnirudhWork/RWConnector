@@ -1,6 +1,6 @@
 import React from 'react'
 
 export const printLogs = ( ...info: any[] ) => {
-    console.log( '\n\n\n\n\n\n____LOGS____', ...info );
+    // console.log( '\n\n\n\n\n\n____LOGS____', ...info );
 }
 

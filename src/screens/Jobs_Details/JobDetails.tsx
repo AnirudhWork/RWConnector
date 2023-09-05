@@ -3,23 +3,32 @@ import React, {useState, useEffect} from 'react';
 import {IJobDetailsProps, TJobsDetailsProps} from '../types';
 import getJobsDetails from '../../Api/Jobs-details-api/job-details-api';
 import {printLogs} from '../../Utils/log-utils';
+import Loading from '../../Components/Loading';
 
 const JobDetails: React.FC<TJobsDetailsProps> = ({navigation, route}) => {
   const jobId = route.params?.jobId;
   const TAG = JobDetails.name;
 
   const [jobDetailsData, setJobDetailsData] = useState<IJobDetailsProps>();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     printLogs(TAG, '| useEffect loaded');
-    handleJobData();
-  }, []);
+    if (jobId) {
+      handleJobData();
+    }
+  }, [jobId]);
 
   // <-- job details api -->
   const handleJobData = async () => {
-    const response = await getJobsDetails(jobId, navigation);
-    if (response) {
-      setJobDetailsData(response.data);
+    setIsLoading(true);
+    try {
+      const response = await getJobsDetails(jobId, navigation);
+      if (response) {
+        setJobDetailsData(response.data);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -32,6 +41,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ({navigation, route}) => {
         alignItems: 'center',
         backgroundColor: 'lightpink',
       }}>
+      <Loading visible={isLoading} />
       <Text style={{color: 'black', fontWeight: '700'}}>
         {jobDetailsData?.['bol-num']}
       </Text>

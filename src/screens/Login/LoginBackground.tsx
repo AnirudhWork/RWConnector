@@ -6,24 +6,21 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import React, {LegacyRef, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {LoginBackgroundProps} from '../types';
 import axios from 'axios';
 import {SimpleAlert} from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
 
-import postApi from '../../Api/postAPI';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useAuth} from '../../Components/AuthContext';
+// import postApi from '../../Api/postAPI';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import {useAuth} from '../../Components/AuthContext';
 import {LOGIN_ERROR_ALERTS, encryptPassword} from './constants';
-import {
-  API_ENDPOINT,
-  API_ERR_MSG,
-  STATUS_CODES,
-  commonHeaders,
-} from '../../Api/constants';
+import {API_ENDPOINT, API_ERR_MSG, STATUS_CODES} from '../../Api/constants';
 import {SCREEN_NAMES} from '../../Navigators/constants';
-import {ASYNC_STORAGE_KEY, AsyncStorageUtils} from '../../Utils/constants';
+import {AsyncStorageUtils} from '../../Utils/constants';
+import {APIServices} from '../../Api/api-services';
+import {printLogs} from '../../Utils/log-utils';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
@@ -36,7 +33,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   const passwordHiddenIcon = require('../../Assets/Icons/PasswordHidden.png');
 
   // <-- useContext -->
-  const {setData} = useAuth();
+  // const {setData} = useAuth();
 
   // <-- useState declarations -->
   let [passwordShown, setPasswordShown] = useState({
@@ -80,7 +77,8 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
   };
 
   // <-- Api -->
-  let handleSubmit = async () => {
+  let loginVerification = async () => {
+    const TAG = loginVerification.name;
     // <-- Field Validation -->
     if (!userNameValue.trim() || !passwordValue.trim()) {
       SimpleAlert('', LOGIN_ERROR_ALERTS.EMPTY_FIELDS);
@@ -98,14 +96,17 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         };
 
         // <-- Token generation (Login) -->
-        const response = await postApi(API_ENDPOINT.LOGIN, commonHeaders, data);
-        if (response.status === STATUS_CODES.SUCCESS) {
-          console.log('\n\n\nLogin api response data:', response.data);
+        const response = await new APIServices(false, navigation).post(
+          API_ENDPOINT.LOGIN,
+          data,
+        );
+        if (response?.status === STATUS_CODES.SUCCESS) {
+          printLogs(TAG, '| successful login response data:', response.data);
           AsyncStorageUtils.setLoginResponse(response.data);
-          setData({
-            username: userNameValue,
-            appVersion: response.data['latest-app-ver'],
-          });
+          // setData({
+          //   username: userNameValue,
+          //   appVersion: response.data['latest-app-ver'],
+          // });
           navigation.reset({
             index: 0,
             routes: [{name: SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER}],
@@ -115,13 +116,8 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
         const knownError = error as any;
         if (axios.isCancel(error)) {
           SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
-        } else if (
-          knownError.response &&
-          knownError.response.status === STATUS_CODES.UNAUTHORIZED
-        ) {
+        } else if (knownError.response.status === STATUS_CODES.UNAUTHORIZED) {
           SimpleAlert('', LOGIN_ERROR_ALERTS.LOGIN_API_ERR);
-        } else if (knownError.request) {
-          SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
         } else {
           SimpleAlert('', API_ERR_MSG.ERR);
           console.log('\n\n\n\nLogin API Error:', error);
@@ -163,7 +159,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
             secureTextEntry={passwordShown.showPassword}
             returnKeyType="done"
             onChangeText={text => setPasswordValue(text)}
-            onSubmitEditing={handleSubmit}
+            onSubmitEditing={loginVerification}
           />
           <TouchableOpacity
             activeOpacity={0.5}
@@ -178,7 +174,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
       <View style={{alignItems: 'center'}}>
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={handleSubmit}
+          onPress={loginVerification}
           style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
@@ -195,8 +191,6 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
     </View>
   );
 };
-
-export default LoginBackground;
 
 // <-- Styles -->
 
@@ -256,3 +250,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
+export default LoginBackground;

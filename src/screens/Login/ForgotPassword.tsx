@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -6,18 +6,24 @@ import {
   Image,
   TextInput,
   StyleSheet,
-  Keyboard,
 } from 'react-native';
 
 import {ForgotPasswordProps} from '../types';
 import axios from 'axios';
-import postApi from '../../Api/postAPI';
 import {SimpleAlert} from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
 import {LOGIN_ERROR_ALERTS} from './constants';
-import {API_ENDPOINT, API_ERR_MSG, commonHeaders} from '../../Api/constants';
+import {
+  API_ENDPOINT,
+  API_ERR_MSG,
+  STATUS_CODES,
+  commonHeaders,
+} from '../../Api/constants';
+import {APIServices} from '../../Api/api-services';
+import {printLogs} from '../../Utils/log-utils';
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({
+  navigation,
   setIsForgotPassword,
   setSubmitted,
 }) => {
@@ -28,32 +34,32 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
 
   const refEmail = useRef<TextInput>(null);
 
-  useEffect(() => {
-    const keyboardDidHideSubscription = Keyboard.addListener(
-      'keyboardDidHide',
-      keyboardDidHideCallback,
-    );
+  // useEffect(() => {
+  //   const keyboardDidHideSubscription = Keyboard.addListener(
+  //     'keyboardDidHide',
+  //     keyboardDidHideCallback,
+  //   );
 
-    return () => {
-      keyboardDidHideSubscription?.remove();
-    };
-  }, []);
+  //   return () => {
+  //     keyboardDidHideSubscription?.remove();
+  //   };
+  // }, []);
 
-  const keyboardDidHideCallback = () => {
-    refEmail.current?.blur();
-  };
+  // const keyboardDidHideCallback = () => {
+  //   refEmail.current?.blur();
+  // };
 
   const isValidEmail = (email: string) => {
     // Regular expression for basic email format validation
-    // const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w\w+)+$/;
     return emailRegex.test(email);
   };
 
   // <-- Apis -->
 
-  const handleSubmit = async () => {
-    if (!email) {
+  const handlePwReset = async () => {
+    const TAG = handlePwReset.name;
+    if (!email.trim()) {
       SimpleAlert('', LOGIN_ERROR_ALERTS.EMPTY_FIELDS);
     } else if (!isValidEmail(email)) {
       SimpleAlert('', LOGIN_ERROR_ALERTS.INVALID_EMAIL);
@@ -63,12 +69,17 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
         const data = {
           email: email,
         };
-        const response = await postApi(
+        const response = await new APIServices(false, navigation).post(
           API_ENDPOINT.FORGOT_PW,
-          commonHeaders,
           data,
+          commonHeaders,
         );
-        if (response.status === 200) {
+        if (response?.status === STATUS_CODES.SUCCESS) {
+          printLogs(
+            TAG,
+            '| successfully sent reset password to email id:',
+            response,
+          );
           setSubmitted(true);
           setTimeout(() => {
             setSubmitted(false);
@@ -79,11 +90,10 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
         const knownError = error as any;
         if (axios.isCancel(error)) {
           SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
-        } else if (knownError.response && knownError.response.status === 401) {
+        } else if (knownError.response?.status === STATUS_CODES.UNAUTHORIZED) {
           SimpleAlert('', LOGIN_ERROR_ALERTS.FORGOT_PW_ERR);
-        } else if (knownError.request) {
-          SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
         } else {
+          printLogs(TAG, '| Forgot Pw error:', error);
           SimpleAlert('', API_ERR_MSG.ERR);
         }
       } finally {
@@ -108,11 +118,11 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
               inputMode="email"
               ref={refEmail}
               returnKeyType="done"
-              onSubmitEditing={handleSubmit}
+              onSubmitEditing={handlePwReset}
             />
           </View>
           <View style={styles.submitButtonContainer}>
-            <TouchableOpacity onPress={handleSubmit}>
+            <TouchableOpacity onPress={handlePwReset}>
               <Text style={styles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
           </View>

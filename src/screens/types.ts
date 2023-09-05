@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { DrawerNavigationProp, DrawerScreenProps } from '@react-navigation/drawer';
-import { NavigationProp, ParamListBase, RouteProp } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { ParamListBase, RouteProp } from '@react-navigation/native';
 import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
 
 export type RootStackParamList = {
@@ -14,7 +14,7 @@ export type RootStackParamList = {
 
 export type RootDrawerParamList = {
   TruckList: undefined;
-  JobDetails: undefined;
+  JobDetails: { jobId: number };
 };
 
 export type TTruckListProps = {
@@ -28,19 +28,20 @@ export type TJobsListProps = {
 
 export type TJobsDetailsProps = {
   navigation: DrawerNavigationProp<any, any>,
-  route: RouteProp<any, any>,
+  route: RouteProp<RootDrawerParamList, DRAWER_SCREEN_NAMES.JOB_DETAILS>,
 }
 
 export type LoginProps = {
-  navigation: NavigationProp<any, any>;
+  navigation: DrawerNavigationProp<any, any>;
 };
 
 export type LoginBackgroundProps = {
-  navigation: NavigationProp<any, any>;
+  navigation: DrawerNavigationProp<any, any>;
   setIsForgotPassword: ( value: boolean ) => void;
 };
 
 export type ForgotPasswordProps = {
+  navigation: DrawerNavigationProp<any, any>;
   setIsForgotPassword: ( value: boolean ) => void;
   setSubmitted: ( value: boolean ) => void;
 };

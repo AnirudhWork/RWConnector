@@ -1,4 +1,4 @@
-import axiosInstance from './Interceptor';
+import axiosInstance from './api-services';
 
 const postApi = async (endPoint: string, headerObj?: any, dataObj?: any) => {
   try {

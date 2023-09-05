@@ -36,6 +36,7 @@ const Login: React.FC<LoginProps> = ({navigation}: LoginProps) => {
             {/* Dynamic View Starts */}
             {isForgotPassword ? (
               <ForgotPassword
+                navigation={navigation}
                 setIsForgotPassword={setIsForgotPassword}
                 setSubmitted={setSubmitted}
               />

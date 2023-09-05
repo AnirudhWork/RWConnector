@@ -46,7 +46,9 @@ const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
 
     const handleNavigation = () => {
       navigation.dispatch(
-        DrawerActions.jumpTo(DRAWER_SCREEN_NAMES.JOB_DETAILS, {jobId: item.id}),
+        DrawerActions.jumpTo(DRAWER_SCREEN_NAMES.JOB_DETAILS, {
+          jobId: item?.id,
+        }),
       );
     };
 

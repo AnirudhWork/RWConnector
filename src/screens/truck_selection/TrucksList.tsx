@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
 import Dropdown from '../../Components/DropDown';
 import {ITruckProps, IJobsProps, TTruckListProps} from '../types';
-import getApi from '../../Api/getAPI';
 import axios from 'axios';
 import {SimpleAlert} from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
@@ -10,7 +9,8 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {API_ENDPOINT, API_ERR_MSG, STATUS_CODES} from '../../Api/constants';
 import Jobs from './Jobs';
 import {TRUCK_API_ERR_MSG} from './constants';
-import {logoutSessionExpired} from '../../Utils/constants';
+import {APIServices} from '../../Api/api-services';
+import {printLogs} from '../../Utils/log-utils';
 
 const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   // <-- Images and Icons -->
@@ -49,20 +49,15 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   const truckList = async () => {
     try {
       setIsLoading(true);
-      const response = await getApi(API_ENDPOINT.GET_TRUCKS);
-      if (response.status === STATUS_CODES.SUCCESS) {
+      const response = await new APIServices(true, navigation).get(
+        API_ENDPOINT.GET_TRUCKS,
+      );
+      if (response?.status === STATUS_CODES.SUCCESS) {
         setTruckData(response.data['truck-list']);
       }
     } catch (error) {
-      const knownError = error as any;
       if (axios.isCancel(error)) {
         SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
-      } else if (
-        knownError.response ||
-        knownError?.response?.status === 401 ||
-        knownError?.response?.status === 402
-      ) {
-        logoutSessionExpired(navigation);
       } else {
         console.log('\n\n\n\nerror:', error);
         SimpleAlert('', API_ERR_MSG.ERR);
@@ -75,29 +70,25 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   // <-- Jobs api -->
 
   const getJobDetailsByTruckId = async () => {
+    const TAG = getJobDetailsByTruckId.name;
     setIsTruckNoteVisible(true);
     try {
       setIsLoading(true);
-      const response = await getApi(
+      const response = await new APIServices(true, navigation).get(
         API_ENDPOINT.GET_JOBS_FOR_TRUCK + `/${selected?.id}`,
       );
-      if (response.status === STATUS_CODES.SUCCESS) {
+      if (response?.status == STATUS_CODES.SUCCESS) {
+        printLogs(TAG, '| successful response:', response);
         setJobsData(response.data['job-list']);
       }
     } catch (error) {
       const knownError = error as any;
       if (axios.isCancel(error)) {
         SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
-      } else if (knownError?.response?.status === STATUS_CODES.BAD_REQUEST) {
+      } else if (knownError.response?.status === STATUS_CODES.BAD_REQUEST) {
         SimpleAlert('', TRUCK_API_ERR_MSG.NOTFOUND);
-      } else if (
-        knownError.response ||
-        knownError?.response?.status === 401 ||
-        knownError?.response?.status === 402
-      ) {
-        logoutSessionExpired(navigation);
       } else {
-        console.log('\n\n\n\nerror:', error);
+        printLogs(TAG, '| API Error:', error);
         SimpleAlert('', API_ERR_MSG.ERR);
       }
     } finally {
