@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet} from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import RootNavigator from './Navigators/RootNavigator';
 import AuthProvider from './Components/AuthProvider';
 
@@ -12,10 +12,10 @@ const App: React.FC = (): React.JSX.Element => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   container: {
     flex: 1,
   },
-});
+} );
 
 export default App;

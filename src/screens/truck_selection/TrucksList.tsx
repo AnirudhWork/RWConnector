@@ -6,7 +6,7 @@ import axios from 'axios';
 import { SimpleAlert } from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { API_ENDPOINT, API_ERR_MSG, STATUS_CODES } from '../../Api/constants';
+import { API_ENDPOINT, API_ERR_MSG, IsInternetAccessAvailable, STATUS_CODES } from '../../Api/constants';
 import Jobs from './Jobs';
 import { TRUCK_API_ERR_MSG } from './constants';
 import { APIServices } from '../../Api/api-services';
@@ -99,7 +99,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
       const knownError = error as any;
       if ( axios.isCancel( error ) ) {
         SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
-      } else if ( knownError.response?.status === STATUS_CODES.BAD_REQUEST ) {
+      } else if ( IsInternetAccessAvailable( knownError.response?.status ) && knownError.response?.status === STATUS_CODES.BAD_REQUEST ) {
         SimpleAlert( '', TRUCK_API_ERR_MSG.NOTFOUND );
       } else {
         printLogs( TAG, '| API Error:', error );

@@ -1,6 +1,8 @@
 import { AsyncStorageUtils } from "../Utils/constants";
 import { SCREEN_NAMES } from "../Navigators/constants";
 import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/src/types";
+import { SimpleAlert } from "../Utils/SimpleAlert";
+import { printLogs } from "../Utils/log-utils";
 
 export const commonHeaders = {
   'Content-Type': 'application/json',
@@ -57,3 +59,14 @@ export const logoutAndNavigateToLoginScreen = ( navigation: DrawerNavigationProp
     routes: [{ name: SCREEN_NAMES.LOGIN, }],
   } );
 };
+
+export const IsInternetAccessAvailable = ( statusCode: number ) => {
+  const TAG = IsInternetAccessAvailable.name;
+  if ( statusCode == STATUS_CODES.NO_INTERNET ) {
+    SimpleAlert( '', API_ERR_MSG.INTERNET_ERR );
+    printLogs( TAG, '| No Internet Access Available' );
+    return false;
+  } else {
+    return true;
+  }
+}

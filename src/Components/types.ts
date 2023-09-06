@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { ITruckProps } from '../screens/types';
-import { DrawerNavigationHelpers, DrawerNavigationProp } from '@react-navigation/drawer/lib/typescript/src/types';
+import { DrawerNavigationProp } from '@react-navigation/drawer/lib/typescript/src/types';
 
 export interface IProps {
   label: string;

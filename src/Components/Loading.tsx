@@ -1,14 +1,14 @@
-import {StyleSheet, View, Modal, Animated, Image} from 'react-native';
-import {LoadingProps} from './types';
+import { StyleSheet, View, Modal, Animated, Image } from 'react-native';
+import { LoadingProps } from './types';
 
-const Loading: React.FC<LoadingProps> = ({visible}) => {
-  const loadingImage = require('../Assets/Images/loader.gif');
+const Loading: React.FC<LoadingProps> = ( { visible } ) => {
+  const loadingImage = require( '../Assets/Images/loader.gif' );
   return (
     <Modal
       animationType="fade"
       transparent={true}
       visible={visible}
-      onRequestClose={() => {}}>
+      onRequestClose={() => { }}>
       <View style={styles.refreshGifContainer}>
         <Animated.Image
           source={loadingImage}
@@ -20,13 +20,9 @@ const Loading: React.FC<LoadingProps> = ({visible}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   refreshGifContainer: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -35,6 +31,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-});
+  header: {
+    width: '100%',
+  },
+} );
 
 export default Loading;

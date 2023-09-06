@@ -41,7 +41,7 @@ export class APIServices {
       if ( token ) {
         config.headers['Authorization'] = `Bearer ${token}`;
       }
-      printLogs( 'Interceptor successful REQUEST config:', config?.data );
+      printLogs( 'Interceptor successful REQUEST config:', config );
       return config;
     }
 
@@ -53,9 +53,10 @@ export class APIServices {
     }
 
     async function renewTokenAndRequest( config: any ) {
+      const TAG = renewTokenAndRequest.name;
       const cloneConfig = { ...config };
+      printLogs( TAG, '| Cloned Config:', cloneConfig );
       const url = cloneConfig?.url;
-      console.log( 'Cloned Config URL:', url );
       try {
         const renewToken = await new APIServices( true, APIServices.navigation ).post( API_ENDPOINT.RENEW_TOKEN );
         if ( renewToken?.status === STATUS_CODES.SUCCESS ) {
@@ -65,7 +66,7 @@ export class APIServices {
             await AsyncStorageUtils.setLoginResponse( loginResponse );
             printLogs( 'Token renewed successfully. New login response:', loginResponse?.data );
           }
-          const response = await new APIServices( true, APIServices.navigation ).post( url, cloneConfig?.body );
+          const response = await new APIServices( true, APIServices.navigation ).post( url, cloneConfig?.data );
           if ( response?.status === STATUS_CODES.SUCCESS ) {
             APIServices.secondRequest = false;
             printLogs( 'Successful interceptor RESPONSE on 2nd request:', response?.data );
@@ -79,7 +80,9 @@ export class APIServices {
     }
 
     async function handleResponseError( error: any ) {
+      const TAG = handleResponseError.name;
       const token = await AsyncStorageUtils.getUserToken();
+      printLogs( TAG, '| Interceptor RESPONSE error:', error );
       if (
         token &&
         ( error.response.status === STATUS_CODES.UNAUTHORIZED || error.response.status === STATUS_CODES.TOKEN_EXPIRED ) &&
@@ -88,7 +91,6 @@ export class APIServices {
         APIServices.secondRequest = true;
         return await renewTokenAndRequest( error.config );
       }
-      printLogs( 'Intereptor 2nd Request also failed. Error:', error );
       return Promise.reject( error );
     }
   }

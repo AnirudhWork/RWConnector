@@ -1,0 +1,4 @@
+export enum TAB_NAVIGATOR_SCREEN {
+    PICKUP = 'PICKUP',
+    DELIVERY = 'DELIVERY',
+}

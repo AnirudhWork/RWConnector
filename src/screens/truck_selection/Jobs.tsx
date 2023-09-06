@@ -9,7 +9,6 @@ import { DRAWER_SCREEN_NAMES } from '../../Navigators/constants';
 import { DrawerActions } from '@react-navigation/native';
 
 const Jobs: React.FC<TJobsListProps> = ( { navigation, jobsData } ) => {
-  console.log( '\n\n\n\n\n\n\nJobs data:', jobsData );
 
   // <-- Cards Info -->
 
@@ -45,9 +44,11 @@ const Jobs: React.FC<TJobsListProps> = ( { navigation, jobsData } ) => {
     // <-- Job Details navigation -->
 
     const handleNavigation = () => {
+      console.log( item?.id );
       navigation.dispatch(
         DrawerActions.jumpTo( DRAWER_SCREEN_NAMES.JOB_DETAILS, {
           jobId: item?.id,
+          jobType: item?.['job-type'],
         } ),
       );
     };

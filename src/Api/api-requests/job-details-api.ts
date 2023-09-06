@@ -1,5 +1,5 @@
 import React from 'react'
-import { API_ENDPOINT, API_ERR_MSG, JOBS_API_ERR, STATUS_CODES, commonHeaders } from '../constants'
+import { API_ENDPOINT, API_ERR_MSG, IsInternetAccessAvailable, JOBS_API_ERR, STATUS_CODES, commonHeaders } from '../constants'
 import { printLogs } from '../../Utils/log-utils';
 import axios from 'axios';
 import { SimpleAlert } from '../../Utils/SimpleAlert';
@@ -19,7 +19,7 @@ const getJobsDetails = async ( id: number, navigation: DrawerNavigationProp<any,
         const knownError = error as any;
         if ( axios.isCancel( error ) ) {
             SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
-        } else if ( knownError.response?.status == STATUS_CODES.BAD_REQUEST ) {
+        } else if ( IsInternetAccessAvailable( knownError.response?.status ) && knownError.response?.status == STATUS_CODES.BAD_REQUEST ) {
             printLogs( TAG, '| RESPONSE error with status code 400 while trying to fetch Job details using Job id, ErrorMsg:', knownError.response );
             SimpleAlert( '', JOBS_API_ERR.JOB_NOT_FOUND );
         } else {

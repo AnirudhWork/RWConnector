@@ -14,7 +14,7 @@ export type RootStackParamList = {
 
 export type RootDrawerParamList = {
   TruckList: undefined;
-  JobDetails: { jobId: number };
+  JobDetails: { jobId: number, jobType: number };
 };
 
 export type TTruckListProps = {

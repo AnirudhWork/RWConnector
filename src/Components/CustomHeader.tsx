@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import {CustomHeaderProps} from '../screens/types';
-import {DRAWER_SCREEN_NAMES} from '../Navigators/constants';
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { CustomHeaderProps } from '../screens/types';
+import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
 
-const CustomHeader: React.FC<CustomHeaderProps> = ({navigation}) => {
-  const logo = require('../Assets/Icons/RWLogo.png');
-  const DrawerIcon = require('../Assets/Icons/DrawerIcon.png');
-  const backButton = require('../Assets/Icons/ic_back.png');
+const CustomHeader: React.FC<CustomHeaderProps> = ( { navigation } ) => {
+  const logo = require( '../Assets/Icons/RWLogo.png' );
+  const DrawerIcon = require( '../Assets/Icons/DrawerIcon.png' );
+  const backButton = require( '../Assets/Icons/ic_back.png' );
 
   let index = navigation.getState().index;
   let showBackButton = navigation.canGoBack() && index != 0;
@@ -74,7 +74,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   header: {
     flexDirection: 'row',
     backgroundColor: 'black',
@@ -114,10 +114,10 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
   },
-  imageLogo: {flex: 1},
-  touchableBackIcon: {position: 'relative', left: 10, width: 40},
-  touchableMenuIcon: {position: 'relative', right: 10, width: 40},
-  imageMenu: {margin: 10},
-});
+  imageLogo: { flex: 1 },
+  touchableBackIcon: { position: 'relative', left: 10, width: 40 },
+  touchableMenuIcon: { position: 'relative', right: 10, width: 40 },
+  imageMenu: { margin: 10 },
+} );
 
 export default CustomHeader;

@@ -16,7 +16,7 @@ import Loading from '../../Components/Loading';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {useAuth} from '../../Components/AuthContext';
 import { LOGIN_ERROR_ALERTS, encryptPassword } from './constants';
-import { API_ENDPOINT, API_ERR_MSG, STATUS_CODES } from '../../Api/constants';
+import { API_ENDPOINT, API_ERR_MSG, IsInternetAccessAvailable, STATUS_CODES } from '../../Api/constants';
 import { SCREEN_NAMES } from '../../Navigators/constants';
 import { AsyncStorageUtils } from '../../Utils/constants';
 import { APIServices } from '../../Api/api-services';
@@ -116,7 +116,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
         const knownError = error as any;
         if ( axios.isCancel( error ) ) {
           SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
-        } else if ( knownError.response.status === STATUS_CODES.UNAUTHORIZED ) {
+        } else if ( IsInternetAccessAvailable( knownError.response?.status ) && knownError.response.status === STATUS_CODES.UNAUTHORIZED ) {
           SimpleAlert( '', LOGIN_ERROR_ALERTS.LOGIN_API_ERR );
         } else {
           SimpleAlert( '', API_ERR_MSG.ERR );
@@ -152,7 +152,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
         <View style={styles.input_icon_container}>
           <Image source={passwordIcon} style={styles.input_icons} />
           <TextInput
-            style={styles.input}
+            style={[styles.input, { fontSize: 16 }]}
             placeholder="Password"
             ref={refPassword}
             placeholderTextColor="#BCBCBC"
