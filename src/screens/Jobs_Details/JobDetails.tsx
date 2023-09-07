@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { IJobDetailsProps, TJobsDetailsProps } from '../types';
 import getJobsDetails from '../../Api/api-requests/job-details-api';
 import { printLogs } from '../../Utils/log-utils';
 import Loading from '../../Components/Loading';
-import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useFocusEffect } from '@react-navigation/native';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TAB_NAVIGATOR_SCREEN } from './job-details-constants';
 import JobPickup from './job-pickup/JobPickup';
 import JobDelivery from './job-delivery/JobDelivery';
+import { GLOBAL_COLOR } from '../../Utils/Global-colors';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,13 +23,16 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
   const [jobDetailsData, setJobDetailsData] = useState<IJobDetailsProps>();
   const [isLoading, setIsLoading] = useState( false );
   const [showInfo, setShowInfo] = useState( false );
+  const [isItPickup, setIsItPickup] = useState<boolean>();
 
-  const initialRouteName = () => {
-    return jobType == 1 ? TAB_NAVIGATOR_SCREEN.PICKUP : TAB_NAVIGATOR_SCREEN.DELIVERY;
+
+  const getJobType = () => {
+    return jobType == 1;
   }
 
   useFocusEffect( React.useCallback( () => {
     printLogs( TAG, '| useEffect loaded' );
+    setIsItPickup( getJobType() );
     if ( jobId != temp ) {
       handleJobData();
     } else {
@@ -57,16 +61,33 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
       style={styles.container}>
       <Loading visible={isLoading} />
       {showInfo && (
-        <View style={{ flex: 1 }}>
-          <Tab.Navigator initialRouteName={initialRouteName()}
+        <View style={styles.container}>
+          <Tab.Navigator initialRouteName={isItPickup ? TAB_NAVIGATOR_SCREEN.PICKUP : TAB_NAVIGATOR_SCREEN.DELIVERY}
             tabBar={() => {
               return (
                 <View style={styles.tab}>
-                  <TouchableOpacity style={styles.tabButton}>
-                    <Text>{TAB_NAVIGATOR_SCREEN.PICKUP}</Text>
+                  <TouchableOpacity
+                    style={[
+                      styles.tabButton,
+                      isItPickup ? { backgroundColor: GLOBAL_COLOR.GREEN } : { backgroundColor: GLOBAL_COLOR.GRAY }]}
+                    onPress={() => {
+                      setIsItPickup( true );
+                      navigation.navigate( TAB_NAVIGATOR_SCREEN.PICKUP )
+                    }}>
+                    <Text style={styles.tabButtonText}>
+                      {TAB_NAVIGATOR_SCREEN.PICKUP}
+                    </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.tabButton}>
-                    <Text>{TAB_NAVIGATOR_SCREEN.DELIVERY}</Text>
+                  <TouchableOpacity
+                    style={[styles.tabButton,
+                    isItPickup ? { backgroundColor: GLOBAL_COLOR.GRAY } : { backgroundColor: GLOBAL_COLOR.GREEN }]}
+                    onPress={() => {
+                      setIsItPickup( false );
+                      navigation.navigate( TAB_NAVIGATOR_SCREEN.DELIVERY )
+                    }}>
+                    <Text style={styles.tabButtonText}>
+                      {TAB_NAVIGATOR_SCREEN.DELIVERY}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               )
@@ -74,15 +95,23 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
             backBehavior={"none"}
             detachInactiveScreens={true}
             screenOptions={{
-              headerShown: false,
+              headerShown: true,
               tabBarShowLabel: false,
+              headerStyle: {
+                height: 50,
+              }
             }}>
-            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.PICKUP} component={JobPickup} />
-            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.DELIVERY} component={JobDelivery} />
+            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.PICKUP}>
+              {() => <JobPickup jobDetailsData={jobDetailsData} />}
+            </Tab.Screen>
+            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.DELIVERY}>
+              {() => <JobDelivery jobDetailsData={jobDetailsData} />}
+            </Tab.Screen>
           </Tab.Navigator>
         </View>
-      )}
-    </View>
+      )
+      }
+    </View >
   );
 };
 
@@ -107,8 +136,11 @@ const styles = StyleSheet.create( {
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    backgroundColor: 'green',
   },
+  tabButtonText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+  }
 } );
 
 export default JobDetails;

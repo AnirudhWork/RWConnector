@@ -73,6 +73,14 @@ export interface ITruckProps {
   note: string;
 }
 
+export interface IJobDeliveryDetailsProps {
+  jobDetailsData: IJobDetailsProps | undefined
+}
+
+export interface IJobPickupDetailsProps {
+  jobDetailsData: IJobDetailsProps | undefined
+}
+
 export interface IJobsProps {
   id: number;
   'bol-num': number;
