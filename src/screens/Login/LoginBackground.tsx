@@ -120,7 +120,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
           SimpleAlert( '', LOGIN_ERROR_ALERTS.LOGIN_API_ERR );
         } else {
           SimpleAlert( '', API_ERR_MSG.ERR );
-          console.log( '\n\n\n\nLogin API Error:', error );
+          printLogs( TAG, '| API Error:', error );
         }
       } finally {
         setIsLoading( false );

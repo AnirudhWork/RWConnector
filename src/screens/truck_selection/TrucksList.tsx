@@ -61,6 +61,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
   // <-- Truck list api -->
 
   const truckList = async () => {
+    const TAG = truckList.name;
     try {
       setIsLoading( true );
       const response = await new APIServices( true, navigation ).get(
@@ -73,7 +74,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
       if ( axios.isCancel( error ) ) {
         SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
       } else {
-        console.log( '\n\n\n\nerror:', error );
+        printLogs( TAG, '| API Error:', error );
         SimpleAlert( '', API_ERR_MSG.ERR );
       }
     } finally {

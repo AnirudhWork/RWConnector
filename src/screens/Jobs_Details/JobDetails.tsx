@@ -1,35 +1,39 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IJobDetailsProps, TJobsDetailsProps } from '../types';
 import getJobsDetails from '../../Api/api-requests/job-details-api';
 import { printLogs } from '../../Utils/log-utils';
 import Loading from '../../Components/Loading';
 import { useFocusEffect } from '@react-navigation/native';
-// import { TouchableOpacity } from 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TAB_NAVIGATOR_SCREEN } from './job-details-constants';
 import JobPickup from './job-pickup/JobPickup';
 import JobDelivery from './job-delivery/JobDelivery';
 import { GLOBAL_COLOR } from '../../Utils/Global-colors';
 
+// <-- Tab Navigator -->
 const Tab = createBottomTabNavigator();
 
 const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
+
+  // <-- variable declaration -->
   const jobId = route.params?.jobId;
   const jobType = route.params?.jobType;
   const TAG = JobDetails.name;
   let temp: number | null = null;
 
+  // <-- useState declarations -->
   const [jobDetailsData, setJobDetailsData] = useState<IJobDetailsProps>();
   const [isLoading, setIsLoading] = useState( false );
   const [showInfo, setShowInfo] = useState( false );
   const [isItPickup, setIsItPickup] = useState<boolean>();
 
-
+  // <-- Job Type -->
   const getJobType = () => {
     return jobType == 1;
   }
 
+  // <-- useFocusEffect -->
   useFocusEffect( React.useCallback( () => {
     printLogs( TAG, '| useEffect loaded' );
     setIsItPickup( getJobType() );
@@ -41,7 +45,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
     return () => { setShowInfo( false ); temp = jobId }
   }, [jobId] ) )
 
-  // <-- job details api -->
+  // <-- get Job Details API -->
   const handleJobData = async () => {
     setIsLoading( true );
     try {
@@ -140,6 +144,7 @@ const styles = StyleSheet.create( {
   tabButtonText: {
     fontSize: 14,
     fontFamily: 'Inter-Regular',
+    color: '#FFFFFF',
   }
 } );
 

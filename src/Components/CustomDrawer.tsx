@@ -36,7 +36,6 @@ const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ( { navigation } ) =
     const requiredInfo = async () => {
       setAppVersion( await AsyncStorageUtils.getAppVersion() );
       setUsername( await AsyncStorageUtils.getUsername() );
-      console.log( 'App Version:', appVersion, 'Username:', username );
     };
     requiredInfo();
   }, [] );

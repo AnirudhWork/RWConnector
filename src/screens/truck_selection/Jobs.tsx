@@ -7,6 +7,7 @@ import moment, { unix } from 'moment';
 import { JOB_STATUS } from './constants';
 import { DRAWER_SCREEN_NAMES } from '../../Navigators/constants';
 import { DrawerActions } from '@react-navigation/native';
+import { printLogs } from '../../Utils/log-utils';
 
 const Jobs: React.FC<TJobsListProps> = ( { navigation, jobsData } ) => {
 
@@ -44,7 +45,7 @@ const Jobs: React.FC<TJobsListProps> = ( { navigation, jobsData } ) => {
     // <-- Job Details navigation -->
 
     const handleNavigation = () => {
-      console.log( item?.id );
+      printLogs( 'Find jobDetailsByJobId | Jobs id:', item?.id );
       navigation.dispatch(
         DrawerActions.jumpTo( DRAWER_SCREEN_NAMES.JOB_DETAILS, {
           jobId: item?.id,
