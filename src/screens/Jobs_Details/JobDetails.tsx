@@ -9,7 +9,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TAB_NAVIGATOR_SCREEN } from './job-details-constants';
 import JobPickup from './job-pickup/JobPickup';
 import JobDelivery from './job-delivery/JobDelivery';
-import { GLOBAL_COLOR } from '../../Utils/Global-colors';
+import { GLOBAL_COLOR } from '../../Utils/global-colors';
+import { globalStyles } from '../../Utils/global-styles';
 
 // <-- Tab Navigator -->
 const Tab = createBottomTabNavigator();
@@ -72,24 +73,24 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
                 <View style={styles.tab}>
                   <TouchableOpacity
                     style={[
-                      styles.tabButton,
+                      styles.tabButton, globalStyles.alignCenterStyle,
                       isItPickup ? { backgroundColor: GLOBAL_COLOR.GREEN } : { backgroundColor: GLOBAL_COLOR.GRAY }]}
                     onPress={() => {
                       setIsItPickup( true );
                       navigation.navigate( TAB_NAVIGATOR_SCREEN.PICKUP )
                     }}>
-                    <Text style={styles.tabButtonText}>
+                    <Text style={[globalStyles.fontStyleRegular, styles.tabButtonText]}>
                       {TAB_NAVIGATOR_SCREEN.PICKUP}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.tabButton,
+                    style={[styles.tabButton, globalStyles.alignCenterStyle,
                     isItPickup ? { backgroundColor: GLOBAL_COLOR.GRAY } : { backgroundColor: GLOBAL_COLOR.GREEN }]}
                     onPress={() => {
                       setIsItPickup( false );
                       navigation.navigate( TAB_NAVIGATOR_SCREEN.DELIVERY )
                     }}>
-                    <Text style={styles.tabButtonText}>
+                    <Text style={[globalStyles.fontStyleRegular, styles.tabButtonText]}>
                       {TAB_NAVIGATOR_SCREEN.DELIVERY}
                     </Text>
                   </TouchableOpacity>
@@ -137,13 +138,8 @@ const styles = StyleSheet.create( {
     flex: 1,
     padding: 10,
     height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
   },
   tabButtonText: {
-    fontSize: 14,
-    fontFamily: 'Inter-Regular',
     color: '#FFFFFF',
   }
 } );
