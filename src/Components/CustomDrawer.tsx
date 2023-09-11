@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { DrawerContentScrollView } from '@react-navigation/drawer';
+import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-navigation/drawer';
 import { AlertWithTwoActionableOptions, SimpleAlert } from '../Utils/SimpleAlert';
 import Loading from './Loading';
 import axios from 'axios';
@@ -13,12 +13,11 @@ import {
   logoutAndNavigateToLoginScreen,
 } from '../Api/constants';
 import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
-import { CustomDrawerNavigationProps } from './types';
 import { printLogs } from '../Utils/log-utils';
 import { APIServices } from '../Api/api-services';
 import { useAuth } from './AuthContext';
 
-const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ( { navigation } ) => {
+const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) => {
   // <-- Images and Icons -->
 
   const drawerClose = require( '../Assets/Icons/DrawerCross.png' );
@@ -84,23 +83,23 @@ const CustomDrawer: React.FC<CustomDrawerNavigationProps> = ( { navigation } ) =
     if ( !userToken ) {
       setIsLoading( false );
       printLogs( TAG, '| Logout API, user token not found. usertoken:', userToken );
-      logoutAndNavigateToLoginScreen( navigation );
+      logoutAndNavigateToLoginScreen( navigation.getParent() );
       return;
     }
 
     // <-- Expiring the token if it exist -->
 
     try {
-      const response = await new APIServices( true, navigation ).post( API_ENDPOINT.LOGOUT );
+      const response = await new APIServices( true, navigation.getParent() ).post( API_ENDPOINT.LOGOUT );
       if ( response?.status === STATUS_CODES.SUCCESS ) {
-        logoutAndNavigateToLoginScreen( navigation );
+        logoutAndNavigateToLoginScreen( navigation.getParent() );
       }
     } catch ( error ) {
       if ( axios.isCancel( error ) ) {
         SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
       } else {
         printLogs( TAG, '| Error', error );
-        logoutSessionExpired( navigation );
+        logoutSessionExpired( navigation.getParent() );
       }
     } finally {
       setIsLoading( false );

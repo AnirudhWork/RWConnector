@@ -6,9 +6,9 @@ import {
 import CustomHeader from '../Components/CustomHeader';
 import CustomDrawer from '../Components/CustomDrawer';
 import TruckList from '../screens/truck_selection/TrucksList';
-import {StyleSheet} from 'react-native';
-import {RootDrawerParamList} from '../screens/types';
-import {DRAWER_SCREEN_NAMES} from './constants';
+import { StyleSheet } from 'react-native';
+import { RootDrawerParamList } from '../screens/types';
+import { DRAWER_SCREEN_NAMES } from './constants';
 import JobDetails from '../screens/Jobs_Details/JobDetails';
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
@@ -38,7 +38,7 @@ const DrawerNavigator: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   drawerCotentContainerStyle: {
     flex: 1,
   },
@@ -50,6 +50,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 20,
   },
-});
+} );
 
 export default DrawerNavigator;
