@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TAB_NAVIGATOR_SCREEN } from './job-details-constants';
 import JobPickup from './job-pickup/JobPickup';
 import JobDelivery from './job-delivery/JobDelivery';
-import { GLOBAL_COLOR } from '../../Utils/global-colors';
+import { globalColors } from '../../Utils/global-colors';
 import { globalStyles } from '../../Utils/global-styles';
 
 // <-- Tab Navigator -->
@@ -74,7 +74,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
                   <TouchableOpacity
                     style={[
                       styles.tabButton, globalStyles.alignCenterStyle,
-                      isItPickup ? { backgroundColor: GLOBAL_COLOR.GREEN } : { backgroundColor: GLOBAL_COLOR.GRAY }]}
+                      isItPickup ? { backgroundColor: globalColors.green } : { backgroundColor: globalColors.gray }]}
                     onPress={() => {
                       setIsItPickup( true );
                       navigation.navigate( TAB_NAVIGATOR_SCREEN.PICKUP )
@@ -85,7 +85,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.tabButton, globalStyles.alignCenterStyle,
-                    isItPickup ? { backgroundColor: GLOBAL_COLOR.GRAY } : { backgroundColor: GLOBAL_COLOR.GREEN }]}
+                    isItPickup ? { backgroundColor: globalColors.gray } : { backgroundColor: globalColors.green }]}
                     onPress={() => {
                       setIsItPickup( false );
                       navigation.navigate( TAB_NAVIGATOR_SCREEN.DELIVERY )

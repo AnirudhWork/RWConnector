@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { View, ViewStyle, Text, Platform, TouchableOpacity } from "react-native";
 import { printLogs } from "../Utils/log-utils";
-import { GLOBAL_COLOR } from "../Utils/global-colors";
+import { globalColors } from "../Utils/global-colors";
 
 
-export const OnlyNotes: React.FC<{
+export const Notes: React.FC<{
     notes: string;
     style: ViewStyle;
 }> = ( { style, notes } ) => {
-    const TAG: string = OnlyNotes.name;
+    const TAG: string = Notes.name;
     const commonSpace = 15;
     const CONST_LINES_COUNT = 3;
     const [linesToDisplay, setLinesToDisplay] =
@@ -39,7 +39,7 @@ export const OnlyNotes: React.FC<{
                         style={[
                             { fontSize: 14 },
                             {
-                                color: GLOBAL_COLOR.TRUCK_NOTES_TEXT,
+                                color: globalColors.truckNoteText,
                             },
                         ]}
                     >
@@ -54,7 +54,7 @@ export const OnlyNotes: React.FC<{
                         style={[
                             { fontSize: 14 },
                             {
-                                color: GLOBAL_COLOR.TRUCK_NOTES_TEXT,
+                                color: globalColors.truckNoteText,
                                 maxHeight:
                                     Platform.OS == "ios" ? linesToDisplay * 20 : undefined,
                             },

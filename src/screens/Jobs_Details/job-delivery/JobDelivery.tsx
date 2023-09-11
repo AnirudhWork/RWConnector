@@ -2,9 +2,11 @@ import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { IJobDeliveryDetailsProps } from '../../types'
 import moment, { unix } from 'moment';
-import { JOB_DETAILS_LABEL, JOB_DETAILS_NOTE } from '../job-details-constants';
+import { JOB_DETAILS_LABEL, JOB_DETAILS_NOTE, ValidateAndReturnEmpty, ValidateAndReturnNA } from '../job-details-constants';
 import truckInfo from '../truckInfo';
 import { globalStyles } from '../../../Utils/global-styles';
+import InfoFields from '../InfoFields';
+import { globalColors } from '../../../Utils/global-colors';
 
 const JobDelivery: React.FC<IJobDeliveryDetailsProps> = ( { jobDetailsData } ) => {
 
@@ -37,7 +39,20 @@ const JobDelivery: React.FC<IJobDeliveryDetailsProps> = ( { jobDetailsData } ) =
                         </View>
                     </View>
 
-                    {truckInfo( JOB_DETAILS_LABEL.TRUCK_DETAILS, jobDetailsData['pu-name'], jobDetailsData['pu-note'], { backgroundColor: '#F5F5F5', ...globalStyles.commonPadding } )}
+                    {truckInfo( JOB_DETAILS_LABEL.TRUCK_DETAILS, jobDetailsData['pu-name'], jobDetailsData['pu-note'], { backgroundColor: globalColors.JOB_DETAIL_BG_1, ...globalStyles.commonPadding } )}
+
+                    <View style={styles.delInfo}>
+                        {InfoFields(
+                            JOB_DETAILS_LABEL.DELIVERY_DETAILS,
+                            ValidateAndReturnNA( jobDetailsData['del-name'] ),
+                            ValidateAndReturnNA( jobDetailsData['del-addr'] ),
+                            `${ValidateAndReturnEmpty( jobDetailsData['del-city'] )}, ${ValidateAndReturnEmpty( jobDetailsData['del-state'] )}, ${ValidateAndReturnEmpty( jobDetailsData['del-zip'] )}`,
+                            {
+                                backgroundColor: globalColors.JOB_DETAIL_BG_2,
+                                ...globalStyles.commonPadding,
+                            }
+                        )}
+                    </View>
                 </ScrollView>
             )}
         </View>
@@ -68,6 +83,10 @@ const styles = StyleSheet.create( {
         fontSize: 14,
         color: '#858C91',
         textAlign: 'right'
+    },
+    delInfo: {
+        flexDirection: 'row',
+        marginTop: 3,
     },
 } )
 

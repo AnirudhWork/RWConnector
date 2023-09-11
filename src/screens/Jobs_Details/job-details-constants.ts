@@ -9,4 +9,15 @@ export enum JOB_DETAILS_NOTE {
 
 export const enum JOB_DETAILS_LABEL {
     TRUCK_DETAILS = 'Truck Details / Notes',
+    DELIVERY_DETAILS = 'Delivery Details',
+    NOTAVAILABLE = 'Not available',
+    EMPTY = '',
+}
+
+export const ValidateAndReturnNA = ( input: string ) => {
+    return input ?? JOB_DETAILS_LABEL.NOTAVAILABLE;
+}
+
+export const ValidateAndReturnEmpty = ( input: string ) => {
+    return input ?? JOB_DETAILS_LABEL.EMPTY;
 }

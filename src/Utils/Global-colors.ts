@@ -1,8 +1,10 @@
-export enum GLOBAL_COLOR {
-    GREEN = '#037F01',
-    GRAY = '#4E5549',
-    White = '#FFFFFF',
-    Black = '#000000',
-    LABEL = '#666666',
-    TRUCK_NOTES_TEXT = '#333333',
+export enum globalColors {
+    green = '#037F01',
+    gray = '#4E5549',
+    white = '#FFFFFF',
+    black = '#000000',
+    label = '#666666',
+    truckNoteText = '#333333',
+    JOB_DETAIL_BG_1 = '#F5F5F5',
+    JOB_DETAIL_BG_2 = '#E8E8E8',
 }
