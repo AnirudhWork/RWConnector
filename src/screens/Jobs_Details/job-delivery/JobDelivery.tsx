@@ -30,10 +30,10 @@ const JobDelivery: React.FC<IJobDeliveryDetailsProps> = ( { jobDetailsData } ) =
                             {jobDetailsData['bol-num']}
                         </Text>
                         <View style={{ flexDirection: 'row' }}>
-                            <Text style={styles.date}>
+                            <Text style={[styles.date, { color: globalColors.JOB_DETAILS_DATE }]}>
                                 {endDate}
                             </Text>
-                            <Text style={styles.fixedNote}>
+                            <Text style={[styles.fixedNote, { color: globalColors.JOB_DETAILS_DATE }]}>
                                 {JOB_DETAILS_NOTE.FIXED}
                             </Text>
                         </View>
@@ -46,10 +46,33 @@ const JobDelivery: React.FC<IJobDeliveryDetailsProps> = ( { jobDetailsData } ) =
                             JOB_DETAILS_LABEL.DELIVERY_DETAILS,
                             ValidateAndReturnNA( jobDetailsData['del-name'] ),
                             ValidateAndReturnNA( jobDetailsData['del-addr'] ),
-                            `${ValidateAndReturnEmpty( jobDetailsData['del-city'] )}, ${ValidateAndReturnEmpty( jobDetailsData['del-state'] )}, ${ValidateAndReturnEmpty( jobDetailsData['del-zip'] )}`,
+                            `${ValidateAndReturnEmpty( jobDetailsData['del-city'] )}, ${ValidateAndReturnEmpty( jobDetailsData['del-state'] )} ${ValidateAndReturnEmpty( jobDetailsData['del-zip'] )}`,
                             {
                                 backgroundColor: globalColors.JOB_DETAIL_BG_2,
                                 ...globalStyles.commonPadding,
+                            }
+                        )}
+                        {InfoFields(
+                            JOB_DETAILS_LABEL.CONTACT_DETAILS,
+                            ValidateAndReturnNA( jobDetailsData['del-name'] ),
+                            `Tel: ${ValidateAndReturnEmpty( jobDetailsData['del-phone'] )}`,
+                            `Email: ${ValidateAndReturnEmpty( jobDetailsData['del-email'] )}`,
+                            {
+                                backgroundColor: globalColors.JOB_DETAIL_BG_1,
+                                ...globalStyles.commonPadding,
+                            }
+                        )}
+                    </View>
+                    <View style={styles.delInfo}>
+                        {InfoFields(
+                            JOB_DETAILS_LABEL.BILL_DETAILS,
+                            ValidateAndReturnNA( jobDetailsData['cust-name'] ),
+                            ValidateAndReturnEmpty( jobDetailsData['cust-addr'] ),
+                            `${ValidateAndReturnEmpty( jobDetailsData['cust-city'] )}, ${ValidateAndReturnEmpty( jobDetailsData['cust-state'] )} ${ValidateAndReturnEmpty( jobDetailsData['cust-zip'] )}`,
+                            {
+                                backgroundColor: globalColors.JOB_DETAIL_BG_2,
+                                marginTop: 3,
+                                padding: 15,
                             }
                         )}
                     </View>
@@ -76,16 +99,14 @@ const styles = StyleSheet.create( {
     },
     date: {
         fontSize: 14,
-        color: '#858C91',
     },
     fixedNote: {
         flex: 1,
         fontSize: 14,
-        color: '#858C91',
         textAlign: 'right'
     },
     delInfo: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         marginTop: 3,
     },
 } )

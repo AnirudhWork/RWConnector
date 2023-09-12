@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, useEffect, useRef, useState} from 'react';
+import React, { FC, ReactElement, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   ListRenderItem,
@@ -9,29 +9,29 @@ import {
   View,
   Image,
 } from 'react-native';
-import {IProps} from './types';
-import {ITruckProps} from '../screens/types';
+import { IProps } from './types';
+import { ITruckProps } from '../screens/types';
 
-const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
-  const chevron_down = require('../Assets/Icons/chevron-down.png');
-  const chevron_up = require('../Assets/Icons/chevron-up.png');
-  const DropdownButton = useRef<TouchableOpacity>(null);
-  const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState<any>(undefined);
-  const [dropdownTop, setDropdownTop] = useState(0);
-  const [chevronToggle, setChevronToggle] = useState(chevron_down);
+const Dropdown: FC<IProps> = ( { label, data, onSelect } ) => {
+  const chevron_down = require( '../Assets/Icons/chevron-down.png' );
+  const chevron_up = require( '../Assets/Icons/chevron-up.png' );
+  const DropdownButton = useRef<TouchableOpacity>( null );
+  const [visible, setVisible] = useState( false );
+  const [selected, setSelected] = useState<any>( undefined );
+  const [dropdownTop, setDropdownTop] = useState( 0 );
+  const [chevronToggle, setChevronToggle] = useState( chevron_down );
 
-  useEffect(() => {
-    if (visible) {
-      setChevronToggle(chevron_up);
+  useEffect( () => {
+    if ( visible ) {
+      setChevronToggle( chevron_up );
     } else {
-      setChevronToggle(chevron_down);
+      setChevronToggle( chevron_down );
     }
-  }, [visible]);
+  }, [visible] );
 
   const toggleDropdown = (): void => {
-    if (visible) {
-      setVisible(false);
+    if ( visible ) {
+      setVisible( false );
     } else {
       openDropdown();
     }
@@ -39,25 +39,25 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
 
   const openDropdown = (): void => {
     //calculating the position of the DropDownButton
-    DropdownButton.current?.measure((x, y, width, height, pageX, pageY) => {
-      setDropdownTop(pageY + height);
-    });
-    setVisible(true);
+    DropdownButton.current?.measure( ( x, y, width, height, pageX, pageY ) => {
+      setDropdownTop( pageY + height );
+    } );
+    setVisible( true );
   };
 
-  const onItemPress = (item: ITruckProps): void => {
-    setSelected(item);
-    onSelect(item);
-    setVisible(false);
+  const onItemPress = ( item: ITruckProps ): void => {
+    setSelected( item );
+    onSelect( item );
+    setVisible( false );
   };
 
-  const renderItem: ListRenderItem<ITruckProps> = ({item}) => (
+  const renderItem: ListRenderItem<ITruckProps> = ( { item } ) => (
     <TouchableOpacity
       style={[
         styles.item,
         selected?.name === item.name ? styles.selectedItem : null,
       ]}
-      onPress={() => onItemPress(item)}>
+      onPress={() => onItemPress( item )}>
       <Text style={styles.itemText}>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -68,12 +68,12 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
         <TouchableOpacity style={styles.modal_container}>
           <TouchableOpacity
             style={styles.overlay}
-            onPress={() => setVisible(false)}>
-            <View style={[styles.dropDownItemsContainer, {top: dropdownTop}]}>
+            onPress={() => setVisible( false )}>
+            <View style={[styles.dropDownItemsContainer, { top: dropdownTop }]}>
               <FlatList
                 data={data}
                 renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={( item, index ) => index.toString()}
               />
             </View>
           </TouchableOpacity>
@@ -91,7 +91,7 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
       <Text
         style={[
           styles.DropDownButtonText,
-          selected ? {color: '#000000'} : {color: '#BCBCBC'},
+          selected ? { color: '#000000' } : { color: '#BCBCBC' },
         ]}>
         {selected?.name || label}
       </Text>
@@ -100,7 +100,7 @@ const Dropdown: FC<IProps> = ({label, data, onSelect}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   DropDownButton: {
     flexDirection: 'row',
     borderColor: '#DCDDDF',
@@ -126,10 +126,10 @@ const styles = StyleSheet.create({
   dropDownItemsContainer: {
     position: 'absolute',
     width: '100%',
-    maxHeight: 210,
+    maxHeight: 292,
     shadowColor: '#000000',
     shadowRadius: 4,
-    shadowOffset: {height: 4, width: 0},
+    shadowOffset: { height: 4, width: 0 },
     shadowOpacity: 0.5,
     backgroundColor: '#fff',
   },
@@ -155,6 +155,6 @@ const styles = StyleSheet.create({
   selectedItem: {
     backgroundColor: '#5897FB',
   },
-});
+} );
 
 export default Dropdown;

@@ -119,7 +119,7 @@ export interface IJobDetailsProps {
   'pu-state': string,
   'pu-zip': string,
   'pu-contact': string
-  'pu-phone': number,
+  'pu-phone': string,
   'pu-email': string,
   'pu-terms': string,
   'pu-dec-val': number,
@@ -132,7 +132,7 @@ export interface IJobDetailsProps {
   'del-state': string,
   'del-zip': string,
   'del-contact': string,
-  'del-phone': number,
+  'del-phone': string,
   'del-email': string,
   'del-note': string,
   'cust-name': string,

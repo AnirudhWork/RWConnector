@@ -10,7 +10,10 @@ export enum JOB_DETAILS_NOTE {
 export const enum JOB_DETAILS_LABEL {
     TRUCK_DETAILS = 'Truck Details / Notes',
     DELIVERY_DETAILS = 'Delivery Details',
-    NOTAVAILABLE = 'Not available',
+    PICKUP_DETAILS = 'Pickup Details',
+    CONTACT_DETAILS = 'Contact Details',
+    BILL_DETAILS = 'Bill Details',
+    NOTAVAILABLE = 'N/A',
     EMPTY = '',
 }
 

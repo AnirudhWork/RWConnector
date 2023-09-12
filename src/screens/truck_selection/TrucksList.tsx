@@ -8,11 +8,12 @@ import Loading from '../../Components/Loading';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { API_ENDPOINT, API_ERR_MSG, IsInternetAccessAvailable, STATUS_CODES } from '../../Api/constants';
 import Jobs from './Jobs';
-import { TRUCK_API_ERR_MSG } from './constants';
+import { JOB_MSGS, TRUCK_API_ERR_MSG } from './constants';
 import { APIServices } from '../../Api/api-services';
 import { printLogs } from '../../Utils/log-utils';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../../Components/AuthContext';
+import { Notes } from '../../Components/Notes';
 
 const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
   // <-- Images and Icons -->
@@ -149,12 +150,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
             <Image source={chevronToggle} style={styles.icon} />
           </TouchableOpacity>
           {isTruckNoteVisible && (
-            <Text
-              style={styles.truckNote}
-              ellipsizeMode={'tail'}
-              numberOfLines={3}>
-              {selected.note}
-            </Text>
+            <Notes notes={selected.note} style={styles.truckNote} />
           )}
         </View>
       )}
@@ -163,7 +159,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
       )}
       {jobsData && jobsData.length < 1 && (
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Text>No job is assigned yet to the selected truck</Text>
+          <Text>{JOB_MSGS.NOT_FOUND}</Text>
         </View>
       )}
     </View>

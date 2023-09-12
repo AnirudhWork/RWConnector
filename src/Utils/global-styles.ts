@@ -5,6 +5,9 @@ export const globalStyles = StyleSheet.create( {
     container: {
         flex: 1,
     },
+    fontSizeNormal: {
+        fontSize: 14,
+    },
     fontStyleRegular: {
         fontSize: 14,
         fontFamily: FONT_FAMILY.INTER_REGULAR,
