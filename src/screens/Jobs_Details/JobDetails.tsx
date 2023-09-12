@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { IJobDetailsProps, TJobsDetailsProps } from '../types';
-import getJobsDetails from '../../Api/api-requests/job-details-api';
+import getJobsDetails from '../../Api/api-requests/jobDetailsApi';
 import { printLogs } from '../../Utils/log-utils';
 import Loading from '../../Components/Loading';
 import { useFocusEffect } from '@react-navigation/native';
@@ -64,7 +64,6 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
   return (
     <View
       style={styles.container}>
-      <Loading visible={isLoading} />
       {showInfo && (
         <View style={styles.container}>
           <Tab.Navigator initialRouteName={isItPickup ? TAB_NAVIGATOR_SCREEN.PICKUP : TAB_NAVIGATOR_SCREEN.DELIVERY}
@@ -116,6 +115,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
         </View>
       )
       }
+      {isLoading && <Loading />}
     </View >
   );
 };

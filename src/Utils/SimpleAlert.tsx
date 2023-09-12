@@ -1,12 +1,12 @@
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 
-export const SimpleAlert = (title: string, message: string) => {
+export const SimpleAlert = ( title: string, message: string ) => {
   const buttons = [
     {
       text: 'ok',
     },
   ];
-  Alert.alert(title, message, buttons, {cancelable: true});
+  Alert.alert( title, message, buttons, { cancelable: true } );
 };
 
 export const AlertWithOneActionableOption = (
@@ -14,20 +14,20 @@ export const AlertWithOneActionableOption = (
   message: string,
   positiveName: string,
   cancellable: boolean,
-  callback: (executeAction: boolean) => void,
+  callback: ( executeAction: boolean ) => void,
 ) => {
   let buttons = [
     {
       text: positiveName,
       onPress: () => {
-        callback(true);
+        callback( true );
       },
     },
   ];
 
-  Alert.alert(title, message, buttons, {
+  Alert.alert( title, message, buttons, {
     cancelable: cancellable,
-  });
+  } );
 };
 
 export const AlertWithTwoActionableOptions = (
@@ -36,27 +36,27 @@ export const AlertWithTwoActionableOptions = (
   positiveName: string,
   negativeName: string | null,
   cancellable: boolean,
-  callback: (executeAction: boolean) => void,
+  callback: ( executeAction: boolean ) => void,
 ) => {
   let buttons = [
     {
       text: positiveName,
       onPress: () => {
-        callback(true);
+        callback( true );
       },
     },
   ];
 
-  if (negativeName) {
-    buttons.push({
+  if ( negativeName ) {
+    buttons.push( {
       text: negativeName,
       onPress: () => {
-        callback(false);
+        callback( false );
       },
-    });
+    } );
   }
 
-  Alert.alert(title, message, buttons, {
+  Alert.alert( title, message, buttons, {
     cancelable: cancellable,
-  });
+  } );
 };

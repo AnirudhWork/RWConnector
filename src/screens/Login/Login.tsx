@@ -9,24 +9,26 @@ import {
 import LoginBackground from './LoginBackground';
 import ForgotPassword from './ForgotPassword';
 
-import {LoginProps} from '../types';
-import {useState} from 'react';
-import {FORGOT_PW_SUCCESS_ALERT} from './constants';
+import { LoginProps } from '../types';
+import { useState } from 'react';
+import { FORGOT_PW_SUCCESS_ALERT } from './constants';
+import Loading from '../../Components/Loading';
 
-const Login: React.FC<LoginProps> = ({navigation}: LoginProps) => {
-  let [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const loginImage = require('../../Assets/Images/TruckLogin.png');
-  const logo = require('../../Assets/Icons/RWLogo.png');
+const Login: React.FC<LoginProps> = ( { navigation }: LoginProps ) => {
+  let [isForgotPassword, setIsForgotPassword] = useState( false );
+  const [submitted, setSubmitted] = useState( false );
+  const [isLoading, setIsLoading] = useState( false );
+  const loginImage = require( '../../Assets/Images/TruckLogin.png' );
+  const logo = require( '../../Assets/Icons/RWLogo.png' );
 
-  const {height} = Dimensions.get('window');
+  const { height } = Dimensions.get( 'window' );
 
   return (
     <ScrollView
       automaticallyAdjustKeyboardInsets={true}
-      contentContainerStyle={{minHeight: height - 25}}>
+      contentContainerStyle={{ minHeight: height - 25 }}>
       {/* Main Container */}
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         {/* 1 View */}
         <View style={styles.content_container}>
           <View style={styles.content}>
@@ -39,11 +41,13 @@ const Login: React.FC<LoginProps> = ({navigation}: LoginProps) => {
                 navigation={navigation}
                 setIsForgotPassword={setIsForgotPassword}
                 setSubmitted={setSubmitted}
+                setIsLoading={setIsLoading}
               />
             ) : (
               <LoginBackground
                 setIsForgotPassword={setIsForgotPassword}
                 navigation={navigation}
+                setIsLoading={setIsLoading}
               />
             )}
             {/* Dynamic View Ends */}
@@ -68,11 +72,12 @@ const Login: React.FC<LoginProps> = ({navigation}: LoginProps) => {
           />
         </View>
       </View>
+      {isLoading && <Loading />}
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   container: {
     flex: 1,
   },
@@ -122,6 +127,6 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: '700',
   },
-});
+} );
 
 export default Login;

@@ -129,7 +129,7 @@ export class APIServices {
         SimpleAlert( '', API_ERR_MSG.INTERNET_ERR );
       }
     } catch ( error ) {
-      printLogs( 'Get Method Request Error:', error );
+      printLogs( 'API Get Method Request Error:', error );
     }
   }
 
@@ -153,7 +153,6 @@ export class APIServices {
       throw error;
     }
   }
-
 }
 
 const axiosInstance = axios.create(

@@ -116,7 +116,6 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
 
   return (
     <View style={styles.container}>
-      {isLoading && <Loading visible={isLoading} />}
       <View style={styles.dropDownRfContainer}>
         <View style={styles.dropDownContainer}>
           <Dropdown
@@ -162,6 +161,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
           <Text>{JOB_MSGS.NOT_FOUND}</Text>
         </View>
       )}
+      {isLoading && <Loading />}
     </View>
   );
 };
@@ -189,14 +189,14 @@ const styles = StyleSheet.create( {
   },
   refreshButton: {
     borderColor: '#DCDDDF',
-    padding: 12,
+    padding: 14,
     borderWidth: 1,
     alignContent: 'center',
     borderRadius: 3,
   },
   refreshImage: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
   },
   truckNote: {
     paddingVertical: 5,

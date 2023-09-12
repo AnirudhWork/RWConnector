@@ -11,7 +11,6 @@ import {
 import { ForgotPasswordProps } from '../types';
 import axios from 'axios';
 import { SimpleAlert } from '../../Utils/SimpleAlert';
-import Loading from '../../Components/Loading';
 import { LOGIN_ERROR_ALERTS } from './constants';
 import {
   API_ENDPOINT,
@@ -27,11 +26,11 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ( {
   navigation,
   setIsForgotPassword,
   setSubmitted,
+  setIsLoading,
 } ) => {
   const emailIcon = require( '../../Assets/Icons/EmailLogo.png' );
 
   const [email, setEmail] = useState( '' );
-  const [isLoading, setIsLoading] = useState( false );
 
   const refEmail = useRef<TextInput>( null );
 
@@ -105,7 +104,6 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ( {
 
   return (
     <View style={styles.container}>
-      {isLoading && <Loading visible={isLoading} />}
       <View style={styles.input_container}>
         <View style={{ alignItems: 'center', width: '100%' }}>
           <View style={styles.input_icon_container}>

@@ -77,7 +77,7 @@ export class AsyncStorageUtils {
 
 export const logoutSessionExpired = async ( navigation: DrawerNavigationProp<any, any> ) => {
   const TAG = logoutAndNavigateToLoginScreen.name;
-  printLogs( TAG );
+  printLogs( TAG, '| Executed' );
   logoutAndNavigateToLoginScreen( navigation );
   SimpleAlert(
     '',

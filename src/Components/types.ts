@@ -9,9 +9,9 @@ export interface IProps {
   onSelect: ( item: ITruckProps ) => void;
 }
 
-export type LoadingProps = {
-  visible: boolean;
-};
+// export type LoadingProps = {
+//   visible: boolean;
+// };
 
 export interface UserData {
   username: string | null;

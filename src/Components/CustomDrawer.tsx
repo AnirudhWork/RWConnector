@@ -24,7 +24,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
 
   // <-- useState Declarations -->
 
-  const [isLoading, setIsLoading] = useState( false );
+  const [isLoading, setIsLoading] = useState<boolean>( false );
   const [appVersion, setAppVersion] = useState<string>( '' );
   const [username, setUsername] = useState<string>( '' );
   let { data, setData } = useAuth();
@@ -84,7 +84,6 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
       setIsLoading( false );
       printLogs( TAG, '| Logout API, user token not found. usertoken:', userToken );
       logoutAndNavigateToLoginScreen( navigation.getParent() );
-      return;
     }
 
     // <-- Expiring the token if it exist -->
@@ -110,7 +109,6 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
 
   return (
     <View style={styles.container}>
-      {isLoading && <Loading visible={isLoading} />}
       <View style={styles.drawerCloseIconContainer}>
         <TouchableOpacity
           onPress={handleDrawerClosure}
@@ -155,6 +153,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
           <Text style={styles.appVersionText}>App version - {appVersion}</Text>
         </View>
       </View>
+      {isLoading && <Loading />}
     </View>
   );
 };
@@ -203,7 +202,6 @@ const styles = StyleSheet.create( {
     fontWeight: '700',
   },
   customDrawerActiveItemContainer: {
-    // backgroundColor: '#007f00',
     paddingVertical: 15,
     paddingHorizontal: 18,
     borderColor: '#C8E6CA',

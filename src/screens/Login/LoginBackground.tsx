@@ -8,23 +8,16 @@ import {
 } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { LoginBackgroundProps } from '../types';
-import axios from 'axios';
 import { SimpleAlert } from '../../Utils/SimpleAlert';
-import Loading from '../../Components/Loading';
-
-// import postApi from '../../Api/postAPI';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {useAuth} from '../../Components/AuthContext';
-import { LOGIN_ERROR_ALERTS, encryptPassword } from './constants';
-import { API_ENDPOINT, API_ERR_MSG, IsInternetAccessAvailable, STATUS_CODES } from '../../Api/constants';
-import { SCREEN_NAMES } from '../../Navigators/constants';
-import { AsyncStorageUtils } from '../../Utils/constants';
-import { APIServices } from '../../Api/api-services';
+import { LOGIN_ERROR_ALERTS, decryptPassword } from './constants';
+import { validateLoginCred } from '../../Api/api-requests/LoginPwApi';
+import { API_ERR_MSG } from '../../Api/constants';
 import { printLogs } from '../../Utils/log-utils';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ( {
   navigation,
   setIsForgotPassword,
+  setIsLoading
 } ) => {
   // <-- Images and Icons -->
   const usernameIcon = require( '../../Assets/Icons/Username.png' );
@@ -42,7 +35,6 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
   } );
   const [passwordValue, setPasswordValue] = useState( '' );
   const [userNameValue, setUsernameValue] = useState( '' );
-  const [isLoading, setIsLoading] = useState( false );
 
   // <-- useRef declarations -->
   const refPassword = useRef<TextInput>( null );
@@ -86,42 +78,11 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
       setIsLoading( true );
       try {
         // <-- API parameters -->
-        const passwordHashValue = encryptPassword( passwordValue );
-        const data = {
-          uname: userNameValue,
-          pwd: passwordHashValue,
-          'app-version': '1',
-          'os-version': '1',
-          'device-type': 'a',
-        };
-
-        // <-- Token generation (Login) -->
-        const response = await new APIServices( false, navigation ).post(
-          API_ENDPOINT.LOGIN,
-          data,
-        );
-        if ( response?.status === STATUS_CODES.SUCCESS ) {
-          printLogs( TAG, '| successful login response data:', response.data );
-          AsyncStorageUtils.setLoginResponse( response.data );
-          // setData({
-          //   username: userNameValue,
-          //   appVersion: response.data['latest-app-ver'],
-          // });
-          navigation.reset( {
-            index: 0,
-            routes: [{ name: SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER }],
-          } );
-        }
+        const passwordHashValue = decryptPassword( passwordValue );
+        await validateLoginCred( userNameValue, passwordHashValue, navigation );
       } catch ( error ) {
-        const knownError = error as any;
-        if ( axios.isCancel( error ) ) {
-          SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
-        } else if ( IsInternetAccessAvailable( knownError.response?.status ) && knownError.response.status === STATUS_CODES.UNAUTHORIZED ) {
-          SimpleAlert( '', LOGIN_ERROR_ALERTS.LOGIN_API_ERR );
-        } else {
-          SimpleAlert( '', API_ERR_MSG.ERR );
-          printLogs( TAG, '| API Error:', error );
-        }
+        printLogs( TAG, '| DecryptPassword failed or ValidateLoginCred Method failed. ErrorMsg:', error );
+        SimpleAlert( '', API_ERR_MSG.ERR );
       } finally {
         setIsLoading( false );
       }
@@ -132,7 +93,6 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
 
   return (
     <View style={styles.container}>
-      {isLoading && <Loading visible={isLoading} />}
       <View style={styles.input_container}>
         <View style={styles.input_icon_container}>
           <Image source={usernameIcon} style={styles.input_icons} />

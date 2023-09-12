@@ -39,12 +39,14 @@ export type LoginProps = {
 export type LoginBackgroundProps = {
   navigation: DrawerNavigationProp<any, any>;
   setIsForgotPassword: ( value: boolean ) => void;
+  setIsLoading: ( value: boolean ) => void;
 };
 
 export type ForgotPasswordProps = {
   navigation: DrawerNavigationProp<any, any>;
   setIsForgotPassword: ( value: boolean ) => void;
   setSubmitted: ( value: boolean ) => void;
+  setIsLoading: ( value: boolean ) => void;
 };
 
 export type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
