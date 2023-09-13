@@ -11,6 +11,8 @@ import JobPickup from './job-pickup/JobPickup';
 import JobDelivery from './job-delivery/JobDelivery';
 import { globalColors } from '../../Utils/global-colors';
 import { globalStyles } from '../../Utils/global-styles';
+import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
+import { setLoadingStatus } from '../../Redux/reducers/truck-selection-slice';
 
 // <-- Tab Navigator -->
 const Tab = createBottomTabNavigator();
@@ -23,9 +25,12 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
 
   // <-- useState declarations -->
   const [jobDetailsData, setJobDetailsData] = useState<IJobDetailsProps>();
-  const [isLoading, setIsLoading] = useState( false );
   const [showInfo, setShowInfo] = useState( false );
   const [isItPickup, setIsItPickup] = useState<boolean>();
+
+  // <-- Redux -->
+  const dispatch = useAppDispatch();
+  const isLoading = useAppSelector( ( state ) => state.truck.loading );
 
   // <-- Job Type -->
   const getIsItPickup = () => {
@@ -45,7 +50,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
 
   // <-- get Job Details API -->
   const handleJobData = async () => {
-    setIsLoading( true );
+    dispatch( setLoadingStatus( true ) );
     try {
       const response = await getJobsDetails( jobId, navigation );
       if ( response ) {
@@ -53,7 +58,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
         setShowInfo( true );
       }
     } finally {
-      setIsLoading( false );
+      dispatch( setLoadingStatus( false ) );
     }
   };
 

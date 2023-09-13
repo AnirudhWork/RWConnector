@@ -16,6 +16,8 @@ import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
 import { printLogs } from '../Utils/log-utils';
 import { APIServices } from '../Api/api-services';
 import { useAuth } from './AuthContext';
+import { useAppDispatch, useAppSelector } from '../Redux/hooks';
+import { setLoadingStatus } from '../Redux/reducers/truck-selection-slice';
 
 const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) => {
   // <-- Images and Icons -->
@@ -23,11 +25,15 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
   const drawerClose = require( '../Assets/Icons/DrawerCross.png' );
 
   // <-- useState Declarations -->
-
-  const [isLoading, setIsLoading] = useState<boolean>( false );
   const [appVersion, setAppVersion] = useState<string>( '' );
   const [username, setUsername] = useState<string>( '' );
+
+  // <-- useContext -->
   let { data, setData } = useAuth();
+
+  // <-- Redux -->
+  const dispatch = useAppDispatch();
+  const isLoading = useAppSelector( ( state ) => state.truck.loading );
 
   // <-- useEffect -->
 
@@ -75,13 +81,13 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
 
   const handleLogOut = async () => {
     const TAG = handleLogOut.name;
-    setIsLoading( true );
+    dispatch( setLoadingStatus( true ) );
 
     // <-- Checking if token exist -->
 
     const userToken = await AsyncStorageUtils.getUserToken();
     if ( !userToken ) {
-      setIsLoading( false );
+      dispatch( setLoadingStatus( false ) );
       printLogs( TAG, '| Logout API, user token not found. usertoken:', userToken );
       logoutAndNavigateToLoginScreen( navigation.getParent() );
     }
@@ -101,7 +107,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
         logoutSessionExpired( navigation.getParent() );
       }
     } finally {
-      setIsLoading( false );
+      dispatch( setLoadingStatus( false ) );
     }
   };
 

@@ -13,11 +13,12 @@ import { LOGIN_ERROR_ALERTS, decryptPassword } from './constants';
 import { validateLoginCred } from '../../Api/api-requests/LoginPwApi';
 import { API_ERR_MSG } from '../../Api/constants';
 import { printLogs } from '../../Utils/log-utils';
+import { useAppDispatch } from '../../Redux/hooks';
+import { setLoadingStatus } from '../../Redux/reducers/truck-selection-slice';
 
 const LoginBackground: React.FC<LoginBackgroundProps> = ( {
   navigation,
   setIsForgotPassword,
-  setIsLoading
 } ) => {
   // <-- Images and Icons -->
   const usernameIcon = require( '../../Assets/Icons/Username.png' );
@@ -25,8 +26,8 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
   const passwordShownIcon = require( '../../Assets/Icons/PasswordShown.png' );
   const passwordHiddenIcon = require( '../../Assets/Icons/PasswordHidden.png' );
 
-  // <-- useContext -->
-  // const {setData} = useAuth();
+  // <-- Redux -->
+  const dispatch = useAppDispatch();
 
   // <-- useState declarations -->
   let [passwordShown, setPasswordShown] = useState( {
@@ -75,7 +76,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
     if ( !userNameValue.trim() || !passwordValue.trim() ) {
       SimpleAlert( '', LOGIN_ERROR_ALERTS.EMPTY_FIELDS );
     } else {
-      setIsLoading( true );
+      dispatch( setLoadingStatus( true ) );
       try {
         // <-- API parameters -->
         const passwordHashValue = decryptPassword( passwordValue );
@@ -84,7 +85,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
         printLogs( TAG, '| DecryptPassword failed or ValidateLoginCred Method failed. ErrorMsg:', error );
         SimpleAlert( '', API_ERR_MSG.ERR );
       } finally {
-        setIsLoading( false );
+        dispatch( setLoadingStatus( false ) );
       }
     }
   };

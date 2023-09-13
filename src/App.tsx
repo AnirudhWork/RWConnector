@@ -1,13 +1,17 @@
 import { SafeAreaView, StyleSheet } from 'react-native';
 import RootNavigator from './Navigators/RootNavigator';
 import AuthProvider from './Components/AuthProvider';
+import { Provider } from 'react-redux';
+import { store } from './Redux/store';
 
 const App: React.FC = (): React.JSX.Element => {
   return (
     <SafeAreaView style={styles.container}>
-      <AuthProvider>
-        <RootNavigator />
-      </AuthProvider>
+      <Provider store={store}>
+        <AuthProvider>
+          <RootNavigator />
+        </AuthProvider>
+      </Provider>
     </SafeAreaView>
   );
 };

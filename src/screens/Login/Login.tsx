@@ -13,15 +13,27 @@ import { LoginProps } from '../types';
 import { useState } from 'react';
 import { FORGOT_PW_SUCCESS_ALERT } from './constants';
 import Loading from '../../Components/Loading';
+import { useAppSelector } from '../../Redux/hooks';
 
 const Login: React.FC<LoginProps> = ( { navigation }: LoginProps ) => {
-  let [isForgotPassword, setIsForgotPassword] = useState( false );
+
+  // <-- useState declarations -->
+
+  const [isForgotPassword, setIsForgotPassword] = useState( false );
   const [submitted, setSubmitted] = useState( false );
-  const [isLoading, setIsLoading] = useState( false );
+
+  // <-- Assets -->
+
   const loginImage = require( '../../Assets/Images/TruckLogin.png' );
   const logo = require( '../../Assets/Icons/RWLogo.png' );
 
+  // <-- Redux -->
+
+  const isLoading = useAppSelector( ( state ) => state.truck.loading );
+
   const { height } = Dimensions.get( 'window' );
+
+  // <-- Activity -->
 
   return (
     <ScrollView
@@ -41,13 +53,11 @@ const Login: React.FC<LoginProps> = ( { navigation }: LoginProps ) => {
                 navigation={navigation}
                 setIsForgotPassword={setIsForgotPassword}
                 setSubmitted={setSubmitted}
-                setIsLoading={setIsLoading}
               />
             ) : (
               <LoginBackground
                 setIsForgotPassword={setIsForgotPassword}
                 navigation={navigation}
-                setIsLoading={setIsLoading}
               />
             )}
             {/* Dynamic View Ends */}
@@ -76,6 +86,8 @@ const Login: React.FC<LoginProps> = ( { navigation }: LoginProps ) => {
     </ScrollView>
   );
 };
+
+// <-- Styles -->
 
 const styles = StyleSheet.create( {
   container: {

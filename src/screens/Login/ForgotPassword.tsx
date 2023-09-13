@@ -9,31 +9,34 @@ import {
 } from 'react-native';
 
 import { ForgotPasswordProps } from '../types';
-import axios from 'axios';
 import { SimpleAlert } from '../../Utils/SimpleAlert';
 import { LOGIN_ERROR_ALERTS } from './constants';
 import {
-  API_ENDPOINT,
   API_ERR_MSG,
-  IsInternetAccessAvailable,
-  STATUS_CODES,
-  commonHeaders,
 } from '../../Api/constants';
-import { APIServices } from '../../Api/api-services';
 import { printLogs } from '../../Utils/log-utils';
 import { resetPassword } from '../../Api/api-requests/LoginPwApi';
+import { useAppDispatch } from '../../Redux/hooks';
+import { setLoadingStatus } from '../../Redux/reducers/truck-selection-slice';
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ( {
   navigation,
   setIsForgotPassword,
   setSubmitted,
-  setIsLoading,
 } ) => {
   const emailIcon = require( '../../Assets/Icons/EmailLogo.png' );
 
+  // <-- useState declarations -->
+
   const [email, setEmail] = useState( '' );
 
+  // <-- useRef -->
+
   const refEmail = useRef<TextInput>( null );
+
+  // <-- Redux -->
+
+  const dispatch = useAppDispatch();
 
   // useEffect(() => {
   //   const keyboardDidHideSubscription = Keyboard.addListener(
@@ -65,7 +68,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ( {
     } else if ( !isValidEmail( email ) ) {
       SimpleAlert( '', LOGIN_ERROR_ALERTS.INVALID_EMAIL );
     } else {
-      setIsLoading( true );
+      dispatch( setLoadingStatus( true ) );
       try {
         const response = await resetPassword( email, navigation );
         if ( response ) {
@@ -84,10 +87,12 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ( {
         printLogs( TAG, '| Forgot PW API REQUEST Error:', error );
         SimpleAlert( '', API_ERR_MSG.ERR );
       } finally {
-        setIsLoading( false );
+        dispatch( setLoadingStatus( false ) );
       }
     }
   };
+
+  // <-- Activity -->
 
   return (
     <View style={styles.container}>
@@ -125,6 +130,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ( {
     </View>
   );
 };
+
+// <-- styles -->
 
 const styles = StyleSheet.create( {
   container: {

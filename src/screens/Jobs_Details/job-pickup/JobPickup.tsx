@@ -1,17 +1,20 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { IJobPickupDetailsProps } from '../../types'
+import { IJobPickupDetailsProps, ITruckProps } from '../../types'
 import { globalColors } from '../../../Utils/global-colors'
 import { JOB_DETAILS_LABEL, JOB_DETAILS_NOTE, ValidateAndReturnEmpty, ValidateAndReturnNA } from '../job-details-constants'
 import { globalStyles } from '../../../Utils/global-styles'
 import moment, { unix } from 'moment'
 import truckInfo from '../truckInfo'
 import InfoFields from '../InfoFields'
+import { useAppSelector } from '../../../Redux/hooks'
 
 const JobPickup: React.FC<IJobPickupDetailsProps> = ( { jobDetailsData } ) => {
 
     const [endDate, setEndDate] = useState<string>();
     const deliveryDate = jobDetailsData?.['del-date'];
+
+    const selectedTruck: ITruckProps = useAppSelector( ( state ) => state.truck.selectedTruck );
 
     useEffect( () => {
         setEndDate(
@@ -43,8 +46,8 @@ const JobPickup: React.FC<IJobPickupDetailsProps> = ( { jobDetailsData } ) => {
 
                     {truckInfo(
                         JOB_DETAILS_LABEL.TRUCK_DETAILS,
-                        ValidateAndReturnEmpty( jobDetailsData['pu-name'] ),
-                        ValidateAndReturnEmpty( jobDetailsData['pu-note'] ),
+                        ValidateAndReturnEmpty( selectedTruck.name ),
+                        ValidateAndReturnEmpty( selectedTruck.note ),
                         {
                             backgroundColor: globalColors.JOB_DETAIL_BG_1,
                             ...globalStyles.commonPadding

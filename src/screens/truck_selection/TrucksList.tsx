@@ -14,6 +14,8 @@ import { printLogs } from '../../Utils/log-utils';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../../Components/AuthContext';
 import { Notes } from '../../Components/Notes';
+import { setLoadingStatus, setSelectedTruckInfo } from '../../Redux/reducers/truck-selection-slice';
+import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 
 const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
   // <-- Images and Icons -->
@@ -24,7 +26,6 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
   // <-- useState declarations -->
   const [selected, setSelected] = useState<ITruckProps | undefined>( undefined );
   const [truckData, setTruckData] = useState<ITruckProps[]>( [] );
-  const [isLoading, setIsLoading] = useState( false );
   const [isTruckNoteVisible, setIsTruckNoteVisible] = useState( true );
   const [jobsData, setJobsData] = useState<IJobsProps[] | null>( null );
   const [chevronToggle, setChevronToggle] = useState( chevron_down );
@@ -32,6 +33,11 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
   // <-- useContext -->
 
   const { setData } = useAuth();
+
+  // <-- Redux -->
+
+  const dispatch = useAppDispatch();
+  const isLoading = useAppSelector( ( state ) => state.truck.loading );
 
   // <-- useEffects -->
 
@@ -42,6 +48,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
   useEffect( () => {
     if ( selected ) {
       getJobDetailsByTruckId();
+      dispatch( setSelectedTruckInfo( selected ) );
     }
   }, [selected] );
 
@@ -64,7 +71,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
   const truckList = async () => {
     const TAG = truckList.name;
     try {
-      setIsLoading( true );
+      dispatch( setLoadingStatus( true ) );
       const response = await new APIServices( true, navigation ).get(
         API_ENDPOINT.GET_TRUCKS,
       );
@@ -79,7 +86,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
         SimpleAlert( '', API_ERR_MSG.ERR );
       }
     } finally {
-      setIsLoading( false );
+      dispatch( setLoadingStatus( false ) );
     }
   };
 
@@ -89,7 +96,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
     const TAG = getJobDetailsByTruckId.name;
     setIsTruckNoteVisible( true );
     try {
-      setIsLoading( true );
+      dispatch( setLoadingStatus( true ) );
       const response = await new APIServices( true, navigation ).get(
         API_ENDPOINT.GET_JOBS_FOR_TRUCK + `/${selected?.id}`,
       );
@@ -108,7 +115,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
         SimpleAlert( '', API_ERR_MSG.ERR );
       }
     } finally {
-      setIsLoading( false );
+      dispatch( setLoadingStatus( false ) );
     }
   };
 

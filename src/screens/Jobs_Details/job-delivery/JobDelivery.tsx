@@ -1,17 +1,20 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { IJobDeliveryDetailsProps } from '../../types'
+import { IJobDeliveryDetailsProps, ITruckProps } from '../../types'
 import moment, { unix } from 'moment';
 import { JOB_DETAILS_LABEL, JOB_DETAILS_NOTE, ValidateAndReturnEmpty, ValidateAndReturnNA } from '../job-details-constants';
 import truckInfo from '../truckInfo';
 import { globalStyles } from '../../../Utils/global-styles';
 import InfoFields from '../InfoFields';
 import { globalColors } from '../../../Utils/global-colors';
+import { useAppSelector } from '../../../Redux/hooks';
 
 const JobDelivery: React.FC<IJobDeliveryDetailsProps> = ( { jobDetailsData } ) => {
 
     const [endDate, setEndDate] = useState<string>();
     const deliveryDate = jobDetailsData?.['del-date'];
+
+    const selectedTruck: ITruckProps = useAppSelector( ( state ) => state.truck.selectedTruck );
 
     useEffect( () => {
         setEndDate(
@@ -39,7 +42,7 @@ const JobDelivery: React.FC<IJobDeliveryDetailsProps> = ( { jobDetailsData } ) =
                         </View>
                     </View>
 
-                    {truckInfo( JOB_DETAILS_LABEL.TRUCK_DETAILS, jobDetailsData['pu-name'], jobDetailsData['pu-note'], { backgroundColor: globalColors.JOB_DETAIL_BG_1, ...globalStyles.commonPadding } )}
+                    {truckInfo( JOB_DETAILS_LABEL.TRUCK_DETAILS, selectedTruck.name, selectedTruck.note, { backgroundColor: globalColors.JOB_DETAIL_BG_1, ...globalStyles.commonPadding } )}
 
                     <View style={styles.delInfo}>
                         {InfoFields(
