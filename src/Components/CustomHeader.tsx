@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { CustomHeaderProps } from '../screens/types';
 import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
+import { useAppDispatch } from '../Redux/hooks';
+import { setLoadingStatus } from '../Redux/reducers/truck-selection-slice';
 
 const CustomHeader: React.FC<CustomHeaderProps> = ( { navigation } ) => {
   const logo = require( '../Assets/Icons/RWLogo.png' );
@@ -10,6 +12,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ( { navigation } ) => {
 
   let index = navigation.getState().index;
   let showBackButton = navigation.canGoBack() && index != 0;
+  const dispatch = useAppDispatch();
 
   const openDrawer = () => {
     navigation.openDrawer();
@@ -37,6 +40,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ( { navigation } ) => {
       {showBackButton && (
         <TouchableOpacity
           onPress={() => {
+            dispatch( setLoadingStatus( false ) );
             if (
               navigation.getState().routeNames[index] ==
               DRAWER_SCREEN_NAMES.JOB_DETAILS

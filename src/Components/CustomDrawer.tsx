@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-navigation/drawer';
 import { AlertWithTwoActionableOptions, SimpleAlert } from '../Utils/SimpleAlert';
-import Loading from './Loading';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { AsyncStorageUtils, logoutSessionExpired } from '../Utils/constants';
@@ -16,7 +15,7 @@ import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
 import { printLogs } from '../Utils/log-utils';
 import { APIServices } from '../Api/api-services';
 import { useAuth } from './AuthContext';
-import { useAppDispatch, useAppSelector } from '../Redux/hooks';
+import { useAppDispatch } from '../Redux/hooks';
 import { setLoadingStatus } from '../Redux/reducers/truck-selection-slice';
 
 const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) => {
@@ -33,7 +32,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
 
   // <-- Redux -->
   const dispatch = useAppDispatch();
-  const isLoading = useAppSelector( ( state ) => state.truck.loading );
+
 
   // <-- useEffect -->
 
@@ -159,7 +158,6 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
           <Text style={styles.appVersionText}>App version - {appVersion}</Text>
         </View>
       </View>
-      {isLoading && <Loading />}
     </View>
   );
 };
