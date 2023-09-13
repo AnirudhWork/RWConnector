@@ -27,8 +27,6 @@ const Splash: React.FC<SplashProps> = ( { navigation } ) => {
   );
 };
 
-export default Splash;
-
 const styles = StyleSheet.create( {
   container: {
     flex: 1,
@@ -38,3 +36,5 @@ const styles = StyleSheet.create( {
     backgroundColor: '#000',
   },
 } );
+
+export default Splash;

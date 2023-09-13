@@ -21,6 +21,7 @@ import {
 } from '../../Api/constants';
 import { APIServices } from '../../Api/api-services';
 import { printLogs } from '../../Utils/log-utils';
+import { resetPassword } from '../../Api/api-requests/LoginPwApi';
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ( {
   navigation,
@@ -66,15 +67,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ( {
     } else {
       setIsLoading( true );
       try {
-        const data = {
-          email: email,
-        };
-        const response = await new APIServices( false, navigation ).post(
-          API_ENDPOINT.FORGOT_PW,
-          data,
-          commonHeaders,
-        );
-        if ( response?.status === STATUS_CODES.SUCCESS ) {
+        const response = await resetPassword( email, navigation );
+        if ( response ) {
           printLogs(
             TAG,
             '| successfully sent reset password to email id:',
@@ -87,15 +81,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ( {
           }, 2000 );
         }
       } catch ( error ) {
-        const knownError = error as any;
-        if ( axios.isCancel( error ) ) {
-          SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
-        } else if ( IsInternetAccessAvailable( knownError.response?.status ) && knownError.response?.status === STATUS_CODES.UNAUTHORIZED ) {
-          SimpleAlert( '', LOGIN_ERROR_ALERTS.FORGOT_PW_ERR );
-        } else {
-          printLogs( TAG, '| Forgot Pw error:', error );
-          SimpleAlert( '', API_ERR_MSG.ERR );
-        }
+        printLogs( TAG, '| Forgot PW API REQUEST Error:', error );
+        SimpleAlert( '', API_ERR_MSG.ERR );
       } finally {
         setIsLoading( false );
       }

@@ -13,7 +13,7 @@ export const AlertWithOneActionableOption = (
   title: string,
   message: string,
   positiveName: string,
-  cancellable: boolean,
+  cancelable: boolean,
   callback: ( executeAction: boolean ) => void,
 ) => {
   let buttons = [
@@ -26,7 +26,7 @@ export const AlertWithOneActionableOption = (
   ];
 
   Alert.alert( title, message, buttons, {
-    cancelable: cancellable,
+    cancelable: cancelable,
   } );
 };
 
@@ -35,7 +35,7 @@ export const AlertWithTwoActionableOptions = (
   message: string,
   positiveName: string,
   negativeName: string | null,
-  cancellable: boolean,
+  cancelable: boolean,
   callback: ( executeAction: boolean ) => void,
 ) => {
   let buttons = [
@@ -57,6 +57,6 @@ export const AlertWithTwoActionableOptions = (
   }
 
   Alert.alert( title, message, buttons, {
-    cancelable: cancellable,
+    cancelable: cancelable,
   } );
 };

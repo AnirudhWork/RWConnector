@@ -16,12 +16,10 @@ import { globalStyles } from '../../Utils/global-styles';
 const Tab = createBottomTabNavigator();
 
 const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
-
   // <-- variable declaration -->
   const jobId = route.params?.jobId;
   const jobType = route.params?.jobType;
   const TAG = JobDetails.name;
-  let temp: number | null = null;
 
   // <-- useState declarations -->
   const [jobDetailsData, setJobDetailsData] = useState<IJobDetailsProps>();
@@ -30,21 +28,20 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
   const [isItPickup, setIsItPickup] = useState<boolean>();
 
   // <-- Job Type -->
-  const getJobType = () => {
+  const getIsItPickup = () => {
     return jobType == 1;
-  }
+  };
 
   // <-- useFocusEffect -->
-  useFocusEffect( React.useCallback( () => {
-    printLogs( TAG, '| useEffect loaded' );
-    setIsItPickup( getJobType() );
-    if ( jobId != temp ) {
+  useFocusEffect(
+    React.useCallback( () => {
+      printLogs( TAG, '| useEffect loaded' );
+      setIsItPickup( getIsItPickup() );
       handleJobData();
-    } else {
-      setShowInfo( true );
-    }
-    return () => { setShowInfo( false ); temp = jobId }
-  }, [jobId] ) )
+
+      return () => setShowInfo( false );
+    }, [jobId] ),
+  );
 
   // <-- get Job Details API -->
   const handleJobData = async () => {
@@ -56,54 +53,75 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
         setShowInfo( true );
       }
     } finally {
-      setIsLoading( false )
+      setIsLoading( false );
     }
   };
 
   // <-- Activity -->
   return (
-    <View
-      style={styles.container}>
+    <View style={styles.container}>
       {showInfo && (
         <View style={styles.container}>
-          <Tab.Navigator initialRouteName={isItPickup ? TAB_NAVIGATOR_SCREEN.PICKUP : TAB_NAVIGATOR_SCREEN.DELIVERY}
+          <Tab.Navigator
+            initialRouteName={
+              isItPickup
+                ? TAB_NAVIGATOR_SCREEN.PICKUP
+                : TAB_NAVIGATOR_SCREEN.DELIVERY
+            }
             tabBar={() => {
               return (
                 <View style={styles.tab}>
                   <TouchableOpacity
                     style={[
-                      styles.tabButton, globalStyles.alignCenterStyle,
-                      isItPickup ? { backgroundColor: globalColors.green } : { backgroundColor: globalColors.gray }]}
+                      styles.tabButton,
+                      globalStyles.alignCenterStyle,
+                      isItPickup
+                        ? { backgroundColor: globalColors.green }
+                        : { backgroundColor: globalColors.gray },
+                    ]}
                     onPress={() => {
                       setIsItPickup( true );
-                      navigation.navigate( TAB_NAVIGATOR_SCREEN.PICKUP )
+                      navigation.navigate( TAB_NAVIGATOR_SCREEN.PICKUP );
                     }}>
-                    <Text style={[globalStyles.fontStyleRegular, styles.tabButtonText]}>
+                    <Text
+                      style={[
+                        globalStyles.fontStyleRegular,
+                        styles.tabButtonText,
+                      ]}>
                       {TAB_NAVIGATOR_SCREEN.PICKUP}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.tabButton, globalStyles.alignCenterStyle,
-                    isItPickup ? { backgroundColor: globalColors.gray } : { backgroundColor: globalColors.green }]}
+                    style={[
+                      styles.tabButton,
+                      globalStyles.alignCenterStyle,
+                      isItPickup
+                        ? { backgroundColor: globalColors.gray }
+                        : { backgroundColor: globalColors.green },
+                    ]}
                     onPress={() => {
                       setIsItPickup( false );
-                      navigation.navigate( TAB_NAVIGATOR_SCREEN.DELIVERY )
+                      navigation.navigate( TAB_NAVIGATOR_SCREEN.DELIVERY );
                     }}>
-                    <Text style={[globalStyles.fontStyleRegular, styles.tabButtonText]}>
+                    <Text
+                      style={[
+                        globalStyles.fontStyleRegular,
+                        styles.tabButtonText,
+                      ]}>
                       {TAB_NAVIGATOR_SCREEN.DELIVERY}
                     </Text>
                   </TouchableOpacity>
                 </View>
-              )
+              );
             }}
-            backBehavior={"none"}
+            backBehavior={'none'}
             detachInactiveScreens={true}
             screenOptions={{
               headerShown: true,
               tabBarShowLabel: false,
               headerStyle: {
                 height: 50,
-              }
+              },
             }}>
             <Tab.Screen name={TAB_NAVIGATOR_SCREEN.PICKUP}>
               {() => <JobPickup jobDetailsData={jobDetailsData} />}
@@ -113,10 +131,9 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
             </Tab.Screen>
           </Tab.Navigator>
         </View>
-      )
-      }
+      )}
       {isLoading && <Loading />}
-    </View >
+    </View>
   );
 };
 
@@ -141,7 +158,7 @@ const styles = StyleSheet.create( {
   },
   tabButtonText: {
     color: '#FFFFFF',
-  }
+  },
 } );
 
 export default JobDetails;

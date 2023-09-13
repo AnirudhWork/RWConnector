@@ -14,7 +14,7 @@ export class AsyncStorageUtils {
   static clearAllUserData = async () => {
     const TAG = this.clearAllUserData.name;
     await AsyncStorage.removeItem( ASYNC_STORAGE_KEY.LOGINRESPONSE );
-    printLogs( TAG, '| successfully' );
+    printLogs( TAG, '| successful' );
   }
 
   static setLoginResponse = async ( value: ILoginDataProps ) => {
@@ -22,8 +22,10 @@ export class AsyncStorageUtils {
     const userData = JSON.stringify( value );
     try {
       await AsyncStorage.setItem( ASYNC_STORAGE_KEY.LOGINRESPONSE, userData );
+      return true;
     } catch ( error ) {
-      printLogs( TAG, '| Error setting response. Error:', error );
+      printLogs( TAG, '| Error:', error );
+      return false;
     }
   }
 

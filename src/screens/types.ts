@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { ParamListBase, RouteProp } from '@react-navigation/native';
 import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
-import { ViewStyle } from 'react-native';
 
 export type RootStackParamList = {
   Splash: undefined;

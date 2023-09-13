@@ -130,6 +130,7 @@ export class APIServices {
       }
     } catch ( error ) {
       printLogs( 'API Get Method Request Error:', error );
+      throw error;
     }
   }
 
@@ -149,17 +150,8 @@ export class APIServices {
         SimpleAlert( '', API_ERR_MSG.INTERNET_ERR );
       }
     } catch ( error ) {
-      printLogs( 'Post Method Request Error:', error );
+      printLogs( 'API Post Method Request Error:', error );
       throw error;
     }
   }
 }
-
-const axiosInstance = axios.create(
-  {
-    baseURL: APIServices.BASE_URL,
-    timeout: 10000,
-    responseType: 'json',
-  } )
-
-export default axiosInstance;
