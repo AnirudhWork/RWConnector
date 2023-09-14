@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { IJobDetailsProps, TJobsDetailsProps } from '../types';
+import { TJobsDetailsProps } from '../types';
 import getJobsDetails from '../../Api/api-requests/jobDetailsApi';
 import { printLogs } from '../../Utils/log-utils';
 import Loading from '../../Components/Loading';
@@ -13,6 +13,9 @@ import { globalColors } from '../../Utils/global-colors';
 import { globalStyles } from '../../Utils/global-styles';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import { setLoadingStatus } from '../../Redux/reducers/truck-selection-slice';
+import { SimpleAlert } from '../../Utils/SimpleAlert';
+import { API_ERR_MSG } from '../../Api/constants';
+import { setJobDetails } from '../../Redux/reducers/job-details-slice';
 
 // <-- Tab Navigator -->
 const Tab = createBottomTabNavigator();
@@ -24,7 +27,6 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
   const TAG = JobDetails.name;
 
   // <-- useState declarations -->
-  const [jobDetailsData, setJobDetailsData] = useState<IJobDetailsProps>();
   const [showInfo, setShowInfo] = useState( false );
   const [isItPickup, setIsItPickup] = useState<boolean>();
 
@@ -40,23 +42,28 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
   // <-- useFocusEffect -->
   useFocusEffect(
     React.useCallback( () => {
+      console.log( TAG, '| useEffect laoded | console.log' );
       printLogs( TAG, '| useEffect loaded' );
       setIsItPickup( getIsItPickup() );
-      handleJobData();
+      requestJobDetails();
 
       return () => setShowInfo( false );
     }, [jobId] ),
   );
 
-  // <-- get Job Details API -->
-  const handleJobData = async () => {
+  // <-- Job Details API -->
+  const requestJobDetails = async () => {
     dispatch( setLoadingStatus( true ) );
+    const TAG = requestJobDetails.name;
     try {
       const response = await getJobsDetails( jobId, navigation );
       if ( response ) {
-        setJobDetailsData( response.data );
+        dispatch( setJobDetails( response.data ) );
         setShowInfo( true );
       }
+    } catch ( error ) {
+      printLogs( TAG, '| outer most error:', error );
+      SimpleAlert( '', API_ERR_MSG.ERR );
     } finally {
       dispatch( setLoadingStatus( false ) );
     }
@@ -128,12 +135,8 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
                 height: 50,
               },
             }}>
-            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.PICKUP}>
-              {() => <JobPickup jobDetailsData={jobDetailsData} />}
-            </Tab.Screen>
-            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.DELIVERY}>
-              {() => <JobDelivery jobDetailsData={jobDetailsData} />}
-            </Tab.Screen>
+            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.PICKUP} component={JobPickup} />
+            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.DELIVERY} component={JobDelivery} />
           </Tab.Navigator>
         </View>
       )}

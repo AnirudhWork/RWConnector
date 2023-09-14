@@ -74,11 +74,11 @@ export interface ITruckProps {
 }
 
 export interface IJobDeliveryDetailsProps {
-  jobDetailsData: IJobDetailsProps | undefined
+  navigation: DrawerNavigationProp<any, any>,
 }
 
 export interface IJobPickupDetailsProps {
-  jobDetailsData: IJobDetailsProps | undefined
+  navigation: DrawerNavigationProp<any, any>
 }
 
 export interface IJobsProps {
@@ -156,4 +156,8 @@ export interface IJobDetailsProps {
 export type SelectedTruckInfoSliceProps = {
   loading: boolean,
   selectedTruck: ITruckProps,
+}
+
+export type JobDetailsSliceProps = {
+  jobDetails: IJobDetailsProps | undefined,
 }

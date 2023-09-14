@@ -7,9 +7,12 @@ import truckInfo from '../truckInfo';
 import { globalStyles } from '../../../Utils/global-styles';
 import InfoFields from '../InfoFields';
 import { globalColors } from '../../../Utils/global-colors';
-import { useAppSelector } from '../../../Redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../Redux/hooks';
 
-const JobDelivery: React.FC<IJobDeliveryDetailsProps> = ( { jobDetailsData } ) => {
+const JobDelivery: React.FC<IJobDeliveryDetailsProps> = ( { navigation } ) => {
+
+    const _dispatch = useAppDispatch();
+    const jobDetailsData = useAppSelector( ( state ) => state.jobDetails.jobDetails );
 
     const [endDate, setEndDate] = useState<string>();
     const deliveryDate = jobDetailsData?.['del-date'];
@@ -22,7 +25,9 @@ const JobDelivery: React.FC<IJobDeliveryDetailsProps> = ( { jobDetailsData } ) =
                 ? moment( unix( deliveryDate ) ).format( 'DD-MMM-YYYY' )
                 : '',
         );
-    }, [] )
+    }, [] );
+
+
     return (
         <View style={styles.container}>
             {jobDetailsData && (
@@ -115,4 +120,4 @@ const styles = StyleSheet.create( {
 } )
 
 
-export default JobDelivery
+export default JobDelivery;

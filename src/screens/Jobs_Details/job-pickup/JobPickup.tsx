@@ -1,15 +1,18 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { IJobPickupDetailsProps, ITruckProps } from '../../types'
+import { IJobDetailsProps, IJobPickupDetailsProps, ITruckProps } from '../../types'
 import { globalColors } from '../../../Utils/global-colors'
 import { JOB_DETAILS_LABEL, JOB_DETAILS_NOTE, ValidateAndReturnEmpty, ValidateAndReturnNA } from '../job-details-constants'
 import { globalStyles } from '../../../Utils/global-styles'
 import moment, { unix } from 'moment'
 import truckInfo from '../truckInfo'
 import InfoFields from '../InfoFields'
-import { useAppSelector } from '../../../Redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../../Redux/hooks'
 
-const JobPickup: React.FC<IJobPickupDetailsProps> = ( { jobDetailsData } ) => {
+const JobPickup: React.FC<IJobPickupDetailsProps> = ( { navigation } ) => {
+
+    const _dispatch = useAppDispatch();
+    const jobDetailsData = useAppSelector( ( state ) => state.jobDetails.jobDetails );
 
     const [endDate, setEndDate] = useState<string>();
     const deliveryDate = jobDetailsData?.['del-date'];
