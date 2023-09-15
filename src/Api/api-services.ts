@@ -129,7 +129,7 @@ export class APIServices {
         SimpleAlert( '', API_ERR_MSG.INTERNET_ERR );
       }
     } catch ( error ) {
-      printLogs( 'API Get Method Request Error:', error );
+      printLogs( 'API Get Method REQUEST Error:', error );
       throw error;
     }
   }
@@ -145,13 +145,13 @@ export class APIServices {
           } )
           .catch( ( error: AxiosError ) => {
             throw error;
-          } )
+          } );
       } else {
         SimpleAlert( '', API_ERR_MSG.INTERNET_ERR );
-      }
+      };
     } catch ( error ) {
       printLogs( 'API Post Method Request Error:', error );
       throw error;
-    }
-  }
-}
+    };
+  };
+};
