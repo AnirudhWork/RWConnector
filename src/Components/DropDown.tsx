@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { IProps } from './types';
 import { ITruckProps } from '../screens/types';
+import { globalColors } from '../Utils/global-colors';
 
 const Dropdown: FC<IProps> = ( { label, data, onSelect } ) => {
   const chevron_down = require( '../Assets/Icons/chevron-down.png' );
@@ -91,7 +92,7 @@ const Dropdown: FC<IProps> = ( { label, data, onSelect } ) => {
       <Text
         style={[
           styles.DropDownButtonText,
-          selected ? { color: '#000000' } : { color: '#BCBCBC' },
+          selected ? { color: globalColors.black } : { color: globalColors.PLACEHOLDER },
         ]}>
         {selected?.name || label}
       </Text>

@@ -101,30 +101,6 @@ const JobPickup: React.FC<IJobPickupDetailsProps> = ( { navigation } ) => {
           </View>
           <View style={styles.puInfo}>
             {InfoFields(
-              JOB_DETAILS_LABEL.PICKUP_DETAILS,
-              ValidateAndReturnNA( jobDetailsData['pu-name'] ),
-              ValidateAndReturnEmpty( jobDetailsData['pu-addr'] ),
-              `${ValidateAndReturnEmpty( jobDetailsData['pu-city'] )}, ${jobDetailsData['pu-state']
-              } ${jobDetailsData['pu-zip']}`,
-              {
-                backgroundColor: globalColors.JOB_DETAIL_BG_2,
-                ...globalStyles.commonPadding,
-              },
-            )}
-            {InfoFields(
-              JOB_DETAILS_LABEL.CONTACT_DETAILS,
-              ValidateAndReturnNA( jobDetailsData['pu-name'] ),
-              `Tel: ${ValidateAndReturnEmpty( jobDetailsData['pu-phone'] )}`,
-              `Email: ${ValidateAndReturnEmpty( jobDetailsData['pu-email'] )}`,
-              {
-                backgroundColor: globalColors.JOB_DETAIL_BG_1,
-                marginTop: 3,
-                ...globalStyles.commonPadding,
-              },
-            )}
-          </View>
-          <View style={styles.puInfo}>
-            {InfoFields(
               JOB_DETAILS_LABEL.BILL_DETAILS,
               ValidateAndReturnNA( jobDetailsData['pu-name'] ),
               ValidateAndReturnEmpty( jobDetailsData['pu-addr'] ),

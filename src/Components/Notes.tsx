@@ -39,7 +39,7 @@ export const Notes: React.FC<{
             style={[
               { fontSize: 14 },
               {
-                color: globalColors.truckNoteText,
+                color: globalColors.TRUCK_NOTE_TEXT,
               },
             ]}
           >
@@ -54,7 +54,7 @@ export const Notes: React.FC<{
             style={[
               { fontSize: 14 },
               {
-                color: globalColors.truckNoteText,
+                color: globalColors.TRUCK_NOTE_TEXT,
                 maxHeight:
                   Platform.OS == "ios" ? linesToDisplay * 20 : undefined,
               },
