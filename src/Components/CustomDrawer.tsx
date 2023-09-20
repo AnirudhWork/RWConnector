@@ -14,9 +14,10 @@ import {
 import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
 import { printLogs } from '../Utils/log-utils';
 import { APIServices } from '../Api/api-services';
-import { useAuth } from './AuthContext';
 import { useAppDispatch } from '../Redux/hooks';
 import { setLoadingStatus } from '../Redux/reducers/truck-selection-slice';
+import { globalColors } from '../Utils/global-colors';
+import { useGlobalContext } from './GlobalContext';
 
 const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) => {
   // <-- Images and Icons -->
@@ -26,13 +27,12 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
   // <-- useState Declarations -->
   const [appVersion, setAppVersion] = useState<string>( '' );
   const [username, setUsername] = useState<string>( '' );
+  // const [drawerItemBgColor, setDrawerItemBgColor] = useState<string>( globalColors.DRAWER_ACTIVE );
 
-  // <-- useContext -->
-  let { data, setData } = useAuth();
+  let drawerBgColor = useGlobalContext();
 
   // <-- Redux -->
   const dispatch = useAppDispatch();
-
 
   // <-- useEffect -->
 
@@ -53,7 +53,8 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
   // <-- On Jobs button click -->
 
   const returnToDashboard = () => {
-    setData( '#007f00' );
+    // setDrawerItemBgColor( globalColors.DRAWER_ACTIVE );
+    drawerBgColor.drawerItemBgColor = globalColors.DRAWER_ACTIVE;
     navigation.closeDrawer();
     navigation.navigate( DRAWER_SCREEN_NAMES.TRUCK_LIST );
   };
@@ -135,7 +136,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
             {/* <DrawerItemList />*/}
             <View>
               <TouchableOpacity
-                style={[styles.customDrawerActiveItemContainer, { backgroundColor: data }]}
+                style={[styles.customDrawerActiveItemContainer, { backgroundColor: drawerBgColor.drawerItemBgColor }]}
                 onPress={returnToDashboard}>
                 <Text style={styles.customDrawerItem}>Jobs</Text>
               </TouchableOpacity>

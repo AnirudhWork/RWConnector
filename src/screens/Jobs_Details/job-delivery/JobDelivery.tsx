@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { IJobDeliveryDetailsProps, ITruckProps } from '../../types'
 import moment, { unix } from 'moment';
 import { JOB_DETAILS_LABEL, JOB_DETAILS_NOTE, ValidateAndReturnEmpty, ValidateAndReturnNA } from '../job-details-constants';
-import truckInfo from '../truckInfo';
+import truckInfo from '../TruckInfo';
 import { globalStyles } from '../../../Utils/global-styles';
 import InfoFields from '../InfoFields';
 import { globalColors } from '../../../Utils/global-colors';

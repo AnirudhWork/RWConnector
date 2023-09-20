@@ -12,10 +12,11 @@ import { JOB_MSGS, TRUCK_API_ERR_MSG } from './constants';
 import { APIServices } from '../../Api/api-services';
 import { printLogs } from '../../Utils/log-utils';
 import { useFocusEffect } from '@react-navigation/native';
-import { useAuth } from '../../Components/AuthContext';
+import { useGlobalContext } from '../../Components/GlobalContext';
 import { Notes } from '../../Components/Notes';
 import { setLoadingStatus, setSelectedTruckInfo } from '../../Redux/reducers/truck-selection-slice';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
+import { globalColors } from '../../Utils/global-colors';
 
 const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
   // <-- Images and Icons -->
@@ -32,7 +33,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
 
   // <-- useContext -->
 
-  const { setData } = useAuth();
+  let drawerBgColor = useGlobalContext();
 
   // <-- Redux -->
 
@@ -61,9 +62,9 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
   // <-- useFocusEffect -->
 
   useFocusEffect( React.useCallback( () => {
-    setData( '#007f00' );
+    drawerBgColor.drawerItemBgColor = globalColors.DRAWER_ACTIVE;
 
-    return () => { setData( 'transparent' ) };
+    return () => { drawerBgColor.drawerItemBgColor = globalColors.TRANSPARENT; };
   }, [] ) );
 
   // <-- Truck list api -->

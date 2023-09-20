@@ -13,6 +13,7 @@ export const enum JOB_DETAILS_LABEL {
   PICKUP_DETAILS = 'Pickup Details',
   CONTACT_DETAILS = 'Contact Details',
   BILL_DETAILS = 'Bill Details',
+  DRIVER_NOTE = 'Driver Note',
   NOTAVAILABLE = 'N/A',
   EMPTY = '',
 }

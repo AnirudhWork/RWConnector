@@ -17,8 +17,3 @@ export interface UserData {
   username: string | null;
   appVersion: string | null;
 }
-
-export type AuthContextType = {
-  data: string;
-  setData: Dispatch<SetStateAction<string>>;
-} | null;

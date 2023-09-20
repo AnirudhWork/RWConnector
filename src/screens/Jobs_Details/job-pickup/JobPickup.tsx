@@ -10,11 +10,16 @@ import {
 } from '../job-details-constants';
 import { globalStyles } from '../../../Utils/global-styles';
 import moment, { unix } from 'moment';
-import truckInfo from '../truckInfo';
+import truckInfo from '../TruckInfo';
 import InfoFields from '../InfoFields';
 import { useAppDispatch, useAppSelector } from '../../../Redux/hooks';
+import { DriverNote } from '../DriverNote';
+import { isTablet } from 'react-native-device-info';
+import { useGlobalContext } from '../../../Components/GlobalContext';
 
 const JobPickup: React.FC<IJobPickupDetailsProps> = ( { navigation } ) => {
+
+  const isThisTablet = isTablet();
 
   // <-- Redux -->
   const _dispatch = useAppDispatch();
@@ -26,6 +31,16 @@ const JobPickup: React.FC<IJobPickupDetailsProps> = ( { navigation } ) => {
   // <-- useState & variable declarations -->
   const [endDate, setEndDate] = useState<string>();
   const deliveryDate = jobDetailsData?.['del-date'];
+  const [refDriverNote, setRefDriverNote] = useState();
+  const [config_IsItCompleted, setConfig_IsItCompleted] = useState<boolean>( false );
+  const [isEditingEnabled, setIsEditingEnabled] = useState<boolean>( false );
+
+  // <-- Global Context -->
+  const globalContext = useGlobalContext();
+
+  let commonSpace = globalContext.commonSpace;
+  let commonMiniSpace = globalContext.commonMiniSpace;
+
 
   // <-- useEffects -->
   useEffect( () => {
@@ -108,9 +123,23 @@ const JobPickup: React.FC<IJobPickupDetailsProps> = ( { navigation } ) => {
               } ${jobDetailsData['pu-zip']}`,
               {
                 backgroundColor: globalColors.JOB_DETAIL_BG_2,
-                padding: 15,
+                padding: commonSpace,
               },
-            )}
+            )};
+            {/* <DriverNote
+              ref={refDriverNote}
+              commonSpace={commonSpace}
+              isItCompletedJobType={config_IsItCompleted}
+              title={JOB_DETAILS_LABEL.DRIVER_NOTE}
+              enabled={isEditingEnabled}
+              extraStyle={{
+                ...globalStyles.commonPadding,
+                backgroundColor: globalColors.JOB_DETAIL_BG_1,
+                padding: commonSpace,
+                marginLeft: isThisTablet ? commonMiniSpace : 0,
+                marginTop: isThisTablet ? 0 : commonMiniSpace,
+              }}
+            /> */}
           </View>
         </ScrollView>
       )}

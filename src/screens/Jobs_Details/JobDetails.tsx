@@ -42,8 +42,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
   // <-- useFocusEffect -->
   useFocusEffect(
     React.useCallback( () => {
-      console.log( TAG, '| useEffect laoded | console.log' );
-      printLogs( TAG, '| useEffect loaded' );
+      printLogs( TAG, '| useFocusEffect loaded' );
       setIsItPickup( getIsItPickup() );
       requestJobDetails();
 
@@ -54,6 +53,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
   // <-- Job Details API -->
   const requestJobDetails = async () => {
     dispatch( setLoadingStatus( true ) );
+    setShowInfo( false );
     const TAG = requestJobDetails.name;
     try {
       const response = await getJobsDetails( jobId, navigation );
