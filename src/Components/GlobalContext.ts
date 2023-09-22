@@ -11,6 +11,10 @@ export class GlobalContextModal {
   constructor( isItLandScape: boolean ) {
     this.isItLandScape = isItLandScape;
   };
+
+  setDrawerItemBgColor = ( color: string ) => {
+    this.drawerItemBgColor = color;
+  };
 };
 
 export const GlobalContext = createContext<GlobalContextModal>(

@@ -1,10 +1,9 @@
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
-import React, { useImperativeHandle, useState } from 'react';
-import { printLogs } from '../../Utils/log-utils';
-import { globalStyles } from '../../Utils/global-styles';
-import { globalColors } from '../../Utils/global-colors';
-import { TextInput } from 'react-native-gesture-handler';
-import { ValidateAndReturnNA } from './job-details-constants';
+import {StyleSheet, Text, View, ViewStyle, TextInput} from 'react-native';
+import React, {useImperativeHandle, useState} from 'react';
+import {printLogs} from '../../Utils/log-utils';
+import {globalStyles} from '../../Utils/global-styles';
+import {globalColors} from '../../Utils/global-colors';
+import {ValidateAndReturnEmpty} from './job-details-constants';
 
 export type TDriverNote = {
   isItCompletedJobType: boolean;
@@ -16,59 +15,60 @@ export type TDriverNote = {
 
 export type TRef_DriverNote = {
   getNote: () => string;
-  setNote: ( rwNote: string, driverNote: string ) => void;
+  setNote: (rwNote: string, driverNote: string) => void;
 };
 
 export const DriverNote = React.forwardRef<TRef_DriverNote, TDriverNote>(
-  ( { enabled, extraStyle, commonSpace, title, isItCompletedJobType }, ref ) => {
+  ({enabled, extraStyle, commonSpace, title, isItCompletedJobType}, ref) => {
     const TAG = DriverNote.name;
 
-    const [driverNote, setDriverNote] = useState( '' );
-    const [defaultNotesFromRW, setDefaultNotesFromRW] = useState( '' );
-    const [default_driverNote, set_default_driverNote] = useState( '' );
-
-    useImperativeHandle( ref, () => {
+    useImperativeHandle(ref, () => {
       return {
         getNote() {
           return driverNote;
         },
-        setNote( rwNote: string, driverNote: string ) {
+        setNote(rwNote: string, driverNote: string) {
           printLogs(
             TAG,
             'useImperativeHandle()-setNote() |',
+            'RW Note:',
             rwNote,
+            'Driver Note:',
             driverNote,
           );
-          set_default_driverNote( driverNote );
-          setDriverNote( driverNote );
-          setDefaultNotesFromRW( rwNote );
+          set_default_driverNote(driverNote);
+          setDriverNote(driverNote);
+          setDefaultNotesFromRW(rwNote);
         },
       };
-    } );
+    });
+
+    const [driverNote, setDriverNote] = useState<string>('');
+    const [defaultNotesFromRW, setDefaultNotesFromRW] = useState<string>('');
+    const [default_driverNote, set_default_driverNote] = useState<string>('');
 
     return (
-      <View style={[
-        styles.container,
-        extraStyle
-      ]}>
-        <Text style={[
-          globalStyles.fontStyleRegular,
-          {
-            color: globalColors.PLACEHOLDER,
-          }
-        ]}>
+      <View style={[styles.container, extraStyle]}>
+        <Text
+          style={[
+            globalStyles.fontStyleRegular,
+            {
+              color: globalColors.PLACEHOLDER,
+            },
+          ]}>
           {title}
         </Text>
 
         {isItCompletedJobType || enabled ? (
           <>
             {defaultNotesFromRW && (
-              <Text style={{
-                backgroundColor: globalColors.TRANSPARENT,
-                borderRadius: commonSpace / 2,
-                marginTop: commonSpace / 2,
-                color: globalColors.black,
-              }}>
+              <Text
+                style={{
+                  backgroundColor: globalColors.TRANSPARENT,
+                  borderRadius: commonSpace / 2,
+                  marginTop: commonSpace / 2,
+                  color: globalColors.black,
+                }}>
                 {defaultNotesFromRW}
               </Text>
             )}
@@ -76,9 +76,10 @@ export const DriverNote = React.forwardRef<TRef_DriverNote, TDriverNote>(
               style={{
                 marginTop: commonSpace / 2,
                 padding: commonSpace,
-                backgroundColor: isItCompletedJobType || enabled
-                  ? globalColors.white
-                  : globalColors.TRANSPARENT,
+                backgroundColor:
+                  isItCompletedJobType || enabled
+                    ? globalColors.white
+                    : globalColors.TRANSPARENT,
                 borderRadius: 3,
                 textAlignVertical: 'top',
                 color: isItCompletedJobType
@@ -95,13 +96,14 @@ export const DriverNote = React.forwardRef<TRef_DriverNote, TDriverNote>(
             />
           </>
         ) : (
-          <Text style={{
-            marginTop: enabled ? commonSpace : 0,
-            backgroundColor: globalColors.TRANSPARENT,
-            borderRadius: commonSpace / 2,
-            color: globalColors.black,
-          }}>
-            {ValidateAndReturnNA( defaultNotesFromRW )}
+          <Text
+            style={{
+              marginTop: enabled ? commonSpace : 0,
+              backgroundColor: globalColors.TRANSPARENT,
+              borderRadius: commonSpace / 2,
+              color: globalColors.black,
+            }}>
+            {ValidateAndReturnEmpty(defaultNotesFromRW)}
           </Text>
         )}
       </View>
@@ -109,10 +111,9 @@ export const DriverNote = React.forwardRef<TRef_DriverNote, TDriverNote>(
   },
 );
 
-
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
   },
-} );
+});

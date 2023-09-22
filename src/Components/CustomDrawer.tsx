@@ -1,48 +1,50 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-navigation/drawer';
-import { AlertWithTwoActionableOptions, SimpleAlert } from '../Utils/SimpleAlert';
+import {StyleSheet, Text, View, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  DrawerContentComponentProps,
+  DrawerContentScrollView,
+} from '@react-navigation/drawer';
+import {AlertWithTwoActionableOptions, SimpleAlert} from '../Utils/SimpleAlert';
 import axios from 'axios';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { AsyncStorageUtils, logoutSessionExpired } from '../Utils/constants';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {AsyncStorageUtils, logoutSessionExpired} from '../Utils/constants';
 import {
   API_ENDPOINT,
   API_ERR_MSG,
   STATUS_CODES,
   logoutAndNavigateToLoginScreen,
 } from '../Api/constants';
-import { DRAWER_SCREEN_NAMES } from '../Navigators/constants';
-import { printLogs } from '../Utils/log-utils';
-import { APIServices } from '../Api/api-services';
-import { useAppDispatch } from '../Redux/hooks';
-import { setLoadingStatus } from '../Redux/reducers/truck-selection-slice';
-import { globalColors } from '../Utils/global-colors';
-import { useGlobalContext } from './GlobalContext';
+import {DRAWER_SCREEN_NAMES} from '../Navigators/constants';
+import {printLogs} from '../Utils/log-utils';
+import {APIServices} from '../Api/api-services';
+import {useAppDispatch} from '../Redux/hooks';
+import {setLoadingStatus} from '../Redux/reducers/truck-selection-slice';
+import {globalColors} from '../Utils/global-colors';
+import {useGlobalContext} from './GlobalContext';
+import DeviceInfo from 'react-native-device-info';
 
-const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) => {
+const CustomDrawer: React.FC<DrawerContentComponentProps> = ({navigation}) => {
   // <-- Images and Icons -->
 
-  const drawerClose = require( '../Assets/Icons/DrawerCross.png' );
+  const drawerClose = require('../Assets/Icons/DrawerCross.png');
+  const appVersion = DeviceInfo.getVersion();
 
   // <-- useState Declarations -->
-  const [appVersion, setAppVersion] = useState<string>( '' );
-  const [username, setUsername] = useState<string>( '' );
-  // const [drawerItemBgColor, setDrawerItemBgColor] = useState<string>( globalColors.DRAWER_ACTIVE );
+  const [username, setUsername] = useState<string>('');
 
-  let drawerBgColor = useGlobalContext();
+  let globalContext = useGlobalContext();
 
   // <-- Redux -->
   const dispatch = useAppDispatch();
 
   // <-- useEffect -->
 
-  useEffect( () => {
+  useEffect(() => {
     const requiredInfo = async () => {
-      setAppVersion( await AsyncStorageUtils.getAppVersion() );
-      setUsername( await AsyncStorageUtils.getUsername() );
+      setUsername(await AsyncStorageUtils.getUsername());
     };
     requiredInfo();
-  }, [] );
+  }, []);
 
   // <-- DrawerClosure on 'X' icon press -->
 
@@ -53,10 +55,9 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
   // <-- On Jobs button click -->
 
   const returnToDashboard = () => {
-    // setDrawerItemBgColor( globalColors.DRAWER_ACTIVE );
-    drawerBgColor.drawerItemBgColor = globalColors.DRAWER_ACTIVE;
+    globalContext.setDrawerItemBgColor(globalColors.DRAWER_ACTIVE);
     navigation.closeDrawer();
-    navigation.navigate( DRAWER_SCREEN_NAMES.TRUCK_LIST );
+    navigation.navigate(DRAWER_SCREEN_NAMES.TRUCK_LIST);
   };
 
   // <-- Confirm Logout Pop-up -->
@@ -70,7 +71,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
       'No',
       true,
       executeAction => {
-        if ( executeAction ) {
+        if (executeAction) {
           handleLogOut();
         }
       },
@@ -81,33 +82,39 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
 
   const handleLogOut = async () => {
     const TAG = handleLogOut.name;
-    dispatch( setLoadingStatus( true ) );
+    dispatch(setLoadingStatus(true));
 
     // <-- Checking if token exist -->
 
     const userToken = await AsyncStorageUtils.getUserToken();
-    if ( !userToken ) {
-      dispatch( setLoadingStatus( false ) );
-      printLogs( TAG, '| Logout API, user token not found. usertoken:', userToken );
-      logoutAndNavigateToLoginScreen( navigation.getParent() );
+    if (!userToken) {
+      dispatch(setLoadingStatus(false));
+      printLogs(
+        TAG,
+        '| Logout API, user token not found. usertoken:',
+        userToken,
+      );
+      logoutAndNavigateToLoginScreen(navigation.getParent());
     }
 
     // <-- Expiring the token if it exist -->
 
     try {
-      const response = await new APIServices( true, navigation.getParent() ).post( API_ENDPOINT.LOGOUT );
-      if ( response?.status === STATUS_CODES.SUCCESS ) {
-        logoutAndNavigateToLoginScreen( navigation.getParent() );
+      const response = await new APIServices(true, navigation.getParent()).post(
+        API_ENDPOINT.LOGOUT,
+      );
+      if (response?.status === STATUS_CODES.SUCCESS) {
+        logoutAndNavigateToLoginScreen(navigation.getParent());
       }
-    } catch ( error ) {
-      if ( axios.isCancel( error ) ) {
-        SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
       } else {
-        printLogs( TAG, '| Error', error );
-        logoutSessionExpired( navigation.getParent() );
+        printLogs(TAG, '| Error', error);
+        logoutSessionExpired(navigation.getParent());
       }
     } finally {
-      dispatch( setLoadingStatus( false ) );
+      dispatch(setLoadingStatus(false));
     }
   };
 
@@ -136,7 +143,10 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
             {/* <DrawerItemList />*/}
             <View>
               <TouchableOpacity
-                style={[styles.customDrawerActiveItemContainer, { backgroundColor: drawerBgColor.drawerItemBgColor }]}
+                style={[
+                  styles.customDrawerActiveItemContainer,
+                  {backgroundColor: globalContext.drawerItemBgColor},
+                ]}
                 onPress={returnToDashboard}>
                 <Text style={styles.customDrawerItem}>Jobs</Text>
               </TouchableOpacity>
@@ -148,15 +158,10 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
                 <Text style={styles.customDrawerItem}>Logout</Text>
               </TouchableOpacity>
             </View>
-            {/* <DrawerItem
-              label="Logout"
-              onPress={confirmLogOut}
-              labelStyle={styles.titleText}
-            /> */}
           </View>
         </DrawerContentScrollView>
         <View style={styles.appVersionContainer}>
-          <Text style={styles.appVersionText}>App version - {appVersion}</Text>
+          <Text style={styles.appVersionText}>App version - v{appVersion}</Text>
         </View>
       </View>
     </View>
@@ -165,7 +170,7 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ( { navigation } ) =
 
 // <-- Styles -->
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#4e5549',
@@ -230,6 +235,6 @@ const styles = StyleSheet.create( {
     color: '#bedbc0',
     marginTop: 60,
   },
-} );
+});
 
 export default CustomDrawer;

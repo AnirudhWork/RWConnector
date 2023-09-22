@@ -14,14 +14,24 @@ export const enum JOB_DETAILS_LABEL {
   CONTACT_DETAILS = 'Contact Details',
   BILL_DETAILS = 'Bill Details',
   DRIVER_NOTE = 'Driver Note',
-  NOTAVAILABLE = 'N/A',
+  SPECIAL_INFO = 'Special Instructions',
   EMPTY = '',
 }
 
-export const ValidateAndReturnNA = ( input: string ) => {
-  return input ?? JOB_DETAILS_LABEL.NOTAVAILABLE;
+export const ValidateAndReturnEmpty = (input: string) => {
+  return input ?? JOB_DETAILS_LABEL.EMPTY;
+};
+
+export const ValidateWithCommaAndReturnEmpty = (input: string) => {
+  return input ? `${input},` : JOB_DETAILS_LABEL.EMPTY;
+};
+
+export enum IS_JOB_LOCKED_BY_CURRENT_USER {
+  YES = 1,
+  NO = 0,
 }
 
-export const ValidateAndReturnEmpty = ( input: string ) => {
-  return input ?? JOB_DETAILS_LABEL.EMPTY;
+export enum JOB_DETAILS_JOB_TYPE {
+  PICKUP = 1,
+  DELIVERY = 2,
 }

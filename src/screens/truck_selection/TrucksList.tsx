@@ -1,93 +1,104 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, Text, View, Image} from 'react-native';
 import Dropdown from '../../Components/DropDown';
-import { ITruckProps, IJobsProps, TTruckListProps } from '../types';
+import {ITruckProps, IJobsProps, TTruckListProps} from '../types';
 import axios from 'axios';
-import { SimpleAlert } from '../../Utils/SimpleAlert';
+import {SimpleAlert} from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { API_ENDPOINT, API_ERR_MSG, IsInternetAccessAvailable, STATUS_CODES } from '../../Api/constants';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {
+  API_ENDPOINT,
+  API_ERR_MSG,
+  IsInternetAccessAvailable,
+  STATUS_CODES,
+} from '../../Api/constants';
 import Jobs from './Jobs';
-import { JOB_MSGS, TRUCK_API_ERR_MSG } from './constants';
-import { APIServices } from '../../Api/api-services';
-import { printLogs } from '../../Utils/log-utils';
-import { useFocusEffect } from '@react-navigation/native';
-import { useGlobalContext } from '../../Components/GlobalContext';
-import { Notes } from '../../Components/Notes';
-import { setLoadingStatus, setSelectedTruckInfo } from '../../Redux/reducers/truck-selection-slice';
-import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
-import { globalColors } from '../../Utils/global-colors';
+import {JOB_MSGS, TRUCK_API_ERR_MSG} from './constants';
+import {APIServices} from '../../Api/api-services';
+import {printLogs} from '../../Utils/log-utils';
+import {useFocusEffect} from '@react-navigation/native';
+import {useGlobalContext} from '../../Components/GlobalContext';
+import {Notes} from '../../Components/Notes';
+import {
+  setLoadingStatus,
+  setSelectedTruckInfo,
+} from '../../Redux/reducers/truck-selection-slice';
+import {useAppDispatch, useAppSelector} from '../../Redux/hooks';
+import {globalColors} from '../../Utils/global-colors';
+import {AsyncStorageUtils, isUpdateAlertReq} from '../../Utils/constants';
 
-const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
+const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   // <-- Images and Icons -->
-  const chevron_down = require( '../../Assets/Icons/chevron-down.png' );
-  const chevron_up = require( '../../Assets/Icons/chevron-up.png' );
-  const refresh = require( '../../Assets/Icons/ic_refresh.png' );
+  const chevron_down = require('../../Assets/Icons/chevron-down.png');
+  const chevron_up = require('../../Assets/Icons/chevron-up.png');
+  const refresh = require('../../Assets/Icons/ic_refresh.png');
 
   // <-- useState declarations -->
-  const [selected, setSelected] = useState<ITruckProps | undefined>( undefined );
-  const [truckData, setTruckData] = useState<ITruckProps[]>( [] );
-  const [isTruckNoteVisible, setIsTruckNoteVisible] = useState( true );
-  const [jobsData, setJobsData] = useState<IJobsProps[] | null>( null );
-  const [chevronToggle, setChevronToggle] = useState( chevron_down );
+  const [selected, setSelected] = useState<ITruckProps | undefined>(undefined);
+  const [truckData, setTruckData] = useState<ITruckProps[]>([]);
+  const [isTruckNoteVisible, setIsTruckNoteVisible] = useState(true);
+  const [jobsData, setJobsData] = useState<IJobsProps[] | null>(null);
+  const [chevronToggle, setChevronToggle] = useState(chevron_down);
 
   // <-- useContext -->
 
-  let drawerBgColor = useGlobalContext();
+  let globalContext = useGlobalContext();
 
   // <-- Redux -->
 
   const dispatch = useAppDispatch();
-  const isLoading = useAppSelector( ( state ) => state.truck.loading );
+  const isLoading = useAppSelector(state => state.truck.loading);
 
   // <-- useEffects -->
 
-  useEffect( () => {
+  useEffect(() => {
     truckList();
-  }, [] );
+  }, []);
 
-  useEffect( () => {
-    if ( selected ) {
+  useEffect(() => {
+    if (selected) {
       getJobDetailsByTruckId();
-      dispatch( setSelectedTruckInfo( selected ) );
+      dispatch(setSelectedTruckInfo(selected));
     }
-  }, [selected] );
+  }, [selected]);
 
-  useEffect( () => {
+  useEffect(() => {
     isTruckNoteVisible
-      ? setChevronToggle( chevron_up )
-      : setChevronToggle( chevron_down );
-  }, [isTruckNoteVisible] );
+      ? setChevronToggle(chevron_up)
+      : setChevronToggle(chevron_down);
+  }, [isTruckNoteVisible]);
 
   // <-- useFocusEffect -->
 
-  useFocusEffect( React.useCallback( () => {
-    drawerBgColor.drawerItemBgColor = globalColors.DRAWER_ACTIVE;
+  useFocusEffect(
+    React.useCallback(() => {
+      globalContext.setDrawerItemBgColor(globalColors.DRAWER_ACTIVE);
 
-    return () => { drawerBgColor.drawerItemBgColor = globalColors.TRANSPARENT; };
-  }, [] ) );
+      return () => globalContext.setDrawerItemBgColor(globalColors.TRANSPARENT);
+    }, []),
+  );
 
   // <-- Truck list api -->
 
   const truckList = async () => {
     const TAG = truckList.name;
     try {
-      dispatch( setLoadingStatus( true ) );
-      const response = await new APIServices( true, navigation ).get(
+      dispatch(setLoadingStatus(true));
+      const response = await new APIServices(true, navigation).get(
         API_ENDPOINT.GET_TRUCKS,
       );
-      if ( response?.status === STATUS_CODES.SUCCESS ) {
-        setTruckData( response.data['truck-list'] );
+      if (response?.status === STATUS_CODES.SUCCESS) {
+        setTruckData(response.data['truck-list']);
       }
-    } catch ( error ) {
-      if ( axios.isCancel( error ) ) {
-        SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
       } else {
-        printLogs( TAG, '| API Error:', error );
-        SimpleAlert( '', API_ERR_MSG.ERR );
+        printLogs(TAG, '| API Error:', error);
+        SimpleAlert('', API_ERR_MSG.ERR);
       }
     } finally {
-      dispatch( setLoadingStatus( false ) );
+      dispatch(setLoadingStatus(false));
     }
   };
 
@@ -95,28 +106,31 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
 
   const getJobDetailsByTruckId = async () => {
     const TAG = getJobDetailsByTruckId.name;
-    setIsTruckNoteVisible( true );
+    setIsTruckNoteVisible(true);
     try {
-      dispatch( setLoadingStatus( true ) );
-      const response = await new APIServices( true, navigation ).get(
+      dispatch(setLoadingStatus(true));
+      const response = await new APIServices(true, navigation).get(
         API_ENDPOINT.GET_JOBS_FOR_TRUCK + `/${selected?.id}`,
       );
-      if ( response?.status == STATUS_CODES.SUCCESS ) {
-        printLogs( TAG, '| successful response:', response );
-        setJobsData( response.data['job-list'] );
+      if (response?.status == STATUS_CODES.SUCCESS) {
+        printLogs(TAG, '| successful response:', response);
+        setJobsData(response.data['job-list']);
       }
-    } catch ( error ) {
+    } catch (error) {
       const knownError = error as any;
-      if ( axios.isCancel( error ) ) {
-        SimpleAlert( '', API_ERR_MSG.REQ_CANCEL_ERR );
-      } else if ( IsInternetAccessAvailable( knownError.response?.status ) && knownError.response?.status === STATUS_CODES.BAD_REQUEST ) {
-        SimpleAlert( '', TRUCK_API_ERR_MSG.NOTFOUND );
+      if (axios.isCancel(error)) {
+        SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
+      } else if (
+        IsInternetAccessAvailable(knownError.response?.status) &&
+        knownError.response?.status === STATUS_CODES.BAD_REQUEST
+      ) {
+        SimpleAlert('', TRUCK_API_ERR_MSG.NOTFOUND);
       } else {
-        printLogs( TAG, '| API Error:', error );
-        SimpleAlert( '', API_ERR_MSG.ERR );
+        printLogs(TAG, '| API Error:', error);
+        SimpleAlert('', API_ERR_MSG.ERR);
       }
     } finally {
-      dispatch( setLoadingStatus( false ) );
+      dispatch(setLoadingStatus(false));
     }
   };
 
@@ -143,7 +157,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
             source={refresh}
             style={[
               styles.refreshImage,
-              !selected ? { tintColor: '#ccc' } : null,
+              !selected ? {tintColor: '#ccc'} : null,
             ]}
           />
         </TouchableOpacity>
@@ -152,7 +166,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
         <View style={styles.truckNoteContainer}>
           <TouchableOpacity
             style={styles.truckNoteButton}
-            onPress={() => setIsTruckNoteVisible( !isTruckNoteVisible )}>
+            onPress={() => setIsTruckNoteVisible(!isTruckNoteVisible)}>
             <Text style={styles.truckNoteTitle}>Truck Note</Text>
             <Image source={chevronToggle} style={styles.icon} />
           </TouchableOpacity>
@@ -165,7 +179,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
         <Jobs navigation={navigation} jobsData={jobsData} />
       )}
       {jobsData && jobsData.length < 1 && (
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text>{JOB_MSGS.NOT_FOUND}</Text>
         </View>
       )}
@@ -176,7 +190,7 @@ const TruckList: React.FC<TTruckListProps> = ( { navigation } ) => {
 
 // <-- Styles -->
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -229,6 +243,6 @@ const styles = StyleSheet.create( {
     color: '#8A8A8A',
     fontSize: 13,
   },
-} );
+});
 
 export default TruckList;

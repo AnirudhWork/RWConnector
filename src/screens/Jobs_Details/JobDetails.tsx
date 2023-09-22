@@ -1,71 +1,102 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
-import { TJobsDetailsProps } from '../types';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {TJobsDetailsProps} from '../types';
 import getJobsDetails from '../../Api/api-requests/jobDetailsApi';
-import { printLogs } from '../../Utils/log-utils';
+import {printLogs} from '../../Utils/log-utils';
 import Loading from '../../Components/Loading';
-import { useFocusEffect } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TAB_NAVIGATOR_SCREEN } from './job-details-constants';
+import {useFocusEffect} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {
+  JOB_DETAILS_JOB_TYPE,
+  TAB_NAVIGATOR_SCREEN,
+} from './job-details-constants';
 import JobPickup from './job-pickup/JobPickup';
 import JobDelivery from './job-delivery/JobDelivery';
-import { globalColors } from '../../Utils/global-colors';
-import { globalStyles } from '../../Utils/global-styles';
-import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
-import { setLoadingStatus } from '../../Redux/reducers/truck-selection-slice';
-import { SimpleAlert } from '../../Utils/SimpleAlert';
-import { API_ERR_MSG } from '../../Api/constants';
-import { setJobDetails } from '../../Redux/reducers/job-details-slice';
+import {globalColors} from '../../Utils/global-colors';
+import {globalStyles} from '../../Utils/global-styles';
+import {useAppDispatch, useAppSelector} from '../../Redux/hooks';
+import {setLoadingStatus} from '../../Redux/reducers/truck-selection-slice';
+import {
+  AlertWithOneActionableOption,
+  SimpleAlert,
+} from '../../Utils/SimpleAlert';
+import {API_ERR_MSG} from '../../Api/constants';
+import {setJobDetails} from '../../Redux/reducers/job-details-slice';
+import {SCREEN_NAMES} from '../../Navigators/constants';
 
 // <-- Tab Navigator -->
 const Tab = createBottomTabNavigator();
 
-const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
+const JobDetails: React.FC<TJobsDetailsProps> = ({navigation}) => {
+  // <-- Redux -->
+  const selectedJobInfo = useAppSelector(state => state.truck.selectedJob);
+
   // <-- variable declaration -->
-  const jobId = route.params?.jobId;
-  const jobType = route.params?.jobType;
+  const jobId = selectedJobInfo?.id;
+  const jobType = selectedJobInfo?.['job-type'];
   const TAG = JobDetails.name;
 
   // <-- useState declarations -->
-  const [showInfo, setShowInfo] = useState( false );
+  const [showInfo, setShowInfo] = useState(false);
   const [isItPickup, setIsItPickup] = useState<boolean>();
 
   // <-- Redux -->
   const dispatch = useAppDispatch();
-  const isLoading = useAppSelector( ( state ) => state.truck.loading );
+  const isLoading = useAppSelector(state => state.truck.loading);
 
   // <-- Job Type -->
   const getIsItPickup = () => {
-    return jobType == 1;
+    return jobType == JOB_DETAILS_JOB_TYPE.PICKUP;
   };
 
   // <-- useFocusEffect -->
   useFocusEffect(
-    React.useCallback( () => {
-      printLogs( TAG, '| useFocusEffect loaded' );
-      setIsItPickup( getIsItPickup() );
+    React.useCallback(() => {
+      printLogs(TAG, '| useFocusEffect loaded');
+      setIsItPickup(getIsItPickup());
       requestJobDetails();
 
-      return () => setShowInfo( false );
-    }, [jobId] ),
+      return () => setShowInfo(false);
+    }, [jobId]),
   );
 
   // <-- Job Details API -->
   const requestJobDetails = async () => {
-    dispatch( setLoadingStatus( true ) );
-    setShowInfo( false );
+    dispatch(setLoadingStatus(true));
+    setShowInfo(false);
     const TAG = requestJobDetails.name;
     try {
-      const response = await getJobsDetails( jobId, navigation );
-      if ( response ) {
-        dispatch( setJobDetails( response.data ) );
-        setShowInfo( true );
+      if (jobId) {
+        const response = await getJobsDetails(jobId, navigation);
+        if (response) {
+          dispatch(setJobDetails(response.data));
+          setShowInfo(true);
+        }
+      } else {
+        AlertWithOneActionableOption(
+          '',
+          API_ERR_MSG.ERR,
+          'Ok',
+          false,
+          executeAction => {
+            if (executeAction) {
+              navigation.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER,
+                  },
+                ],
+              });
+            }
+          },
+        );
       }
-    } catch ( error ) {
-      printLogs( TAG, '| outer most error:', error );
-      SimpleAlert( '', API_ERR_MSG.ERR );
+    } catch (error) {
+      printLogs(TAG, '| outer most error:', error);
+      SimpleAlert('', API_ERR_MSG.ERR);
     } finally {
-      dispatch( setLoadingStatus( false ) );
+      dispatch(setLoadingStatus(false));
     }
   };
 
@@ -88,12 +119,12 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
                       styles.tabButton,
                       globalStyles.alignCenterStyle,
                       isItPickup
-                        ? { backgroundColor: globalColors.green }
-                        : { backgroundColor: globalColors.gray },
+                        ? {backgroundColor: globalColors.green}
+                        : {backgroundColor: globalColors.gray},
                     ]}
                     onPress={() => {
-                      setIsItPickup( true );
-                      navigation.navigate( TAB_NAVIGATOR_SCREEN.PICKUP );
+                      setIsItPickup(true);
+                      navigation.navigate(TAB_NAVIGATOR_SCREEN.PICKUP);
                     }}>
                     <Text
                       style={[
@@ -108,12 +139,12 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
                       styles.tabButton,
                       globalStyles.alignCenterStyle,
                       isItPickup
-                        ? { backgroundColor: globalColors.gray }
-                        : { backgroundColor: globalColors.green },
+                        ? {backgroundColor: globalColors.gray}
+                        : {backgroundColor: globalColors.green},
                     ]}
                     onPress={() => {
-                      setIsItPickup( false );
-                      navigation.navigate( TAB_NAVIGATOR_SCREEN.DELIVERY );
+                      setIsItPickup(false);
+                      navigation.navigate(TAB_NAVIGATOR_SCREEN.DELIVERY);
                     }}>
                     <Text
                       style={[
@@ -135,8 +166,14 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
                 height: 50,
               },
             }}>
-            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.PICKUP} component={JobPickup} />
-            <Tab.Screen name={TAB_NAVIGATOR_SCREEN.DELIVERY} component={JobDelivery} />
+            <Tab.Screen
+              name={TAB_NAVIGATOR_SCREEN.PICKUP}
+              component={JobPickup}
+            />
+            <Tab.Screen
+              name={TAB_NAVIGATOR_SCREEN.DELIVERY}
+              component={JobDelivery}
+            />
           </Tab.Navigator>
         </View>
       )}
@@ -147,7 +184,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ( { navigation, route } ) => {
 
 // <-- Styles -->
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -167,6 +204,6 @@ const styles = StyleSheet.create( {
   tabButtonText: {
     color: '#FFFFFF',
   },
-} );
+});
 
 export default JobDetails;
