@@ -11,4 +11,4 @@ export enum globalColors {
   JOB_DETAIL_BG_2 = '#E8E8E8',
   JOB_DETAILS_DATE = '#858C91',
   PLACEHOLDER = '#BCBCBC',
-};
+}

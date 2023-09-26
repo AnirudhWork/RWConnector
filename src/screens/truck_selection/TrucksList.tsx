@@ -78,7 +78,7 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   const requestTrucksList = async () => {
     try {
       dispatch(setLoadingStatus(true));
-      const response = await getTrucksList(navigation);
+      const response = await getTrucksList(navigation, dispatch);
       if (response) {
         setTruckData(response.data['truck-list']);
       }
@@ -95,7 +95,11 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
     try {
       dispatch(setLoadingStatus(true));
       if (selected) {
-        const response = await getJobDetailsByTruckId(selected.id, navigation);
+        const response = await getJobDetailsByTruckId(
+          selected.id,
+          navigation,
+          dispatch,
+        );
         if (response) {
           dispatch(setCompleteJobInfo(response.data['job-list']));
         }

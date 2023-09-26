@@ -1,17 +1,12 @@
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React, {useEffect, useState, createRef} from 'react';
-import {
-  IJobDetailsProps,
-  IJobPickupDetailsProps,
-  ITruckProps,
-} from '../../types';
+import {IJobPickupDetailsProps, ITruckProps} from '../../types';
 import {globalColors} from '../../../Utils/global-colors';
 import {
   IS_JOB_LOCKED_BY_CURRENT_USER,
   JOB_DETAILS_JOB_TYPE,
   JOB_DETAILS_LABEL,
   JOB_DETAILS_NOTE,
-  TAB_NAVIGATOR_SCREEN,
   ValidateAndReturnEmpty,
   ValidateWithCommaAndReturnEmpty,
 } from '../job-details-constants';

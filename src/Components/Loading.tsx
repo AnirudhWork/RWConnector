@@ -1,8 +1,8 @@
-import { StyleSheet, View, Animated } from 'react-native';
-import { globalStyles } from '../Utils/global-styles';
+import {StyleSheet, View, Animated} from 'react-native';
+import {globalStyles} from '../Utils/global-styles';
 
 const Loading = () => {
-  const loadingImage = require( '../Assets/Images/loader.gif' );
+  const loadingImage = require('../Assets/Images/loader.gif');
   return (
     // <Modal
     //   animationType="fade"
@@ -20,7 +20,7 @@ const Loading = () => {
   );
 };
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
   refreshGifContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -35,6 +35,6 @@ const styles = StyleSheet.create( {
   header: {
     width: '100%',
   },
-} );
+});
 
 export default Loading;

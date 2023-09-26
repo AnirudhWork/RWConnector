@@ -8,14 +8,16 @@ import {
 } from '../constants';
 import {printLogs} from '../../Utils/log-utils';
 import {SimpleAlert} from '../../Utils/SimpleAlert';
+import {ThunkDispatch} from '@reduxjs/toolkit';
 
 export const getTrucksList = async (
   navigation: DrawerNavigationProp<any, any>,
+  dispatch: ThunkDispatch<any, any, any>,
 ) => {
   const TAG = getTrucksList.name;
 
   try {
-    const response = await new APIServices(true, navigation).get(
+    const response = await new APIServices(true, navigation, dispatch).get(
       API_ENDPOINT.GET_TRUCKS,
     );
     if (response?.status == STATUS_CODES.SUCCESS) {

@@ -6,40 +6,40 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import React, { useRef, useState } from 'react';
-import { LoginBackgroundProps } from '../types';
-import { SimpleAlert } from '../../Utils/SimpleAlert';
-import { LOGIN_ERROR_ALERTS, decryptPassword } from './constants';
-import { validateLoginCred } from '../../Api/api-requests/LoginPwApi';
-import { API_ERR_MSG } from '../../Api/constants';
-import { printLogs } from '../../Utils/log-utils';
-import { useAppDispatch } from '../../Redux/hooks';
-import { setLoadingStatus } from '../../Redux/reducers/truck-selection-slice';
+import React, {useRef, useState} from 'react';
+import {LoginBackgroundProps} from '../types';
+import {SimpleAlert} from '../../Utils/SimpleAlert';
+import {LOGIN_ERROR_ALERTS, decryptPassword} from './constants';
+import {validateLoginCred} from '../../Api/api-requests/LoginPwApi';
+import {API_ERR_MSG} from '../../Api/constants';
+import {printLogs} from '../../Utils/log-utils';
+import {useAppDispatch} from '../../Redux/hooks';
+import {setLoadingStatus} from '../../Redux/reducers/truck-selection-slice';
 
-const LoginBackground: React.FC<LoginBackgroundProps> = ( {
+const LoginBackground: React.FC<LoginBackgroundProps> = ({
   navigation,
   setIsForgotPassword,
-} ) => {
+}) => {
   // <-- Images and Icons -->
-  const usernameIcon = require( '../../Assets/Icons/Username.png' );
-  const passwordIcon = require( '../../Assets/Icons/PasswordLock.png' );
-  const passwordShownIcon = require( '../../Assets/Icons/PasswordShown.png' );
-  const passwordHiddenIcon = require( '../../Assets/Icons/PasswordHidden.png' );
+  const usernameIcon = require('../../Assets/Icons/Username.png');
+  const passwordIcon = require('../../Assets/Icons/PasswordLock.png');
+  const passwordShownIcon = require('../../Assets/Icons/PasswordShown.png');
+  const passwordHiddenIcon = require('../../Assets/Icons/PasswordHidden.png');
 
   // <-- Redux -->
   const dispatch = useAppDispatch();
 
   // <-- useState declarations -->
-  let [passwordShown, setPasswordShown] = useState( {
+  let [passwordShown, setPasswordShown] = useState({
     showPassword: true,
     passwordIcon: passwordHiddenIcon,
-  } );
-  const [passwordValue, setPasswordValue] = useState( '' );
-  const [userNameValue, setUsernameValue] = useState( '' );
+  });
+  const [passwordValue, setPasswordValue] = useState('');
+  const [userNameValue, setUsernameValue] = useState('');
 
   // <-- useRef declarations -->
-  const refPassword = useRef<TextInput>( null );
-  const refUsername = useRef<TextInput>( null );
+  const refPassword = useRef<TextInput>(null);
+  const refUsername = useRef<TextInput>(null);
 
   // useEffect(() => {
   //   const keyboardDidHideSubscription = Keyboard.addListener(
@@ -61,31 +61,40 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
 
   // <-- Show/Hide Password -->
   let handleShowPassword = () => {
-    setPasswordShown( previousIcon => ( {
+    setPasswordShown(previousIcon => ({
       showPassword: !previousIcon.showPassword,
       passwordIcon: previousIcon.showPassword
         ? passwordShownIcon
         : passwordHiddenIcon,
-    } ) );
+    }));
   };
 
   // <-- Api -->
   let loginVerification = async () => {
     const TAG = loginVerification.name;
     // <-- Field Validation -->
-    if ( !userNameValue.trim() || !passwordValue.trim() ) {
-      SimpleAlert( '', LOGIN_ERROR_ALERTS.EMPTY_FIELDS );
+    if (!userNameValue.trim() || !passwordValue.trim()) {
+      SimpleAlert('', LOGIN_ERROR_ALERTS.EMPTY_FIELDS);
     } else {
-      dispatch( setLoadingStatus( true ) );
+      dispatch(setLoadingStatus(true));
       try {
         // <-- API parameters -->
-        const passwordHashValue = decryptPassword( passwordValue );
-        await validateLoginCred( userNameValue, passwordHashValue, navigation );
-      } catch ( error ) {
-        printLogs( TAG, '| DecryptPassword failed or ValidateLoginCred Method failed. ErrorMsg:', error );
-        SimpleAlert( '', API_ERR_MSG.ERR );
+        const passwordHashValue = decryptPassword(passwordValue);
+        await validateLoginCred(
+          userNameValue,
+          passwordHashValue,
+          navigation,
+          dispatch,
+        );
+      } catch (error) {
+        printLogs(
+          TAG,
+          '| DecryptPassword failed or ValidateLoginCred Method failed. ErrorMsg:',
+          error,
+        );
+        SimpleAlert('', API_ERR_MSG.ERR);
       } finally {
-        dispatch( setLoadingStatus( false ) );
+        dispatch(setLoadingStatus(false));
       }
     }
   };
@@ -103,7 +112,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
             placeholderTextColor="#BCBCBC"
             returnKeyType="next"
             ref={refUsername}
-            onChangeText={text => setUsernameValue( text )}
+            onChangeText={text => setUsernameValue(text)}
             blurOnSubmit={false}
             onSubmitEditing={() => {
               refPassword.current?.focus();
@@ -113,13 +122,13 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
         <View style={styles.input_icon_container}>
           <Image source={passwordIcon} style={styles.input_icons} />
           <TextInput
-            style={[styles.input, { fontSize: 16 }]}
+            style={[styles.input, {fontSize: 16}]}
             placeholder="Password"
             ref={refPassword}
             placeholderTextColor="#BCBCBC"
             secureTextEntry={passwordShown.showPassword}
             returnKeyType="done"
-            onChangeText={text => setPasswordValue( text )}
+            onChangeText={text => setPasswordValue(text)}
             onSubmitEditing={loginVerification}
           />
           <TouchableOpacity
@@ -132,7 +141,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
         </View>
       </View>
 
-      <View style={{ alignItems: 'center' }}>
+      <View style={{alignItems: 'center'}}>
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={loginVerification}
@@ -144,7 +153,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
           activeOpacity={0.5}
           hitSlop={20}
           onPress={() => {
-            setIsForgotPassword( true );
+            setIsForgotPassword(true);
           }}>
           <Text style={styles.forgetPasswordStyles}>Forgot Password?</Text>
         </TouchableOpacity>
@@ -155,7 +164,7 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ( {
 
 // <-- Styles -->
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-evenly',
@@ -210,6 +219,6 @@ const styles = StyleSheet.create( {
     color: 'white',
     fontSize: 14,
   },
-} );
+});
 
 export default LoginBackground;

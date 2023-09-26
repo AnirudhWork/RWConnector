@@ -67,7 +67,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ({navigation}) => {
     const TAG = requestJobDetails.name;
     try {
       if (jobId) {
-        const response = await getJobsDetails(jobId, navigation);
+        const response = await getJobsDetails(jobId, navigation, dispatch);
         if (response) {
           dispatch(setJobDetails(response.data));
           setShowInfo(true);

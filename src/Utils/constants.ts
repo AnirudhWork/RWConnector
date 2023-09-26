@@ -6,6 +6,12 @@ import {API_ERR_MSG, logoutAndNavigateToLoginScreen} from '../Api/constants';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {printLogs} from './log-utils';
 import DeviceInfo from 'react-native-device-info';
+import {ThunkDispatch} from '@reduxjs/toolkit';
+import {
+  setCompleteJobInfo,
+  setSelectedJobInfo,
+  setSelectedTruckInfo,
+} from '../Redux/reducers/truck-selection-slice';
 
 export enum ASYNC_STORAGE_KEY {
   LOGINRESPONSE = '@loginResponse',
@@ -98,10 +104,11 @@ export class AsyncStorageUtils {
 
 export const logoutSessionExpired = async (
   navigation: DrawerNavigationProp<any, any>,
+  dispatch: ThunkDispatch<any, any, any>,
 ) => {
   const TAG = logoutAndNavigateToLoginScreen.name;
   printLogs(TAG, '| Executed');
-  logoutAndNavigateToLoginScreen(navigation);
+  logoutAndNavigateToLoginScreen(navigation, dispatch);
   SimpleAlert('', API_ERR_MSG.LOGOUT_ERR);
 };
 
@@ -130,4 +137,17 @@ export const isUpdateAlertReq = async () => {
       },
     );
   }
+};
+
+export const clearReduxStore = async (
+  dispatch: ThunkDispatch<any, any, any>,
+) => {
+  dispatch(setCompleteJobInfo([]));
+  dispatch(
+    setSelectedTruckInfo({
+      id: 0,
+      name: '',
+      note: '',
+    }),
+  );
 };

@@ -1,8 +1,9 @@
-import {AsyncStorageUtils} from '../Utils/constants';
+import {AsyncStorageUtils, clearReduxStore} from '../Utils/constants';
 import {SCREEN_NAMES} from '../Navigators/constants';
 import {DrawerNavigationProp} from '@react-navigation/drawer/lib/typescript/src/types';
 import {SimpleAlert} from '../Utils/SimpleAlert';
 import {printLogs} from '../Utils/log-utils';
+import {ThunkDispatch} from '@reduxjs/toolkit';
 
 export const commonHeaders = {
   'Content-Type': 'application/json',
@@ -54,8 +55,10 @@ export const STATUS_CODES = {
 
 export const logoutAndNavigateToLoginScreen = (
   navigation: DrawerNavigationProp<any, any>,
+  dispatch: ThunkDispatch<any, any, any>,
 ) => {
   AsyncStorageUtils.clearAllUserData();
+  clearReduxStore(dispatch);
   navigation.reset({
     index: 0,
     routes: [{name: SCREEN_NAMES.LOGIN}],

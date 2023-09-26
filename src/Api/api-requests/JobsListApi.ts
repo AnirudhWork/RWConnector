@@ -9,16 +9,18 @@ import {
 } from '../constants';
 import {printLogs} from '../../Utils/log-utils';
 import {SimpleAlert} from '../../Utils/SimpleAlert';
+import {ThunkDispatch} from '@reduxjs/toolkit';
 
 //<-- Jobs List API -->
 export const getJobDetailsByTruckId = async (
   truck_id: number,
   navigation: DrawerNavigationProp<any, any>,
+  dispatch: ThunkDispatch<any, any, any>,
 ) => {
   const TAG = getJobDetailsByTruckId.name;
 
   try {
-    const response = await new APIServices(true, navigation).get(
+    const response = await new APIServices(true, navigation, dispatch).get(
       `${API_ENDPOINT.GET_JOBS_FOR_TRUCK}/${truck_id}`,
     );
 

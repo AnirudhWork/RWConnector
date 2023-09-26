@@ -1,7 +1,7 @@
-import { StyleSheet } from 'react-native';
-import { FONT_FAMILY } from './global-enums';
+import {StyleSheet} from 'react-native';
+import {FONT_FAMILY} from './global-enums';
 
-export const globalStyles = StyleSheet.create( {
+export const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -52,4 +52,4 @@ export const globalStyles = StyleSheet.create( {
     paddingTop: 10,
     paddingBottom: 15,
   },
-} ) 
+});

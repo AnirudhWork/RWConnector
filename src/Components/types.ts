@@ -1,17 +1,10 @@
-import { Dispatch, SetStateAction } from 'react';
-import { ITruckProps } from '../screens/types';
-import { DrawerNavigationProp } from '@react-navigation/drawer/lib/typescript/src/types';
-import { ParamListBase } from '@react-navigation/native';
+import {ITruckProps} from '../screens/types';
 
 export interface IProps {
   label: string;
   data: Array<ITruckProps>;
-  onSelect: ( item: ITruckProps ) => void;
+  onSelect: (item: ITruckProps) => void;
 }
-
-// export type LoadingProps = {
-//   visible: boolean;
-// };
 
 export interface UserData {
   username: string | null;

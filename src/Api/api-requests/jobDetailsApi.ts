@@ -12,15 +12,17 @@ import axios from 'axios';
 import {SimpleAlert} from '../../Utils/SimpleAlert';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 import {APIServices} from '../api-services';
+import {ThunkDispatch} from '@reduxjs/toolkit';
 
 //<-- job details api -->
 const getJobsDetails = async (
   id: number,
   navigation: DrawerNavigationProp<any, any>,
+  dispatch: ThunkDispatch<any, any, any>,
 ) => {
   const TAG = getJobsDetails.name;
   try {
-    const response = await new APIServices(true, navigation).get(
+    const response = await new APIServices(true, navigation, dispatch).get(
       `${API_ENDPOINT.GET_JOB_INFO_BY_JOB_ID}/${id}`,
       commonHeaders,
     );

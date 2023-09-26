@@ -1,5 +1,5 @@
-import { createContext, useContext } from 'react';
-import { globalColors } from '../Utils/global-colors';
+import {createContext, useContext} from 'react';
+import {globalColors} from '../Utils/global-colors';
 
 export class GlobalContextModal {
   isItLandScape: boolean = false;
@@ -8,24 +8,24 @@ export class GlobalContextModal {
   commonMiniSpace: number = 3;
   commonIconSize: number = 25;
   drawerItemBgColor: string = globalColors.DRAWER_ACTIVE;
-  constructor( isItLandScape: boolean ) {
+  constructor(isItLandScape: boolean) {
     this.isItLandScape = isItLandScape;
-  };
+  }
 
-  setDrawerItemBgColor = ( color: string ) => {
+  setDrawerItemBgColor = (color: string) => {
     this.drawerItemBgColor = color;
   };
-};
+}
 
 export const GlobalContext = createContext<GlobalContextModal>(
-  new GlobalContextModal( false ),
+  new GlobalContextModal(false),
 );
 
 export const useGlobalContext = () => {
-  const context = useContext( GlobalContext );
-  if ( context ) {
+  const context = useContext(GlobalContext);
+  if (context) {
     return context;
   } else {
-    throw new Error( 'useGlobalContext must be used within an AuthProvider' );
+    throw new Error('useGlobalContext must be used within an AuthProvider');
   }
 };

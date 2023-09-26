@@ -1,5 +1,5 @@
-import { stringMd5 } from 'react-native-quick-md5';
-import { Platform } from 'react-native'
+import {stringMd5} from 'react-native-quick-md5';
+import {Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 export enum LOGIN_ERROR_ALERTS {
@@ -13,8 +13,8 @@ export enum FORGOT_PW_SUCCESS_ALERT {
   RESET_SUCCESS = 'Password successfully sent to email provided',
 }
 
-export const decryptPassword = ( password: string ) => {
-  return stringMd5( password );
+export const decryptPassword = (password: string) => {
+  return stringMd5(password);
 };
 
 export type TLoginRequestBody = {
@@ -25,7 +25,10 @@ export type TLoginRequestBody = {
   'device-type': string;
 };
 
-export const getLoginRequestBody = ( uname: string, pwd: string ): TLoginRequestBody => {
+export const getLoginRequestBody = (
+  uname: string,
+  pwd: string,
+): TLoginRequestBody => {
   return {
     uname: uname,
     pwd: pwd,

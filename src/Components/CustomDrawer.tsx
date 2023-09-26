@@ -94,24 +94,26 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = ({navigation}) => {
         '| Logout API, user token not found. usertoken:',
         userToken,
       );
-      logoutAndNavigateToLoginScreen(navigation.getParent());
+      logoutAndNavigateToLoginScreen(navigation.getParent(), dispatch);
     }
 
     // <-- Expiring the token if it exist -->
 
     try {
-      const response = await new APIServices(true, navigation.getParent()).post(
-        API_ENDPOINT.LOGOUT,
-      );
+      const response = await new APIServices(
+        true,
+        navigation.getParent(),
+        dispatch,
+      ).post(API_ENDPOINT.LOGOUT);
       if (response?.status === STATUS_CODES.SUCCESS) {
-        logoutAndNavigateToLoginScreen(navigation.getParent());
+        logoutAndNavigateToLoginScreen(navigation.getParent(), dispatch);
       }
     } catch (error) {
       if (axios.isCancel(error)) {
         SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
       } else {
         printLogs(TAG, '| Error', error);
-        logoutSessionExpired(navigation.getParent());
+        logoutSessionExpired(navigation.getParent(), dispatch);
       }
     } finally {
       dispatch(setLoadingStatus(false));
