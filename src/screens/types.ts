@@ -23,7 +23,6 @@ export type TTruckListProps = {
 
 export type TJobsListProps = {
   navigation: DrawerNavigationProp<any, any>;
-  jobsData: IJobsProps[] | null;
 };
 
 export type TJobsDetailsProps = {
@@ -157,6 +156,7 @@ export type SelectedTruckInfoSliceProps = {
   loading: boolean;
   selectedTruck: ITruckProps;
   selectedJob?: IJobsProps;
+  completeJobInfo: IJobsProps[];
 };
 
 export type JobDetailsSliceProps = {

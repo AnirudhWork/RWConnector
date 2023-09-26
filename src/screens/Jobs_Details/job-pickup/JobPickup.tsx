@@ -225,6 +225,11 @@ const JobPickup: React.FC<IJobPickupDetailsProps> = ({navigation}) => {
               marginTop: commonMiniSpace,
             },
           )}
+          {(config_IsItCompleted || isEditingEnabled) && (
+            <>
+              <Text>Temporary Text!</Text>
+            </>
+          )}
         </ScrollView>
       )}
     </View>

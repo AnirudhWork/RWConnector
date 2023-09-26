@@ -1,8 +1,8 @@
-import { AsyncStorageUtils } from "../Utils/constants";
-import { SCREEN_NAMES } from "../Navigators/constants";
-import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/src/types";
-import { SimpleAlert } from "../Utils/SimpleAlert";
-import { printLogs } from "../Utils/log-utils";
+import {AsyncStorageUtils} from '../Utils/constants';
+import {SCREEN_NAMES} from '../Navigators/constants';
+import {DrawerNavigationProp} from '@react-navigation/drawer/lib/typescript/src/types';
+import {SimpleAlert} from '../Utils/SimpleAlert';
+import {printLogs} from '../Utils/log-utils';
 
 export const commonHeaders = {
   'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export enum API_ERR_MSG {
 }
 
 export enum JOBS_API_ERR {
-  JOB_NOT_FOUND = 'Jobs does not exist. Refresh and try again!',
+  JOB_NOT_FOUND = 'Truck/Job does not exist. Refresh and try again!',
 }
 
 export const STATUS_CODES = {
@@ -52,21 +52,23 @@ export const STATUS_CODES = {
   NO_INTERNET: -1,
 };
 
-export const logoutAndNavigateToLoginScreen = ( navigation: DrawerNavigationProp<any, any> ) => {
+export const logoutAndNavigateToLoginScreen = (
+  navigation: DrawerNavigationProp<any, any>,
+) => {
   AsyncStorageUtils.clearAllUserData();
-  navigation.reset( {
+  navigation.reset({
     index: 0,
-    routes: [{ name: SCREEN_NAMES.LOGIN, }],
-  } );
+    routes: [{name: SCREEN_NAMES.LOGIN}],
+  });
 };
 
-export const IsInternetAccessAvailable = ( statusCode: number ) => {
+export const IsInternetAccessAvailable = (statusCode: number) => {
   const TAG = IsInternetAccessAvailable.name;
-  if ( statusCode == STATUS_CODES.NO_INTERNET ) {
-    SimpleAlert( '', API_ERR_MSG.INTERNET_ERR );
-    printLogs( TAG, ' | No Internet Access Available' );
+  if (statusCode == STATUS_CODES.NO_INTERNET) {
+    SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
+    printLogs(TAG, ' | No Internet Access Available');
     return false;
   } else {
     return true;
   }
-}
+};

@@ -1,5 +1,9 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IJobsProps, ITruckProps, SelectedTruckInfoSliceProps } from '../../screens/types';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {
+  IJobsProps,
+  ITruckProps,
+  SelectedTruckInfoSliceProps,
+} from '../../screens/types';
 
 const initialState: SelectedTruckInfoSliceProps = {
   loading: false,
@@ -9,23 +13,32 @@ const initialState: SelectedTruckInfoSliceProps = {
     note: '',
   },
   selectedJob: undefined,
+  completeJobInfo: [],
 };
 
-const truckSelectionSlice = createSlice( {
+const truckSelectionSlice = createSlice({
   name: 'truck',
   initialState,
   reducers: {
-    setLoadingStatus: ( state, action: PayloadAction<boolean> ) => {
+    setLoadingStatus: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
-    setSelectedTruckInfo: ( state, action: PayloadAction<ITruckProps> ) => {
+    setSelectedTruckInfo: (state, action: PayloadAction<ITruckProps>) => {
       state.selectedTruck = action.payload;
     },
-    setSelectedJobInfo: ( state, action: PayloadAction<IJobsProps> ) => {
+    setSelectedJobInfo: (state, action: PayloadAction<IJobsProps>) => {
       state.selectedJob = action.payload;
-    }
+    },
+    setCompleteJobInfo: (state, action: PayloadAction<IJobsProps[]>) => {
+      state.completeJobInfo = action.payload;
+    },
   },
-} );
+});
 
-export const { setLoadingStatus, setSelectedTruckInfo, setSelectedJobInfo } = truckSelectionSlice.actions;
+export const {
+  setLoadingStatus,
+  setSelectedTruckInfo,
+  setSelectedJobInfo,
+  setCompleteJobInfo,
+} = truckSelectionSlice.actions;
 export default truckSelectionSlice.reducer;

@@ -8,18 +8,19 @@ import {JOB_STATUS} from './constants';
 import {DRAWER_SCREEN_NAMES} from '../../Navigators/constants';
 import {DrawerActions} from '@react-navigation/native';
 import {printLogs} from '../../Utils/log-utils';
-import {useAppDispatch} from '../../Redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../Redux/hooks';
 import {setSelectedJobInfo} from '../../Redux/reducers/truck-selection-slice';
 import {
   ValidateAndReturnEmpty,
   ValidateWithCommaAndReturnEmpty,
 } from '../Jobs_Details/job-details-constants';
 
-const Jobs: React.FC<TJobsListProps> = ({navigation, jobsData}) => {
+const Jobs: React.FC<TJobsListProps> = ({navigation}) => {
   const TAG = Jobs.name;
 
   // <-- Redux -->
   const dispatch = useAppDispatch();
+  const jobsData = useAppSelector(state => state.truck.completeJobInfo);
 
   // <-- Cards Info -->
   const renderItem = ({item}: {item: IJobsProps}) => {

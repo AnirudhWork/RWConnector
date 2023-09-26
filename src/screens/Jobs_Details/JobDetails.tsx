@@ -72,26 +72,27 @@ const JobDetails: React.FC<TJobsDetailsProps> = ({navigation}) => {
           dispatch(setJobDetails(response.data));
           setShowInfo(true);
         }
-      } else {
-        AlertWithOneActionableOption(
-          '',
-          API_ERR_MSG.ERR,
-          'Ok',
-          false,
-          executeAction => {
-            if (executeAction) {
-              navigation.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER,
-                  },
-                ],
-              });
-            }
-          },
-        );
       }
+      // else {
+      //   AlertWithOneActionableOption(
+      //     '',
+      //     API_ERR_MSG.ERR,
+      //     'Ok',
+      //     false,
+      //     executeAction => {
+      //       if (executeAction) {
+      //         navigation.reset({
+      //           index: 0,
+      //           routes: [
+      //             {
+      //               name: SCREEN_NAMES.DRAWER_NAVIGATION_CONTAINER,
+      //             },
+      //           ],
+      //         });
+      //       }
+      //     },
+      //   );
+      // }
     } catch (error) {
       printLogs(TAG, '| outer most error:', error);
       SimpleAlert('', API_ERR_MSG.ERR);

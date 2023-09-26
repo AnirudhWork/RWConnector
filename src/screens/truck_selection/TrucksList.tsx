@@ -1,31 +1,26 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
 import Dropdown from '../../Components/DropDown';
-import {ITruckProps, IJobsProps, TTruckListProps} from '../types';
-import axios from 'axios';
+import {ITruckProps, TTruckListProps} from '../types';
 import {SimpleAlert} from '../../Utils/SimpleAlert';
 import Loading from '../../Components/Loading';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {
-  API_ENDPOINT,
-  API_ERR_MSG,
-  IsInternetAccessAvailable,
-  STATUS_CODES,
-} from '../../Api/constants';
+import {API_ERR_MSG} from '../../Api/constants';
 import Jobs from './Jobs';
-import {JOB_MSGS, TRUCK_API_ERR_MSG} from './constants';
-import {APIServices} from '../../Api/api-services';
+import {JOB_MSGS} from './constants';
 import {printLogs} from '../../Utils/log-utils';
 import {useFocusEffect} from '@react-navigation/native';
 import {useGlobalContext} from '../../Components/GlobalContext';
 import {Notes} from '../../Components/Notes';
 import {
+  setCompleteJobInfo,
   setLoadingStatus,
   setSelectedTruckInfo,
 } from '../../Redux/reducers/truck-selection-slice';
 import {useAppDispatch, useAppSelector} from '../../Redux/hooks';
 import {globalColors} from '../../Utils/global-colors';
-import {AsyncStorageUtils, isUpdateAlertReq} from '../../Utils/constants';
+import {getJobDetailsByTruckId} from '../../Api/api-requests/JobsListApi';
+import {getTrucksList} from '../../Api/api-requests/TruckListAPI';
 
 const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   // <-- Images and Icons -->
@@ -37,7 +32,6 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   const [selected, setSelected] = useState<ITruckProps | undefined>(undefined);
   const [truckData, setTruckData] = useState<ITruckProps[]>([]);
   const [isTruckNoteVisible, setIsTruckNoteVisible] = useState(true);
-  const [jobsData, setJobsData] = useState<IJobsProps[] | null>(null);
   const [chevronToggle, setChevronToggle] = useState(chevron_down);
 
   // <-- useContext -->
@@ -48,16 +42,17 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
 
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(state => state.truck.loading);
+  const jobsData = useAppSelector(state => state.truck.completeJobInfo);
 
   // <-- useEffects -->
 
   useEffect(() => {
-    truckList();
+    requestTrucksList();
   }, []);
 
   useEffect(() => {
     if (selected) {
-      getJobDetailsByTruckId();
+      requestJobsList();
       dispatch(setSelectedTruckInfo(selected));
     }
   }, [selected]);
@@ -80,22 +75,12 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
 
   // <-- Truck list api -->
 
-  const truckList = async () => {
-    const TAG = truckList.name;
+  const requestTrucksList = async () => {
     try {
       dispatch(setLoadingStatus(true));
-      const response = await new APIServices(true, navigation).get(
-        API_ENDPOINT.GET_TRUCKS,
-      );
-      if (response?.status === STATUS_CODES.SUCCESS) {
+      const response = await getTrucksList(navigation);
+      if (response) {
         setTruckData(response.data['truck-list']);
-      }
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
-      } else {
-        printLogs(TAG, '| API Error:', error);
-        SimpleAlert('', API_ERR_MSG.ERR);
       }
     } finally {
       dispatch(setLoadingStatus(false));
@@ -104,31 +89,20 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
 
   // <-- Jobs api -->
 
-  const getJobDetailsByTruckId = async () => {
-    const TAG = getJobDetailsByTruckId.name;
+  const requestJobsList = async () => {
+    const TAG = requestJobsList.name;
     setIsTruckNoteVisible(true);
     try {
       dispatch(setLoadingStatus(true));
-      const response = await new APIServices(true, navigation).get(
-        API_ENDPOINT.GET_JOBS_FOR_TRUCK + `/${selected?.id}`,
-      );
-      if (response?.status == STATUS_CODES.SUCCESS) {
-        printLogs(TAG, '| successful response:', response);
-        setJobsData(response.data['job-list']);
+      if (selected) {
+        const response = await getJobDetailsByTruckId(selected.id, navigation);
+        if (response) {
+          dispatch(setCompleteJobInfo(response.data['job-list']));
+        }
       }
     } catch (error) {
-      const knownError = error as any;
-      if (axios.isCancel(error)) {
-        SimpleAlert('', API_ERR_MSG.REQ_CANCEL_ERR);
-      } else if (
-        IsInternetAccessAvailable(knownError.response?.status) &&
-        knownError.response?.status === STATUS_CODES.BAD_REQUEST
-      ) {
-        SimpleAlert('', TRUCK_API_ERR_MSG.NOTFOUND);
-      } else {
-        printLogs(TAG, '| API Error:', error);
-        SimpleAlert('', API_ERR_MSG.ERR);
-      }
+      printLogs(TAG, '| Pre-API call Error:', error);
+      SimpleAlert('', API_ERR_MSG.ERR);
     } finally {
       dispatch(setLoadingStatus(false));
     }
@@ -148,8 +122,8 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            truckList();
-            getJobDetailsByTruckId();
+            requestTrucksList();
+            requestJobsList();
           }}
           disabled={!selected}
           style={styles.refreshButton}>
@@ -175,10 +149,8 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
           )}
         </View>
       )}
-      {jobsData && jobsData.length > 0 && (
-        <Jobs navigation={navigation} jobsData={jobsData} />
-      )}
-      {jobsData && jobsData.length < 1 && (
+      {jobsData && jobsData.length > 0 && <Jobs navigation={navigation} />}
+      {jobsData && selected && jobsData.length < 1 && (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text>{JOB_MSGS.NOT_FOUND}</Text>
         </View>
