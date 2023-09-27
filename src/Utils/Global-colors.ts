@@ -4,6 +4,7 @@ export enum globalColors {
   white = '#FFFFFF',
   black = '#000000',
   label = '#666666',
+  LIGHT_GRAY = '#DCDDDF',
   DRAWER_ACTIVE = '#007f00',
   TRANSPARENT = 'transparent',
   TRUCK_NOTE_TEXT = '#333333',
@@ -11,4 +12,5 @@ export enum globalColors {
   JOB_DETAIL_BG_2 = '#E8E8E8',
   JOB_DETAILS_DATE = '#858C91',
   PLACEHOLDER = '#BCBCBC',
+  ITEM_DETAILS_HEADER_BG = '#D9EDF7',
 }

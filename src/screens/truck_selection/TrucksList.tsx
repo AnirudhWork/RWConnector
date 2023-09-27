@@ -154,7 +154,7 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
         </View>
       )}
       {jobsData && jobsData.length > 0 && <Jobs navigation={navigation} />}
-      {jobsData && selected && jobsData.length < 1 && (
+      {!isLoading && jobsData && selected && jobsData.length < 1 && (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text>{JOB_MSGS.NOT_FOUND}</Text>
         </View>

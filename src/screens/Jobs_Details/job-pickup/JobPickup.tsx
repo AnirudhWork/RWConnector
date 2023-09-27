@@ -20,10 +20,11 @@ import {isTablet} from 'react-native-device-info';
 import {useGlobalContext} from '../../../Components/GlobalContext';
 import {JOB_STATUS} from '../../truck_selection/constants';
 import {printLogs} from '../../../Utils/log-utils';
+import ItemDetailsUI from '../add-item/ItemDetailsUI';
+import {TRef_ItemDetailsUI} from '../add-item/types';
 
 const JobPickup: React.FC<IJobPickupDetailsProps> = ({navigation}) => {
   const TAG = JobPickup.name;
-  const isThisTablet = isTablet();
 
   // <-- Redux -->
   const _dispatch = useAppDispatch();
@@ -35,16 +36,22 @@ const JobPickup: React.FC<IJobPickupDetailsProps> = ({navigation}) => {
 
   // <-- useRef -->
   const refDriverNote = createRef<TRef_DriverNote>();
+  const refItemDetails = createRef<TRef_ItemDetailsUI>();
 
-  // <-- useState & variable declarations -->
+  // <-- variable declarations -->
+  const isThisTablet = isTablet();
+  const pickupDate = jobDetailsData?.['pu-date'];
+
+  // <-- useState declarations -->
   const [endDate, setEndDate] = useState<string>();
-  const deliveryDate = jobDetailsData?.['del-date'];
+  const [declaredValue, setDeclaredValue] = useState<number>();
   const [config_IsItCompleted, setConfig_IsItCompleted] =
     useState<boolean>(false);
   const [config__IsItLocked, setconfig__IsItLocked] = useState<boolean>(false);
-  const [isEditingEnabled, setIsEditingEnabled] = useState<boolean>(false);
   const [config__IsJobTypePickup, setConfig__IsJobTypePickup] =
     useState<boolean>(false);
+  const [isEditingEnabled, setIsEditingEnabled] = useState<boolean>(false);
+  const [isFooterRequired, setIsFooterRequired] = useState<boolean>(false);
 
   // <-- Global Context -->
   const globalContext = useGlobalContext();
@@ -55,9 +62,17 @@ const JobPickup: React.FC<IJobPickupDetailsProps> = ({navigation}) => {
   // <-- useEffects -->
   useEffect(() => {
     setEndDate(
-      deliveryDate ? moment(unix(deliveryDate)).format('DD-MMM-YYYY') : '',
+      pickupDate
+        ? moment(unix(pickupDate)).format('DD-MMM-YYYY')
+        : JOB_DETAILS_LABEL.EMPTY,
     );
-  }, []);
+    setDeclaredValue(jobDetailsData?.['pu-dec-val']);
+    printLogs(
+      TAG,
+      '| useEffect() | declaredValue:',
+      jobDetailsData?.['pu-dec-val'],
+    );
+  }, [jobDetailsData]);
 
   useEffect(() => {
     let jobType = selectedJobInfo?.['job-type'];
@@ -222,7 +237,19 @@ const JobPickup: React.FC<IJobPickupDetailsProps> = ({navigation}) => {
           )}
           {(config_IsItCompleted || isEditingEnabled) && (
             <>
-              <Text>Temporary Text!</Text>
+              {/* ITEM DETAILS */}
+              <ItemDetailsUI
+                ref={refItemDetails}
+                isItCompletedJobType={config_IsItCompleted}
+                commonIconSize={globalContext.commonIconSize}
+                commonSpace={commonSpace}
+                extraStyles={{
+                  ...globalStyles.commonPadding,
+                  marginTop: commonMiniSpace,
+                  backgroundColor: globalColors.JOB_DETAIL_BG_1,
+                }}
+                navigation={navigation}
+              />
             </>
           )}
         </ScrollView>

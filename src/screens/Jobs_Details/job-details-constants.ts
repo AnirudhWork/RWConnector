@@ -15,6 +15,7 @@ export const enum JOB_DETAILS_LABEL {
   BILL_DETAILS = 'Bill Details',
   DRIVER_NOTE = 'Driver Note',
   SPECIAL_INFO = 'Special Instructions',
+  ITEM_DETAILS = 'Item Details',
   EMPTY = '',
 }
 
@@ -34,4 +35,16 @@ export enum IS_JOB_LOCKED_BY_CURRENT_USER {
 export enum JOB_DETAILS_JOB_TYPE {
   PICKUP = 1,
   DELIVERY = 2,
+}
+
+export const enum NEW_ITEM_TITLES {
+  DESCR = 'Description',
+  QTY = 'Quantity',
+  LENGTH = 'Length\n(In)',
+  WIDTH = 'Width\n(In)',
+  HEIGHT = 'Height\n(In)',
+}
+
+export const enum ITEM_ERROR_MSGS {
+  NO_ITEMS = 'Not added any item yet',
 }
