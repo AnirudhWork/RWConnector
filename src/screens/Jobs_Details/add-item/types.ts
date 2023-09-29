@@ -1,5 +1,7 @@
-import {ViewStyle} from 'react-native';
+import {TextInputProps, ViewStyle} from 'react-native';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
+import {LegacyRef} from 'react';
+import {TextInput} from 'react-native-gesture-handler';
 
 export type TRef_ItemDetailsUI = {
   getItems: () => TJobDetails_ItemDetails[];
@@ -30,4 +32,26 @@ export type TItemDetailsProps = {
   commonSpace: number;
   items: TJobDetails_ItemDetails[];
   editExistingItem: (item: TJobDetails_ItemDetails) => void;
+};
+
+export type TTextInputWithLabel = {
+  reference?: LegacyRef<TextInput>;
+  style?: ViewStyle;
+  textInputProps?: TextInputProps;
+  label: string;
+  placeholder: string;
+  numberOfLines: number;
+  onChangeText: (text: string) => void;
+  onSubmitEditing?: () => void;
+};
+
+export type TAddItemDetails = {
+  navigation: DrawerNavigationProp<any, any>;
+};
+
+export type TSAddItemDetails_Route = {
+  params: {
+    editableOne: TJobDetails_ItemDetails | undefined;
+    callback: (info: TJobDetails_ItemDetails) => void;
+  };
 };

@@ -43,12 +43,12 @@ export const ItemDetails: React.FC<TItemDetailsProps> = ({
         };
         return (
           <TouchableOpacity
-            disabled={isItCompletedJobType} // client want items from server also editable
+            disabled={isItCompletedJobType}
             onPress={() => {
               editExistingItem(withIndex);
             }}
-            key={index}>
-            {/* <ItemDetailView commonSpace={commonSpace} item={withIndex} /> */}
+            key={item.id}>
+            <ItemDetailView commonSpace={commonSpace} item={withIndex} />
           </TouchableOpacity>
         );
       })}
@@ -66,6 +66,20 @@ export const ItemDetails: React.FC<TItemDetailsProps> = ({
       ]}>
       {ITEM_ERROR_MSGS.NO_ITEMS}
     </Text>
+  );
+};
+
+const ItemDetailView: React.FC<{
+  commonSpace: number;
+  item: TJobDetails_ItemDetails;
+}> = ({commonSpace, item}) => {
+  return commonUIItemDetails(
+    item['ship-desc'],
+    item['ship-qty'],
+    item['ship-length'],
+    item['ship-width'],
+    item['ship-height'],
+    {paddingLeft: commonSpace},
   );
 };
 

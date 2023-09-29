@@ -9,6 +9,7 @@ import {printLogs} from '../../../Utils/log-utils';
 import {SCREEN_NAMES} from '../../../Navigators/constants';
 import {MandatoryLabel} from '../MandatoryLabel';
 import {JOB_DETAILS_LABEL} from '../job-details-constants';
+import {ItemDetails} from './ItemDetails';
 
 export const ItemDetailsUI = React.forwardRef<
   TRef_ItemDetailsUI,
@@ -96,6 +97,15 @@ export const ItemDetailsUI = React.forwardRef<
             </TouchableOpacity>
           )}
         </View>
+
+        <ItemDetails
+          commonSpace={commonSpace}
+          isItCompletedJobType={isItCompletedJobType}
+          items={itemDetails}
+          editExistingItem={(item: TJobDetails_ItemDetails) => {
+            return navigateToAddDetailsScreen(item);
+          }}
+        />
       </View>
     );
   },

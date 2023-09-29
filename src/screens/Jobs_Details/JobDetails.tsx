@@ -52,7 +52,7 @@ const JobDetails: React.FC<TJobsDetailsProps> = ({navigation}) => {
   // <-- useFocusEffect -->
   useFocusEffect(
     React.useCallback(() => {
-      printLogs(TAG, '| useFocusEffect loaded');
+      printLogs(TAG, '| useFocusEffect() loaded');
       setIsItPickup(getIsItPickup());
       requestJobDetails();
 
