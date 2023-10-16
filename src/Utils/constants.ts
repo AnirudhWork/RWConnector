@@ -26,9 +26,9 @@ export enum APP_VERSION_MSG {
 
 export class AsyncStorageUtils {
   static clearAllUserData = async () => {
-    const TAG = this.clearAllUserData.name;
+    const TAG = 'clearAllUserData';
     await AsyncStorage.removeItem(ASYNC_STORAGE_KEY.LOGINRESPONSE);
-    printLogs(TAG, '| successful');
+    printLogs(TAG, '| successfully');
   };
 
   static setLoginResponse = async (value: ILoginDataProps) => {
@@ -106,7 +106,7 @@ export const logoutSessionExpired = async (
   navigation: DrawerNavigationProp<any, any>,
   dispatch: ThunkDispatch<any, any, any>,
 ) => {
-  const TAG = logoutAndNavigateToLoginScreen.name;
+  const TAG = logoutSessionExpired.name;
   printLogs(TAG, '| Executed');
   logoutAndNavigateToLoginScreen(navigation, dispatch);
   SimpleAlert('', API_ERR_MSG.LOGOUT_ERR);
@@ -142,6 +142,7 @@ export const isUpdateAlertReq = async () => {
 export const clearReduxStore = async (
   dispatch: ThunkDispatch<any, any, any>,
 ) => {
+  const TAG = clearReduxStore.name;
   dispatch(setCompleteJobInfo([]));
   dispatch(
     setSelectedTruckInfo({
@@ -150,4 +151,5 @@ export const clearReduxStore = async (
       note: '',
     }),
   );
+  printLogs(TAG, '| successfully');
 };

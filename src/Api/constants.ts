@@ -57,12 +57,18 @@ export const logoutAndNavigateToLoginScreen = (
   navigation: DrawerNavigationProp<any, any>,
   dispatch: ThunkDispatch<any, any, any>,
 ) => {
+  const TAG = logoutAndNavigateToLoginScreen.name;
   AsyncStorageUtils.clearAllUserData();
   clearReduxStore(dispatch);
   navigation.reset({
     index: 0,
     routes: [{name: SCREEN_NAMES.LOGIN}],
   });
+  const callerName = new Error().stack
+    ?.split('\n')[1]
+    .trim()
+    .match(/at\s(.+?)\s/)?.[1];
+  printLogs(TAG, '| successfully', 'Called by:', callerName);
 };
 
 export const IsInternetAccessAvailable = (statusCode: number) => {

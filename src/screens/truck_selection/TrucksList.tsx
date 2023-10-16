@@ -90,7 +90,6 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
   // <-- Jobs api -->
 
   const requestJobsList = async () => {
-    const TAG = requestJobsList.name;
     setIsTruckNoteVisible(true);
     try {
       dispatch(setLoadingStatus(true));
@@ -104,9 +103,6 @@ const TruckList: React.FC<TTruckListProps> = ({navigation}) => {
           dispatch(setCompleteJobInfo(response.data['job-list']));
         }
       }
-    } catch (error) {
-      printLogs(TAG, '| Pre-API call Error:', error);
-      SimpleAlert('', API_ERR_MSG.ERR);
     } finally {
       dispatch(setLoadingStatus(false));
     }

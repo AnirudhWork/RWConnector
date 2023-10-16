@@ -22,6 +22,7 @@ import {JOB_STATUS} from '../../truck_selection/constants';
 import {printLogs} from '../../../Utils/log-utils';
 import ItemDetailsUI from '../add-item/ItemDetailsUI';
 import {TRef_ItemDetailsUI} from '../add-item/types';
+import Camera from '../../Camera';
 
 const JobPickup: React.FC<IJobPickupDetailsProps> = ({navigation}) => {
   const TAG = JobPickup.name;
@@ -252,6 +253,7 @@ const JobPickup: React.FC<IJobPickupDetailsProps> = ({navigation}) => {
               />
             </>
           )}
+          <Camera />
         </ScrollView>
       )}
     </View>

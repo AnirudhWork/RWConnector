@@ -46,5 +46,5 @@ export const enum NEW_ITEM_TITLES {
 }
 
 export const enum ITEM_ERROR_MSGS {
-  NO_ITEMS = 'Not added any item yet',
+  NO_ITEMS = 'No items has been added yet',
 }

@@ -92,7 +92,6 @@ const LoginBackground: React.FC<LoginBackgroundProps> = ({
           '| DecryptPassword failed or ValidateLoginCred Method failed. ErrorMsg:',
           error,
         );
-        SimpleAlert('', API_ERR_MSG.ERR);
       } finally {
         dispatch(setLoadingStatus(false));
       }

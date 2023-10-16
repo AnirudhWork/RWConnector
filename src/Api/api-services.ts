@@ -70,6 +70,7 @@ export class APIServices {
       const cloneConfig = {...config};
       printLogs(TAG, '| Cloned Config:', cloneConfig);
       const url = cloneConfig?.url;
+      printLogs(TAG, '| second request URL from cloned config:', url);
       try {
         const renewToken = await new APIServices(
           true,
@@ -102,7 +103,6 @@ export class APIServices {
         }
       } catch (error) {
         logoutSessionExpired(APIServices.navigation, APIServices.dispatch);
-        return Promise.reject(error);
       }
     }
 
@@ -142,46 +142,36 @@ export class APIServices {
   };
 
   get = async (path: string, headers?: any) => {
-    try {
-      const isInternet = await this.isInternetConnected();
+    const isInternet = await this.isInternetConnected();
 
-      if (isInternet.status) {
-        return await this.axiosInstance
-          .get(path, headers ? {headers: headers} : {})
-          .then((response: AxiosResponse) => {
-            return response;
-          })
-          .catch((error: AxiosError) => {
-            throw error;
-          });
-      } else {
-        SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
-      }
-    } catch (error) {
-      printLogs('API Get Method REQUEST Error:', error);
-      throw error;
+    if (isInternet.status) {
+      return await this.axiosInstance
+        .get(path, headers ? {headers: headers} : {})
+        .then((response: AxiosResponse) => {
+          return response;
+        })
+        .catch((error: AxiosError) => {
+          throw error;
+        });
+    } else {
+      SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
     }
   };
 
   post = async (path: string, body?: any, headers?: any) => {
-    try {
-      const isInternet = await this.isInternetConnected();
+    const isInternet = await this.isInternetConnected();
 
-      if (isInternet.status) {
-        return await this.axiosInstance
-          .post(path, body, headers ? {headers: headers} : {})
-          .then((response: AxiosResponse) => {
-            return response;
-          })
-          .catch((error: AxiosError) => {
-            throw error;
-          });
-      } else {
-        SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
-      }
-    } catch (error) {
-      printLogs('API Post Method Request Error:', error);
-      throw error;
+    if (isInternet.status) {
+      return await this.axiosInstance
+        .post(path, body, headers ? {headers: headers} : {})
+        .then((response: AxiosResponse) => {
+          return response;
+        })
+        .catch((error: AxiosError) => {
+          throw error;
+        });
+    } else {
+      SimpleAlert('', API_ERR_MSG.INTERNET_ERR);
     }
   };
 }

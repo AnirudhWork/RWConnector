@@ -81,9 +81,6 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({
             setIsForgotPassword(false);
           }, 2000);
         }
-      } catch (error) {
-        printLogs(TAG, '| Forgot PW API REQUEST Error:', error);
-        SimpleAlert('', API_ERR_MSG.ERR);
       } finally {
         dispatch(setLoadingStatus(false));
       }
